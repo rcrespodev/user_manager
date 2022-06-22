@@ -12,4 +12,5 @@ type ReturnLogSrv interface {
 	LogSuccess(command domain.NewSuccessCommand)
 	Success() *message.Message
 	HttpCode() valueObjects.HttpCodeReturn
+	Status() valueObjects.Status
 }

@@ -43,7 +43,7 @@ func NewReturnLog(uuid uuid.UUID, repository message.MessageRepository, defaultP
 
 func (r *ReturnLog) LogError(command NewErrorCommand) {
 	defer func() {
-		r.updateHttpCode()
+		r.updateInternalData()
 	}()
 
 	if command.Error != nil {
@@ -69,7 +69,7 @@ func (r ReturnLog) Error() *CustomError {
 
 func (r *ReturnLog) LogSuccess(command NewSuccessCommand) {
 	defer func() {
-		r.updateHttpCode()
+		r.updateInternalData()
 	}()
 
 	pkg := r.getPkg(command.MessagePkg)
@@ -103,6 +103,10 @@ func (r ReturnLog) HttpCode() valueObjects.HttpCodeReturn {
 	return r.httpCodeReturn
 }
 
+func (r *ReturnLog) Status() valueObjects.Status {
+	return r.status
+}
+
 func (r ReturnLog) getPkg(commandPkg string) string {
 	if commandPkg == "" {
 		return r.defaultPkg
@@ -110,8 +114,11 @@ func (r ReturnLog) getPkg(commandPkg string) string {
 	return commandPkg
 }
 
-func (r *ReturnLog) updateHttpCode() {
+func (r *ReturnLog) updateInternalData() {
 	if r.error != nil {
+		if r.status != valueObjects.Error {
+			r.status = valueObjects.Error
+		}
 		if r.error.internalError != nil {
 			r.httpCodeReturn = valueObjects.HttpCodeInternalError
 			return
@@ -120,6 +127,10 @@ func (r *ReturnLog) updateHttpCode() {
 			r.httpCodeReturn = valueObjects.HttpCodeBadRequest
 			return
 		}
+	}
+
+	if r.status != valueObjects.Success {
+		r.status = valueObjects.Success
 	}
 	if r.httpCodeReturn != valueObjects.HttpCodeSuccess {
 		r.httpCodeReturn = valueObjects.HttpCodeSuccess

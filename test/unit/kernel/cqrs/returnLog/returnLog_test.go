@@ -136,6 +136,10 @@ func TestReturnLogSrv(t *testing.T) {
 				t.Errorf("HttpCode()\n\t- got: %v\n\t- want: %v", gotHttpCode, tt.want.httpCodeReturn)
 			}
 
+			if gotStatus := srv.Status(); !reflect.DeepEqual(gotStatus, tt.want.status) {
+				t.Errorf("Status()\n\t- got: %v\n\t- want: %v", gotStatus, tt.want.status)
+			}
+
 		})
 	}
 }
