@@ -21,22 +21,9 @@ type NewMessageCommand struct {
 	Variables  Variables
 }
 
-//type MessageData struct {
-//	ObjectId   string
-//	MessageId  MessageId
-//	MessagePkg string
-//	Variables  Variables
-//	Text       string
-//	Time       time.Time
-//}
-
 type MessageId uint16
 
 type Variables [4]string
-
-const (
-	messageNotFound = "message %v not found in pkg %v"
-)
 
 type MessageData struct {
 	ObjectId   string
@@ -60,16 +47,9 @@ func NewMessage(command NewMessageCommand, repository MessageRepository) (*Messa
 	}
 
 	if msg.text == "" {
-		//msg.text = messageNotFound
-		//msg.messagePkg = "kernel"
-		//msg.variables = Variables{strconv.Itoa(int(command.MessageId)), command.MessagePkg}
 		return nil, fmt.Errorf("message %v not found in pkg %v", command.MessageId, command.MessagePkg)
 	}
 
-	//for _, variable := range msg.variables {
-	//
-	//	msg.text = strings.Replace(msg.text, "%v", variable, 1)
-	//}
 	msg.text = fmt.Sprintf(msg.text, msg.variables)
 
 	return msg, nil
