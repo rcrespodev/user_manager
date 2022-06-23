@@ -3,23 +3,28 @@ package returnLog
 import (
 	"fmt"
 	"github.com/google/uuid"
+	"github.com/joho/godotenv"
 	domain "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/valueObjects"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/repository"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/service"
+	"log"
 	"os"
 	"reflect"
 	"testing"
 )
 
 func TestReturnLogSrv(t *testing.T) {
+	if err := godotenv.Load(".env"); err != nil {
+		log.Fatal(err)
+	}
 	homeProject := os.Getenv("HOME_PROJECT")
 	const (
 		defaultPkg = "testing"
 	)
 	var uuids [1]uuid.UUID
-	for i, _ := range uuids {
+	for i := range uuids {
 		uuids[i] = uuid.New()
 	}
 

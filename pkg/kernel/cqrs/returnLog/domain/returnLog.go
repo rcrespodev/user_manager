@@ -2,6 +2,7 @@ package domain
 
 import (
 	"github.com/google/uuid"
+	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/customError"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/valueObjects"
 )
@@ -14,7 +15,7 @@ type ReturnLog struct {
 	uuid           uuid.UUID           //uuid of command/query
 	status         valueObjects.Status //Success or Error
 	defaultPkg     string
-	error          *CustomError
+	error          *customError.CustomError
 	success        *message.Message
 	httpCodeReturn valueObjects.HttpCodeReturn
 	repository     message.MessageRepository
@@ -47,12 +48,12 @@ func (r *ReturnLog) LogError(command NewErrorCommand) {
 	}()
 
 	if command.Error != nil {
-		r.error = NewInternalError(command.Error, r.caller)
+		r.error = customError.NewInternalError(command.Error, r.caller)
 		return
 	}
 
 	pkg := r.getPkg(command.MessagePkg)
-	r.error = NewExternalError(message.NewMessageCommand{
+	r.error = customError.NewExternalError(message.NewMessageCommand{
 		ObjectId:   command.ObjectId,
 		MessageId:  command.MessageId,
 		MessagePkg: pkg,
@@ -60,7 +61,7 @@ func (r *ReturnLog) LogError(command NewErrorCommand) {
 	}, r.repository)
 }
 
-func (r ReturnLog) Error() *CustomError {
+func (r ReturnLog) Error() *customError.CustomError {
 	if r.error == nil {
 		return nil
 	}
@@ -119,11 +120,11 @@ func (r *ReturnLog) updateInternalData() {
 		if r.status != valueObjects.Error {
 			r.status = valueObjects.Error
 		}
-		if r.error.internalError != nil {
+		if r.error.InternalError() != nil {
 			r.httpCodeReturn = valueObjects.HttpCodeInternalError
 			return
 		}
-		if r.error.message != nil {
+		if r.error.Message() != nil {
 			r.httpCodeReturn = valueObjects.HttpCodeBadRequest
 			return
 		}

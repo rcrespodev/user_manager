@@ -1,4 +1,4 @@
-package domain
+package customError
 
 type InternalError struct {
 	error error
