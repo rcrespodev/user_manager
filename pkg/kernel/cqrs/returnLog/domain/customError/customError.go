@@ -7,7 +7,7 @@ import (
 
 type CustomError struct {
 	internalError *InternalError
-	message       *message.Message
+	clientError   *message.Message
 }
 
 func NewExternalError(command message.NewMessageCommand, repository message.MessageRepository) *CustomError {
@@ -17,7 +17,7 @@ func NewExternalError(command message.NewMessageCommand, repository message.Mess
 	}
 	return &CustomError{
 		internalError: nil,
-		message:       msg,
+		clientError:   msg,
 	}
 }
 
@@ -29,7 +29,7 @@ func NewInternalError(error error, caller int) *CustomError {
 			file:  file,
 			line:  line,
 		},
-		message: nil,
+		clientError: nil,
 	}
 }
 
@@ -38,8 +38,8 @@ func (c CustomError) InternalError() *InternalError {
 }
 
 func (c CustomError) Message() *message.MessageData {
-	if c.message == nil {
+	if c.clientError == nil {
 		return nil
 	}
-	return c.message.MessageData()
+	return c.clientError.MessageData()
 }

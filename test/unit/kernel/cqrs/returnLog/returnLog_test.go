@@ -44,7 +44,7 @@ func TestReturnLogSrv(t *testing.T) {
 		file  string
 	}
 	type wantCustomError struct {
-		message *message.MessageData
+		clienteError *message.MessageData
 		*internalError
 	}
 	type wantSuccess struct {
@@ -137,7 +137,7 @@ func TestReturnLogSrv(t *testing.T) {
 				status: valueObjects.Error,
 				error: &wantCustomError{
 					internalError: nil,
-					message: &message.MessageData{
+					clienteError: &message.MessageData{
 						ObjectId:   "reference",
 						MessageId:  001,
 						MessagePkg: "testing",
@@ -171,7 +171,7 @@ func TestReturnLogSrv(t *testing.T) {
 						Error: fmt.Errorf("internal Error"),
 						file:  fmt.Sprintf("%v/user_manager/test/unit/kernel/cqrs/returnLog/returnLog_test.go", homeProject),
 					},
-					message: nil,
+					clienteError: nil,
 				},
 				success:        &wantSuccess{message: nil},
 				httpCodeReturn: 500,
@@ -199,7 +199,7 @@ func TestReturnLogSrv(t *testing.T) {
 				status: valueObjects.Error,
 				error: &wantCustomError{
 					internalError: nil,
-					message: &message.MessageData{
+					clienteError: &message.MessageData{
 						ObjectId:   "reference error",
 						MessageId:  001,
 						MessagePkg: "testing",
@@ -287,8 +287,8 @@ func TestReturnLogSrv(t *testing.T) {
 				if gotErrorMsg != nil {
 					gotErrorMsg.Time = time.Time{} // clear time field
 				}
-				if !reflect.DeepEqual(gotErrorMsg, tt.want.error.message) {
-					t.Errorf("ErrorMessage()\n\t- got: %v\n\t- want: %v", gotErrorMsg, tt.want.error.message)
+				if !reflect.DeepEqual(gotErrorMsg, tt.want.error.clienteError) {
+					t.Errorf("ErrorMessage()\n\t- got: %v\n\t- want: %v", gotErrorMsg, tt.want.error.clienteError)
 				}
 
 				internalError := errorLog.InternalError()
