@@ -6,13 +6,21 @@ import (
 	"time"
 )
 
+const (
+	ClientErrorBadRequest ClientErrorType = 1 + iota
+	ClientErrorUnauthorized
+	ClientErrorFordibben
+	ClientErrorNotFound
+)
+
 type Message struct {
-	objectId   string
-	messageId  MessageId
-	messagePkg string
-	variables  Variables
-	text       string
-	time       time.Time
+	objectId        string
+	messageId       MessageId
+	messagePkg      string
+	variables       Variables
+	text            string
+	time            time.Time
+	clientErrorType ClientErrorType
 }
 
 type NewMessageCommand struct {
@@ -22,29 +30,33 @@ type NewMessageCommand struct {
 	Variables  Variables
 }
 
+type MessageData struct {
+	ObjectId        string
+	MessageId       MessageId
+	MessagePkg      string
+	Variables       Variables
+	Text            string
+	Time            time.Time
+	ClientErrorType ClientErrorType
+}
+
 type MessageId uint16
 
 type Variables [4]string
 
-type MessageData struct {
-	ObjectId   string
-	MessageId  MessageId
-	MessagePkg string
-	Variables  Variables
-	Text       string
-	Time       time.Time
-}
+type ClientErrorType uint8
 
 func NewMessage(command NewMessageCommand, repository MessageRepository) (*Message, error) {
-	text := repository.GetMessageText(command.MessageId, command.MessagePkg)
+	text, clientErrorType := repository.GetMessageData(command.MessageId, command.MessagePkg)
 
 	msg := &Message{
-		objectId:   command.ObjectId,
-		messageId:  command.MessageId,
-		messagePkg: command.MessagePkg,
-		variables:  command.Variables,
-		text:       text,
-		time:       time.Now(),
+		objectId:        command.ObjectId,
+		messageId:       command.MessageId,
+		messagePkg:      command.MessagePkg,
+		variables:       command.Variables,
+		text:            text,
+		time:            time.Now(),
+		clientErrorType: clientErrorType,
 	}
 
 	if msg.text == "" {
@@ -60,11 +72,12 @@ func NewMessage(command NewMessageCommand, repository MessageRepository) (*Messa
 
 func (m Message) MessageData() *MessageData {
 	return &MessageData{
-		ObjectId:   m.objectId,
-		MessageId:  m.messageId,
-		MessagePkg: m.messagePkg,
-		Variables:  m.variables,
-		Text:       m.text,
-		Time:       m.time,
+		ObjectId:        m.objectId,
+		MessageId:       m.messageId,
+		MessagePkg:      m.messagePkg,
+		Variables:       m.variables,
+		Text:            m.text,
+		Time:            m.time,
+		ClientErrorType: m.clientErrorType,
 	}
 }

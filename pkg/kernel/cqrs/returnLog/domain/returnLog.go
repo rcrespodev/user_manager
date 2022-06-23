@@ -147,7 +147,12 @@ func (r *ReturnLog) updateInternalData() {
 			return
 		}
 		if r.error.Message() != nil {
-			r.httpCodeReturn = valueObjects.HttpCodeBadRequest
+			httpCode, err := r.httpCodeReturn.MapClientErrorToHttpCode(r.error.Message().ClientErrorType)
+			if err != nil {
+				r.LogError(NewErrorCommand{Error: err})
+				return
+			}
+			r.httpCodeReturn = httpCode
 			return
 		}
 	}

@@ -1,5 +1,5 @@
 package message
 
 type MessageRepository interface {
-	GetMessageText(id MessageId, messagePkg string) string
+	GetMessageData(id MessageId, messagePkg string) (text string, clientErrorType ClientErrorType)
 }

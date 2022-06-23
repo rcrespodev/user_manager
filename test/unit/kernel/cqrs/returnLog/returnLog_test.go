@@ -37,6 +37,30 @@ func TestReturnLogSrv(t *testing.T) {
 			Pkg:  "testing",
 			Text: "message 002, pkg testing with vars %v, %v, %v, %v.",
 		},
+		{
+			Id:              003,
+			Pkg:             "testing",
+			Text:            "message 003, pkg testing with vars %v, %v, %v, %v.",
+			ClientErrorType: message.ClientErrorUnauthorized,
+		},
+		{
+			Id:              004,
+			Pkg:             "testing",
+			Text:            "message 004, pkg testing with vars %v, %v, %v, %v.",
+			ClientErrorType: message.ClientErrorBadRequest,
+		},
+		{
+			Id:              005,
+			Pkg:             "testing",
+			Text:            "message 005, pkg testing with vars %v, %v, %v, %v.",
+			ClientErrorType: message.ClientErrorFordibben,
+		},
+		{
+			Id:              006,
+			Pkg:             "testing",
+			Text:            "message 006, pkg testing with vars %v, %v, %v, %v.",
+			ClientErrorType: message.ClientErrorNotFound,
+		},
 	})
 
 	type internalError struct {
@@ -259,6 +283,130 @@ func TestReturnLogSrv(t *testing.T) {
 					Time:       time.Time{},
 				}},
 				httpCodeReturn: 200,
+			},
+		},
+		{
+			name: "external error Unauthorized",
+			args: &args{
+				defaultPkg: defaultPkg,
+				error: &domain.NewErrorCommand{
+					Error: nil,
+					NewMessageCommand: &message.NewMessageCommand{
+						ObjectId:  "reference error",
+						MessageId: 003,
+						Variables: message.Variables{"var1", "var2", "var3", "var4"},
+					},
+				},
+				success: nil,
+			},
+			want: &want{
+				status: valueObjects.Error,
+				error: &wantCustomError{
+					internalError: nil,
+					clienteError: &message.MessageData{
+						ObjectId:        "reference error",
+						MessageId:       003,
+						MessagePkg:      "testing",
+						Variables:       message.Variables{"var1", "var2", "var3", "var4"},
+						Text:            "message 003, pkg testing with vars var1, var2, var3, var4.",
+						ClientErrorType: message.ClientErrorUnauthorized,
+					},
+				},
+				success:        &wantSuccess{message: nil},
+				httpCodeReturn: 401,
+			},
+		},
+		{
+			name: "external error Bad request",
+			args: &args{
+				defaultPkg: defaultPkg,
+				error: &domain.NewErrorCommand{
+					Error: nil,
+					NewMessageCommand: &message.NewMessageCommand{
+						ObjectId:  "reference error",
+						MessageId: 004,
+						Variables: message.Variables{"var1", "var2", "var3", "var4"},
+					},
+				},
+				success: nil,
+			},
+			want: &want{
+				status: valueObjects.Error,
+				error: &wantCustomError{
+					internalError: nil,
+					clienteError: &message.MessageData{
+						ObjectId:        "reference error",
+						MessageId:       004,
+						MessagePkg:      "testing",
+						Variables:       message.Variables{"var1", "var2", "var3", "var4"},
+						Text:            "message 004, pkg testing with vars var1, var2, var3, var4.",
+						ClientErrorType: message.ClientErrorBadRequest,
+					},
+				},
+				success:        &wantSuccess{message: nil},
+				httpCodeReturn: 400,
+			},
+		},
+		{
+			name: "external error Forbidden",
+			args: &args{
+				defaultPkg: defaultPkg,
+				error: &domain.NewErrorCommand{
+					Error: nil,
+					NewMessageCommand: &message.NewMessageCommand{
+						ObjectId:  "reference error",
+						MessageId: 005,
+						Variables: message.Variables{"var1", "var2", "var3", "var4"},
+					},
+				},
+				success: nil,
+			},
+			want: &want{
+				status: valueObjects.Error,
+				error: &wantCustomError{
+					internalError: nil,
+					clienteError: &message.MessageData{
+						ObjectId:        "reference error",
+						MessageId:       005,
+						MessagePkg:      "testing",
+						Variables:       message.Variables{"var1", "var2", "var3", "var4"},
+						Text:            "message 005, pkg testing with vars var1, var2, var3, var4.",
+						ClientErrorType: message.ClientErrorFordibben,
+					},
+				},
+				success:        &wantSuccess{message: nil},
+				httpCodeReturn: 403,
+			},
+		},
+		{
+			name: "external error Not found",
+			args: &args{
+				defaultPkg: defaultPkg,
+				error: &domain.NewErrorCommand{
+					Error: nil,
+					NewMessageCommand: &message.NewMessageCommand{
+						ObjectId:  "reference error",
+						MessageId: 006,
+						Variables: message.Variables{"var1", "var2", "var3", "var4"},
+					},
+				},
+				success: nil,
+			},
+			want: &want{
+				status: valueObjects.Error,
+				error: &wantCustomError{
+					internalError: nil,
+					clienteError: &message.MessageData{
+						ObjectId:        "reference error",
+						MessageId:       006,
+						MessagePkg:      "testing",
+						Variables:       message.Variables{"var1", "var2", "var3", "var4"},
+						Text:            "message 006, pkg testing with vars var1, var2, var3, var4.",
+						ClientErrorType: message.ClientErrorNotFound,
+					},
+				},
+				success:        &wantSuccess{message: nil},
+				httpCodeReturn: 404,
 			},
 		},
 	}
