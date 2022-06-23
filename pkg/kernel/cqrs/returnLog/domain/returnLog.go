@@ -11,6 +11,12 @@ const (
 	defaultCaller = 2
 )
 
+// ReturnLog
+// Every command/query can be Success or Error. Log the status in the ReturnLog
+// using LogError() and LogSuccess. If log has one Error and one Success, the error
+// is more important.
+// Also, if error has one internal error and one external error, the internal is more
+// important
 type ReturnLog struct {
 	uuid           uuid.UUID           //uuid of command/query
 	status         valueObjects.Status //Success or Error
