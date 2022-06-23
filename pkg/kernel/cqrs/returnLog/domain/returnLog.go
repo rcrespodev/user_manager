@@ -33,10 +33,10 @@ type ReturnLog struct {
 // If Error == nil, returnLog use the messageData and log the error
 type NewErrorCommand struct {
 	Error error
-	message.NewMessageCommand
+	*message.NewMessageCommand
 }
 
-type NewSuccessCommand message.NewMessageCommand
+type NewSuccessCommand *message.NewMessageCommand
 
 func NewReturnLog(uuid uuid.UUID, repository message.MessageRepository, defaultPkg string) *ReturnLog {
 	return &ReturnLog{
@@ -44,10 +44,16 @@ func NewReturnLog(uuid uuid.UUID, repository message.MessageRepository, defaultP
 		defaultPkg:     defaultPkg,
 		repository:     repository,
 		caller:         defaultCaller,
+		error:          nil,
+		success:        nil,
 		httpCodeReturn: valueObjects.HttpCodeSuccess,
 	}
 }
 
+// LogError
+// See NewErrorCommand usage.
+// The log can only contain one error. If the log already contain an error, no new
+// errors are logged, that is, the original error is not overwritten.
 func (r *ReturnLog) LogError(command NewErrorCommand) {
 	defer func() {
 		r.updateInternalData()
@@ -74,10 +80,17 @@ func (r ReturnLog) Error() *customError.CustomError {
 	return r.error
 }
 
+// LogSuccess
+// The log can only contain one Success. If the log already contain a success, no new
+// success are logged, that is, the original success is not overwritten.
 func (r *ReturnLog) LogSuccess(command NewSuccessCommand) {
 	defer func() {
 		r.updateInternalData()
 	}()
+
+	if r.success != nil {
+		return
+	}
 
 	pkg := r.getPkg(command.MessagePkg)
 	msg, err := message.NewMessage(message.NewMessageCommand{
@@ -123,6 +136,9 @@ func (r ReturnLog) getPkg(commandPkg string) string {
 
 func (r *ReturnLog) updateInternalData() {
 	if r.error != nil {
+		if r.success != nil {
+			r.success = nil
+		}
 		if r.status != valueObjects.Error {
 			r.status = valueObjects.Error
 		}

@@ -2,6 +2,7 @@ package message
 
 import (
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -50,7 +51,9 @@ func NewMessage(command NewMessageCommand, repository MessageRepository) (*Messa
 		return nil, fmt.Errorf("message %v not found in pkg %v", command.MessageId, command.MessagePkg)
 	}
 
-	msg.text = fmt.Sprintf(msg.text, msg.variables)
+	for _, variable := range msg.variables {
+		msg.text = strings.Replace(msg.text, "%v", variable, 1)
+	}
 
 	return msg, nil
 }
