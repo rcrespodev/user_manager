@@ -13,3 +13,7 @@ func (i InternalError) Error() error {
 func (i InternalError) File() string {
 	return i.file
 }
+
+func (i InternalError) Line() int {
+	return i.line
+}
