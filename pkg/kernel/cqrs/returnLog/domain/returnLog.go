@@ -18,14 +18,15 @@ const (
 // Also, if error has one internal error and one external error, the internal is more
 // important
 type ReturnLog struct {
-	uuid           uuid.UUID           //uuid of command/query
-	status         valueObjects.Status //Success or Error
-	defaultPkg     string
-	error          *customError.CustomError
-	success        *message.Message
-	httpCodeReturn valueObjects.HttpCodeReturn
-	repository     message.MessageRepository
-	caller         int
+	uuid            uuid.UUID           //uuid of command/query
+	status          valueObjects.Status //Success or Error
+	defaultPkg      string
+	error           *customError.CustomError
+	success         *message.Message
+	httpCodeReturn  valueObjects.HttpCodeReturn
+	currentObjectId string
+	repository      message.MessageRepository
+	caller          int
 }
 
 // NewErrorCommand
@@ -40,13 +41,14 @@ type NewSuccessCommand *message.NewMessageCommand
 
 func NewReturnLog(uuid uuid.UUID, repository message.MessageRepository, defaultPkg string) *ReturnLog {
 	return &ReturnLog{
-		uuid:           uuid,
-		defaultPkg:     defaultPkg,
-		repository:     repository,
-		caller:         defaultCaller,
-		error:          nil,
-		success:        nil,
-		httpCodeReturn: valueObjects.HttpCodeSuccess,
+		uuid:            uuid,
+		defaultPkg:      defaultPkg,
+		repository:      repository,
+		caller:          defaultCaller,
+		error:           nil,
+		success:         nil,
+		currentObjectId: "",
+		httpCodeReturn:  valueObjects.HttpCodeSuccess,
 	}
 }
 
@@ -65,8 +67,9 @@ func (r *ReturnLog) LogError(command NewErrorCommand) {
 	}
 
 	pkg := r.getPkg(command.MessagePkg)
+	objectId := r.getObjectId(command.ObjectId)
 	r.error = customError.NewExternalError(message.NewMessageCommand{
-		ObjectId:   command.ObjectId,
+		ObjectId:   objectId,
 		MessageId:  command.MessageId,
 		MessagePkg: pkg,
 		Variables:  command.Variables,
@@ -93,8 +96,9 @@ func (r *ReturnLog) LogSuccess(command NewSuccessCommand) {
 	}
 
 	pkg := r.getPkg(command.MessagePkg)
+	objectId := r.getObjectId(command.ObjectId)
 	msg, err := message.NewMessage(message.NewMessageCommand{
-		ObjectId:   command.ObjectId,
+		ObjectId:   objectId,
 		MessageId:  command.MessageId,
 		MessagePkg: pkg,
 		Variables:  command.Variables,
@@ -148,6 +152,9 @@ func (r *ReturnLog) updateInternalData() {
 		}
 		if r.error.Message() != nil {
 			httpCode, err := r.httpCodeReturn.MapClientErrorToHttpCode(r.error.Message().ClientErrorType)
+			//if httpCode == 0 {
+			//	return
+			//}
 			if err != nil {
 				r.LogError(NewErrorCommand{Error: err})
 				return
@@ -163,4 +170,16 @@ func (r *ReturnLog) updateInternalData() {
 	if r.httpCodeReturn != valueObjects.HttpCodeSuccess {
 		r.httpCodeReturn = valueObjects.HttpCodeSuccess
 	}
+}
+
+func (r *ReturnLog) SetObjectId(objectId string) {
+	r.currentObjectId = objectId
+}
+
+func (r ReturnLog) getObjectId(cmdObjectId string) string {
+	if r.currentObjectId != "" {
+		return r.currentObjectId
+	}
+
+	return cmdObjectId
 }
