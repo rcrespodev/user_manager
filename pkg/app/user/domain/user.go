@@ -24,6 +24,7 @@ type NewUserCommand struct {
 }
 
 func NewUser(cmd NewUserCommand, log *returnLog.ReturnLog) *User {
+	log.SetObjectId(cmd.Alias)
 	userUuid, err := uuid.Parse(cmd.Uuid)
 	if err != nil {
 		log.LogError(returnLog.NewErrorCommand{

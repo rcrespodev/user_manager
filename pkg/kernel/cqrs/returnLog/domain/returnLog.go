@@ -48,7 +48,8 @@ func NewReturnLog(uuid uuid.UUID, repository message.MessageRepository, defaultP
 		error:           nil,
 		success:         nil,
 		currentObjectId: "",
-		httpCodeReturn:  valueObjects.HttpCodeSuccess,
+		status:          "",
+		httpCodeReturn:  000,
 	}
 }
 
