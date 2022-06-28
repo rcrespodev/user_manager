@@ -7,7 +7,6 @@ import (
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/valueObjects"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/repository"
-	"log"
 	"reflect"
 	"testing"
 	"time"
@@ -19,7 +18,25 @@ func TestNewUser(t *testing.T) {
 		{
 			Id:              004,
 			Pkg:             "user",
-			Text:            "value foo.test.com is invalid as email attribute",
+			Text:            "value %v is invalid as %v attribute",
+			ClientErrorType: message.ClientErrorBadRequest,
+		},
+		{
+			Id:              005,
+			Pkg:             "user",
+			Text:            "attribute %v are mandatory",
+			ClientErrorType: message.ClientErrorBadRequest,
+		},
+		{
+			Id:              006,
+			Pkg:             "user",
+			Text:            "attribute %v can´t be greater than %v characters",
+			ClientErrorType: message.ClientErrorBadRequest,
+		},
+		{
+			Id:              007,
+			Pkg:             "user",
+			Text:            "attribute %v can´t contain special characters (%v)",
 			ClientErrorType: message.ClientErrorBadRequest,
 		},
 	})
@@ -97,8 +114,116 @@ func TestNewUser(t *testing.T) {
 					ObjectId:        "martin_fowler",
 					MessageId:       004,
 					MessagePkg:      "user",
-					Variables:       message.Variables{"foo.test.com"},
+					Variables:       message.Variables{"foo.test.com", "email"},
 					Text:            "value foo.test.com is invalid as email attribute",
+					Time:            time.Time{},
+					ClientErrorType: message.ClientErrorBadRequest,
+				},
+				successMessage: nil,
+				userData:       nil,
+			},
+		},
+		{
+			name: "bad request - missing email",
+			args: &args{
+				uuid:       "123e4567-e89b-12d3-a456-426614174000",
+				alias:      "martin_fowler",
+				name:       "martin",
+				secondName: "fowler",
+				email:      "",
+				password:   "Linux648$",
+			},
+			want: &want{
+				status:         valueObjects.Error,
+				httpCodeReturn: 400,
+				error:          nil,
+				errorMessage: &message.MessageData{
+					ObjectId:        "martin_fowler",
+					MessageId:       005,
+					MessagePkg:      "user",
+					Variables:       message.Variables{"Email"},
+					Text:            "attribute Email are mandatory",
+					Time:            time.Time{},
+					ClientErrorType: message.ClientErrorBadRequest,
+				},
+				successMessage: nil,
+				userData:       nil,
+			},
+		},
+		{
+			name: "bad request - invalid uuid",
+			args: &args{
+				uuid:       "123e4567-e89b-12d3-a456-42661417",
+				alias:      "martin_fowler",
+				name:       "martin",
+				secondName: "fowler",
+				email:      "foo@test.com",
+				password:   "Linux648$",
+			},
+			want: &want{
+				status:         valueObjects.Error,
+				httpCodeReturn: 400,
+				error:          nil,
+				errorMessage: &message.MessageData{
+					ObjectId:        "martin_fowler",
+					MessageId:       004,
+					MessagePkg:      "user",
+					Variables:       message.Variables{"123e4567-e89b-12d3-a456-42661417", "uuid"},
+					Text:            "value 123e4567-e89b-12d3-a456-42661417 is invalid as uuid attribute",
+					Time:            time.Time{},
+					ClientErrorType: message.ClientErrorBadRequest,
+				},
+				successMessage: nil,
+				userData:       nil,
+			},
+		},
+		{
+			name: "bad request - Invalid alias (Len > 30)",
+			args: &args{
+				uuid:       "123e4567-e89b-12d3-a456-426614174000",
+				alias:      "martin_fowlermartin_fowlermartin_fowler",
+				name:       "martin",
+				secondName: "fowler",
+				email:      "foo@test.com",
+				password:   "Linux648$",
+			},
+			want: &want{
+				status:         valueObjects.Error,
+				httpCodeReturn: 400,
+				error:          nil,
+				errorMessage: &message.MessageData{
+					ObjectId:        "martin_fowlermartin_fowlermartin_fowler",
+					MessageId:       006,
+					MessagePkg:      "user",
+					Variables:       message.Variables{"alias", "30"},
+					Text:            "attribute alias can´t be greater than 30 characters",
+					Time:            time.Time{},
+					ClientErrorType: message.ClientErrorBadRequest,
+				},
+				successMessage: nil,
+				userData:       nil,
+			},
+		},
+		{
+			name: "bad request - Invalid alias (Special chars)",
+			args: &args{
+				uuid:       "123e4567-e89b-12d3-a456-426614174000",
+				alias:      "OR 5=5",
+				name:       "martin",
+				secondName: "fowler",
+				email:      "foo@test.com",
+				password:   "Linux648$",
+			},
+			want: &want{
+				status:         valueObjects.Error,
+				httpCodeReturn: 400,
+				error:          nil,
+				errorMessage: &message.MessageData{
+					ObjectId:        "OR 5=5",
+					MessageId:       007,
+					MessagePkg:      "user",
+					Variables:       message.Variables{"alias", "="},
+					Text:            "attribute alias can´t contain special characters (=)",
 					Time:            time.Time{},
 					ClientErrorType: message.ClientErrorBadRequest,
 				},
@@ -110,10 +235,10 @@ func TestNewUser(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			byteUuid, err := uuid.Parse(tt.args.uuid)
-			if err != nil {
-				log.Fatal(err)
-			}
+			byteUuid, _ := uuid.Parse(tt.args.uuid)
+			//if err != nil {
+			//	log.Fatal(err)
+			//}
 			retLog := returnLog.NewReturnLog(byteUuid, messageRepository, "user")
 			user := domain.NewUser(domain.NewUserCommand{
 				Uuid:       tt.args.uuid,

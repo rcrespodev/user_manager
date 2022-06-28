@@ -17,7 +17,7 @@ func NewUserEmail(emailAddress string, log *returnLog.ReturnLog) *UserEmail {
 			Error: nil,
 			NewMessageCommand: &message.NewMessageCommand{
 				MessageId: 004,
-				Variables: message.Variables{emailAddress},
+				Variables: message.Variables{emailAddress, "email"},
 			},
 		})
 		return nil
@@ -28,7 +28,3 @@ func NewUserEmail(emailAddress string, log *returnLog.ReturnLog) *UserEmail {
 func (e UserEmail) Address() string {
 	return e.address
 }
-
-//func (e UserEmail) MessageData() *messageData {
-//	return e.messageData
-//}
