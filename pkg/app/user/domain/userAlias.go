@@ -5,6 +5,7 @@ import (
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/pkg/kernel/utils/stringValidations"
 	"strconv"
+	"unicode"
 )
 
 const (
@@ -32,6 +33,11 @@ func NewUserAlias(alias string, log *returnLog.ReturnLog) *UserAlias {
 		return nil
 	}
 
+	userAlias.checkSpaces()
+	if userAlias.log.Error() != nil {
+		return nil
+	}
+
 	return userAlias
 }
 
@@ -48,7 +54,7 @@ func (u *UserAlias) checkLen() {
 }
 
 func (u *UserAlias) checkSpecialChars() {
-	if contain, specialChars := stringValidations.ContainSpecialChars(u.alias); contain == true {
+	if contain, specialChars := stringValidations.ContainSpecialChars(u.alias); contain {
 		u.log.LogError(returnLog.NewErrorCommand{
 			Error: nil,
 			NewMessageCommand: &message.NewMessageCommand{
@@ -56,6 +62,19 @@ func (u *UserAlias) checkSpecialChars() {
 				Variables: message.Variables{"alias", specialChars[0]},
 			},
 		})
+	}
+}
+
+func (u *UserAlias) checkSpaces() {
+	for _, char := range u.alias {
+		if ok := unicode.IsSpace(char); ok {
+			u.log.LogError(returnLog.NewErrorCommand{
+				NewMessageCommand: &message.NewMessageCommand{
+					MessageId: 13,
+					Variables: message.Variables{"alias", "spaces"},
+				},
+			})
+		}
 	}
 }
 

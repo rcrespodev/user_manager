@@ -5,6 +5,7 @@ import (
 	returnLog "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"reflect"
+	"strings"
 )
 
 type User struct {
@@ -45,22 +46,22 @@ func NewUser(cmd NewUserCommand, log *returnLog.ReturnLog) *User {
 		return nil
 	}
 
-	userAlias := NewUserAlias(cmd.Alias, log)
+	userAlias := NewUserAlias(strings.TrimSpace(cmd.Alias), log)
 	if log.Error() != nil {
 		return nil
 	}
 
-	userName := NewUserName(cmd.Name, log)
+	userName := NewUserName(strings.TrimSpace(cmd.Name), log)
 	if log.Error() != nil {
 		return nil
 	}
 
-	userSecondName := NewUserName(cmd.SecondName, log)
+	userSecondName := NewUserName(strings.TrimSpace(cmd.SecondName), log)
 	if log.Error() != nil {
 		return nil
 	}
 
-	userEmail := NewUserEmail(cmd.Email, log)
+	userEmail := NewUserEmail(strings.TrimSpace(cmd.Email), log)
 	if log.Error() != nil {
 		return nil
 	}
