@@ -22,7 +22,7 @@ func newServer(host, port string) *server {
 func (s *server) run() error {
 	routes := apiRoutes.NewRoutes()
 	for _, route := range routes.Routes {
-		s.engine.Handle(route.HttpMethod(), route.RelativePath(), route.Handler())
+		s.engine.Handle(route.HttpMethod, route.RelativePath, route.Handler)
 	}
 
 	log.Printf("Server running on %v", s.httpAddress)

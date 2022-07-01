@@ -7,33 +7,33 @@ import (
 )
 
 type Routes struct {
-	Routes []route
+	Routes []Route
 }
 
-type route struct {
-	httpMethod   string
-	relativePath string
-	handler      gin.HandlerFunc
+type Route struct {
+	HttpMethod   string
+	RelativePath string
+	Handler      gin.HandlerFunc
 }
 
-func (r route) RelativePath() string {
-	return r.relativePath
-}
-
-func (r route) Handler() gin.HandlerFunc {
-	return r.handler
-}
-
-func (r route) HttpMethod() string {
-	return r.httpMethod
-}
+//func (r Route) RelativePath() string {
+//	return r.RelativePath
+//}
+//
+//func (r Route) Handler() gin.HandlerFunc {
+//	return r.Handler
+//}
+//
+//func (r Route) HttpMethod() string {
+//	return r.HttpMethod
+//}
 
 func NewRoutes() Routes {
-	routes := []route{
+	routes := []Route{
 		{
-			httpMethod:   http.MethodGet,
-			relativePath: "/check-status",
-			handler:      checkStatus.StatusGinHandlerFunc(),
+			HttpMethod:   http.MethodGet,
+			RelativePath: "/check-status",
+			Handler:      checkStatus.StatusGinHandlerFunc(),
 		},
 	}
 	return Routes{Routes: routes}
