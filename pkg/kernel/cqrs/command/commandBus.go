@@ -6,10 +6,12 @@ import (
 )
 
 type Bus struct {
-	handlersMap map[Id]Handler
+	handlersMap HandlersMap
 }
 
-func NewBus(handlersMap map[Id]Handler) *Bus {
+type HandlersMap map[Id]CommandHandler
+
+func NewBus(handlersMap HandlersMap) *Bus {
 	return &Bus{handlersMap: handlersMap}
 }
 
@@ -19,7 +21,7 @@ func (b Bus) Exec(c Command, returnLog *domain.ReturnLog) {
 	handler, ok := b.handlersMap[commandId]
 	if !ok {
 		returnLog.LogError(domain.NewErrorCommand{
-			Error: fmt.Errorf("there not any Handler associate to commandId %v", commandId),
+			Error: fmt.Errorf("there not any CommandHandler associate to commandId %v", commandId),
 		})
 		return
 	}

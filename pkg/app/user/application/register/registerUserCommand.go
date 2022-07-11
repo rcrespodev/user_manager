@@ -10,12 +10,12 @@ type RegisterUserCommand struct {
 }
 
 type ClientArgs struct {
-	Uuid       string
-	Alias      string
-	Name       string
-	SecondName string
-	Email      string
-	Password   string
+	Uuid       string `json:"uuid"`
+	Alias      string `json:"alias"`
+	Name       string `json:"name"`
+	SecondName string `json:"second_name"`
+	Email      string `json:"email"`
+	Password   string `json:"password"`
 }
 
 func NewRegisterUserCommand(args ClientArgs) *RegisterUserCommand {

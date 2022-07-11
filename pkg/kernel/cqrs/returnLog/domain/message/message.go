@@ -31,13 +31,13 @@ type NewMessageCommand struct {
 }
 
 type MessageData struct {
-	ObjectId        string
-	MessageId       MessageId
-	MessagePkg      string
-	Variables       Variables
-	Text            string
-	Time            time.Time
-	ClientErrorType ClientErrorType
+	ObjectId        string          `json:"object_id"`
+	MessageId       MessageId       `json:"message_id"`
+	MessagePkg      string          `json:"message_pkg"`
+	Variables       Variables       `json:"variables"`
+	Text            string          `json:"text"`
+	Time            time.Time       `json:"time"`
+	ClientErrorType ClientErrorType `json:"client_error_type"`
 }
 
 type MessageId uint16

@@ -11,12 +11,12 @@ type RegisterUserCommandHanlder struct {
 	cmd              *RegisterUserCommand
 }
 
-func NewRegisterUserCommandHanlder(userRegistration *UserRegistration) *RegisterUserCommandHanlder {
+func NewRegisterUserCommandHandler(userRegistration *UserRegistration) *RegisterUserCommandHanlder {
 	return &RegisterUserCommandHanlder{userRegistration: userRegistration}
 }
 
 func (r RegisterUserCommandHanlder) Handle(command command.Command, log *domain.ReturnLog, done chan bool) {
-	registerUserCmd, ok := command.Args().(*RegisterUserCommand)
+	cmd, ok := command.Args().(ClientArgs)
 	if !ok {
 		log.LogError(domain.NewErrorCommand{
 			Error: fmt.Errorf("invalid type assertion"),
@@ -24,6 +24,7 @@ func (r RegisterUserCommandHanlder) Handle(command command.Command, log *domain.
 		done <- true
 		return
 	}
-	r.userRegistration.Exec(*registerUserCmd, log)
+	r.cmd = NewRegisterUserCommand(cmd)
+	r.userRegistration.Exec(*r.cmd, log)
 	done <- true
 }

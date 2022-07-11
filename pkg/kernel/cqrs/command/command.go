@@ -8,10 +8,10 @@ type Command struct {
 	args      interface{}
 }
 
-func NewCommand(commandId Id, args interface{}) *Command {
+func NewCommand(commandId Id, uuid uuid.UUID, args interface{}) *Command {
 	return &Command{
 		commandId: commandId,
-		uuid:      uuid.New(),
+		uuid:      uuid,
 		args:      args,
 	}
 }

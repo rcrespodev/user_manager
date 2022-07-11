@@ -1,17 +1,20 @@
-test_envs:
-	export APP_HOST=localhost
-	export APP_PORT=8080
-	export HOME_PROJECT=/home/rcrespo/github.com/rcrespodev
-	export GO111MODULE=on
-	export LOG_DIRECTORY={HOME_PROJECT}/user_manager/logs
-	export LOG_FILE_NAME=.log
+run: stop_app up_app_d
 
-run_server:
-	go run ./cmd/web/main.go
+run_online: stop_app up_app_online
 
-test_server: test_envs run_server
+stop_app:
+	docker-compose -f docker-compose.yaml stop
 
-go_tests:
-	go test ./...
+up_app_d:
+	docker-compose -f docker-compose.yaml up -d --build
 
-test: test_envs go_tests
+up_app_online:
+	docker-compose -f docker-compose.yaml up --build
+
+stop_services:
+	sudo service redis stop | sudo service mysql stop
+
+run_test:
+	docker-compose -f test/docker-compose.yaml up --build --abort-on-container-exit
+	#docker-compose -f test/docker-compose.yml down --volumes
+	docker-compose -f test/docker-compose.yaml down --volumes

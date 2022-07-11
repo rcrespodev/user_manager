@@ -4,7 +4,7 @@ import (
 	uuid "github.com/google/uuid"
 	"github.com/rcrespodev/user_manager/pkg/app/user/application/register"
 	userDomain "github.com/rcrespodev/user_manager/pkg/app/user/domain"
-	"github.com/rcrespodev/user_manager/pkg/app/user/gateway"
+	userRepository "github.com/rcrespodev/user_manager/pkg/app/user/repository"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
@@ -142,10 +142,10 @@ func TestUserRegistration(t *testing.T) {
 			})
 
 			cmd := command.NewCommand(command.RegisterUser, cmdUuid, registerUserCommand)
-			mockRepository := gateway.NewMockUserRepository()
+			mockRepository := userRepository.NewMockUserRepository()
 			setMockUserData(mockRepository)
 			userRegistration := register.NewUserRegistration(mockRepository)
-			handler := register.NewRegisterUserCommandHanlder(userRegistration)
+			handler := register.NewRegisterUserCommandHandler(userRegistration)
 			retLog := domain.NewReturnLog(cmd.Uuid(), messageRepository, "user")
 			go handler.Handle(*cmd, retLog, done)
 
@@ -208,7 +208,7 @@ func TestUserRegistration(t *testing.T) {
 	}
 }
 
-func setMockUserData(userRepository *gateway.MockUserRepository) {
+func setMockUserData(userRepository *userRepository.MockUserRepository) {
 	mockDataArgs := []userDomain.NewUserCommand{
 		{
 			Uuid:       uuid.New().String(),

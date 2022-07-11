@@ -1,0 +1,76 @@
+{
+  "messages": [
+    {
+      "id": 1,
+      "pkg": "user",
+      "text": "user %v created successful",
+      "client_error_type": 0
+    },
+    {
+      "id": 4,
+      "pkg": "user",
+      "text": "value %v is invalid as %v attribute",
+      "client_error_type": 1
+    },
+    {
+      "id": 5,
+      "pkg": "user",
+      "text": "attribute %v are mandatory",
+      "client_error_type": 1
+    },
+    {
+      "id": 6,
+      "pkg": "user",
+      "text": "attribute %v can´t be greater than %v characters",
+      "client_error_type": 1
+    },
+    {
+      "id": 7,
+      "pkg": "user",
+      "text": "attribute %v can´t contain special characters (%v)",
+      "client_error_type": 1
+    },
+    {
+      "id": 8,
+      "pkg": "user",
+      "text": "password must be contain at least one special character like %$#&",
+      "client_error_type": 1
+    },
+    {
+      "id": 9,
+      "pkg": "user",
+      "text": "password must be contain at least one number",
+      "client_error_type": 1
+    },
+    {
+      "id": 10,
+      "pkg": "user",
+      "text": "attribute %v can´t be smaller than %v characters",
+      "client_error_type": 1
+    },
+    {
+      "id": 11,
+      "pkg": "user",
+      "text": "password must be contain at least one upper case",
+      "client_error_type": 1
+    },
+    {
+      "id": 12,
+      "pkg": "user",
+      "text": "password must be contain at least one lower case",
+      "client_error_type": 1
+    },
+    {
+      "id": 13,
+      "pkg": "user",
+      "text": "%v attribute dont´t must contain %v",
+      "client_error_type": 1
+    },
+    {
+      "id": 14,
+      "pkg": "user",
+      "text": "user with component: %v and value: %v already exists",
+      "client_error_type": 1
+    }
+  ]
+}

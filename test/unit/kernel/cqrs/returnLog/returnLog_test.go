@@ -113,7 +113,7 @@ func TestReturnLogSrv(t *testing.T) {
 				error: &wantCustomError{
 					internalError: &internalError{
 						Error: fmt.Errorf("message 999 not found in pkg testing"),
-						file:  fmt.Sprintf("%v/user_manager/test/unit/kernel/cqrs/returnLog/returnLog_test.go", homeProject),
+						file:  fmt.Sprintf("%v/test/unit/kernel/cqrs/returnLog/returnLog_test.go", homeProject),
 					},
 				},
 				success:        &wantSuccess{message: nil},
@@ -139,7 +139,7 @@ func TestReturnLogSrv(t *testing.T) {
 				error: &wantCustomError{
 					internalError: &internalError{
 						Error: fmt.Errorf("internal Error"),
-						file:  fmt.Sprintf("%v/user_manager/test/unit/kernel/cqrs/returnLog/returnLog_test.go", homeProject),
+						file:  fmt.Sprintf("%v/test/unit/kernel/cqrs/returnLog/returnLog_test.go", homeProject),
 					},
 				},
 				success:        &wantSuccess{message: nil},
@@ -201,7 +201,7 @@ func TestReturnLogSrv(t *testing.T) {
 				error: &wantCustomError{
 					internalError: &internalError{
 						Error: fmt.Errorf("internal Error"),
-						file:  fmt.Sprintf("%v/user_manager/test/unit/kernel/cqrs/returnLog/returnLog_test.go", homeProject),
+						file:  fmt.Sprintf("%v/test/unit/kernel/cqrs/returnLog/returnLog_test.go", homeProject),
 					},
 					clienteError: nil,
 				},

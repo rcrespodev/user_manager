@@ -4,19 +4,28 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	apiRoutes "github.com/rcrespodev/user_manager/api/v1/routes"
+	kernel "github.com/rcrespodev/user_manager/pkg/kernel"
 	"log"
 )
+
+var Server *server
 
 type server struct {
 	httpAddress string
 	engine      *gin.Engine
+	kernel      *kernel.Kernel
 }
 
 func newServer(host, port string) *server {
-	return &server{
+	if Server != nil {
+		return Server
+	}
+	Server = &server{
 		httpAddress: fmt.Sprintf("%s:%s", host, port),
 		engine:      gin.New(),
+		kernel:      kernel.NewPrdKernel(),
 	}
+	return Server
 }
 
 func (s *server) run() error {
@@ -27,4 +36,8 @@ func (s *server) run() error {
 
 	log.Printf("Server running on %v", s.httpAddress)
 	return s.engine.Run(s.httpAddress)
+}
+
+func (s *server) Kernel() *kernel.Kernel {
+	return s.kernel
 }
