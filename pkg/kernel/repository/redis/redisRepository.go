@@ -4,8 +4,9 @@ import (
 	"context"
 	"fmt"
 	"github.com/go-redis/redis/v8"
+	"github.com/rcrespodev/user_manager/pkg/kernel"
 	"log"
-	"os"
+	_ "os"
 )
 
 type RedisRepository struct {
@@ -14,33 +15,17 @@ type RedisRepository struct {
 }
 
 func NewRedisRepository(redisClient *redis.Client) *RedisRepository {
+	redisRepository := &RedisRepository{}
 	switch redisClient {
 	case nil:
-		host := os.Getenv("REDIS_HOST")
-		port := os.Getenv("REDIS_PORT")
-		if host == "" || port == "" {
-			log.Fatalf("redis env vars nots found")
-		}
-
-		r := &RedisRepository{
-			redisCliente: redis.NewClient(&redis.Options{
-				Addr:     fmt.Sprintf("%v:%v", host, port),
-				Password: "", // no password set
-				DB:       0,  // use default DB
-			}),
-			ctx: context.Background(),
-		}
-		if err := r.redisCliente.Ping(r.ctx).Err(); err != nil {
-			log.Fatalf("Redis %v", err)
-		}
-		return r
+		redisRepository.redisCliente = redisRepository.newConnection()
+		redisRepository.ctx = context.Background()
 	default:
-		return &RedisRepository{
-			redisCliente: redisClient,
-			ctx:          context.Background(),
-		}
+		redisRepository.redisCliente = redisClient
+		redisRepository.ctx = context.Background()
 	}
 
+	return redisRepository
 }
 
 func (r RedisRepository) RedisCliente() *redis.Client {
@@ -49,4 +34,19 @@ func (r RedisRepository) RedisCliente() *redis.Client {
 
 func (r RedisRepository) Ctx() context.Context {
 	return r.ctx
+}
+
+func (r RedisRepository) newConnection() *redis.Client {
+	redisConf := kernel.Instance.Config().Redis
+	redisCliente := redis.NewClient(&redis.Options{
+		Addr:     fmt.Sprintf("%s:%s", redisConf.Host, redisConf.Host),
+		Password: "", // no password set
+		DB:       0,  // use default DB
+	})
+
+	if err := redisCliente.Ping(context.Background()).Err(); err != nil {
+		log.Fatalf("Redis connection %v", err)
+	}
+
+	return redisCliente
 }
