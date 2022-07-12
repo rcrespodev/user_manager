@@ -1,4 +1,11 @@
-package kernel
+package config
+
+import (
+	"github.com/vrischmann/envconfig"
+	"log"
+)
+
+var Conf *Config
 
 type Config struct {
 	App struct {
@@ -16,4 +23,11 @@ type Config struct {
 		Host     string `default:"mysql"`
 		Port     string `default:"3306"`
 	}
+}
+
+func Setup() *Config {
+	if err := envconfig.Init(&Conf); err != nil {
+		log.Fatal(err)
+	}
+	return Conf
 }

@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/go-redis/redis/v8"
-	"github.com/rcrespodev/user_manager/pkg/kernel"
+	"github.com/rcrespodev/user_manager/pkg/kernel/config"
 	"log"
 	_ "os"
 )
@@ -37,7 +37,7 @@ func (r RedisRepository) Ctx() context.Context {
 }
 
 func (r RedisRepository) newConnection() *redis.Client {
-	redisConf := kernel.Instance.Config().Redis
+	redisConf := config.Conf.Redis
 	redisCliente := redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%s:%s", redisConf.Host, redisConf.Host),
 		Password: "", // no password set
