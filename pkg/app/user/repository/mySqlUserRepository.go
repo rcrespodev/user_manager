@@ -38,6 +38,7 @@ func (m *MySqlUserRepository) SaveUser(user *domain.User, log *returnLog.ReturnL
 
 	if err := m.trxPrepare(log, wg); err != nil {
 		m.errorHandler()
+		wg.Done()
 		return
 	}
 	result, err := m.trx.Exec(saveUser, user.Uuid().String(), user.Alias().Alias(), user.Name().Name(),
@@ -45,6 +46,7 @@ func (m *MySqlUserRepository) SaveUser(user *domain.User, log *returnLog.ReturnL
 	if err != nil {
 		m.err = err
 		m.errorHandler()
+		wg.Done()
 		return
 	}
 
@@ -54,14 +56,17 @@ func (m *MySqlUserRepository) SaveUser(user *domain.User, log *returnLog.ReturnL
 			m.err = fmt.Errorf("no rows afected")
 		}
 		m.errorHandler()
+		wg.Done()
 		return
 	}
-	_ = m.trx.Commit()
-	//if err := m.trx.Commit(); err != nil {
-	//	m.err = err
-	//	m.errorHandler()
-	//	return
-	//}
+
+	if err := m.trx.Commit(); err != nil {
+		m.err = err
+		m.errorHandler()
+		wg.Done()
+		return
+	}
+	wg.Done()
 }
 
 func (m *MySqlUserRepository) FindUserById(command domain.FindByIdCommand) *domain.User {

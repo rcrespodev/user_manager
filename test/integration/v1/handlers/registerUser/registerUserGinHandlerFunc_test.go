@@ -108,12 +108,13 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 			})
 			if gotHttpCode := response.HttpCode; !reflect.DeepEqual(gotHttpCode, tt.want.httpStatusCode) {
 				t.Errorf("HttpCode()\n\t- got: %v\n\t- want: %v", gotHttpCode, tt.want.httpStatusCode)
-				//return
+				return
 			}
-			var gotRespBody api.CommandResponse
+			var gotRespBody *api.CommandResponse
 			if err := json.Unmarshal(response.Body, &gotRespBody); err != nil {
 				log.Fatalln(err)
 			}
+			gotRespBody.Message.Time = time.Time{}
 			if !reflect.DeepEqual(gotRespBody, tt.want.response) {
 				t.Errorf("Body()\n\t- got: %v\n\t- want: %v", gotRespBody, tt.want.response)
 				return
