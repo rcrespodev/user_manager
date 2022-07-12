@@ -9,19 +9,19 @@ var Conf *Config
 
 type Config struct {
 	App struct {
-		Host string `default:"0.0.0.0"`
-		Port string `default:"8080"`
+		Host string `envconfig:"default=0.0.0.0"`
+		Port string `envconfig:"default=8080"`
 	}
 	Redis struct {
-		Host string `default:"redis"`
-		Port string `default:"6379"`
+		Host string `envconfig:"default=redis"`
+		Port string `envconfig:"default=6379"`
 	}
 	MySql struct {
-		User     string `default:"root"`
-		Password string `default:"my_secret"`
-		Database string `default:"user_manager"`
-		Host     string `default:"mysql"`
-		Port     string `default:"3306"`
+		User     string `envconfig:"default=root"`
+		Password string `envconfig:"default=my_secret"`
+		Database string `envconfig:"default=user_manager"`
+		Host     string `envconfig:"default=mysql"`
+		Port     string `envconfig:"default=3306"`
 	}
 }
 
