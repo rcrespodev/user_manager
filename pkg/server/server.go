@@ -23,7 +23,7 @@ func newServer(host, port string) *server {
 	Server = &server{
 		httpAddress: fmt.Sprintf("%s:%s", host, port),
 		engine:      gin.New(),
-		kernel:      kernel.NewPrdKernel(),
+		kernel:      kernel.NewPrdKernel(nil, nil),
 	}
 	return Server
 }
