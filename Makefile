@@ -14,7 +14,8 @@ up_app_online:
 stop_services:
 	sudo service redis stop | sudo service mysql stop
 
+stop_test_services:
+	docker stop test_app_mysql test_app_redis
+
 run_test:
-	docker-compose -f docker-compose.test.yaml up --build --abort-on-container-exit
-	#docker-compose -f test/docker-compose.yml down --volumes
-	#docker-compose -f test/docker-compose.test.yaml down --volumes
+	go test ./...
