@@ -45,10 +45,14 @@ func RegisterUserGinHandlerFunc() gin.HandlerFunc {
 			return
 		}
 
-		cmd := command.NewCommand(command.RegisterUser, cmdUuid, clientArgs)
 		log := domain.NewReturnLog(cmdUuid, kernel.Instance.MessageRepository(), "user")
+
+		registerUserCommand := register.NewRegisterUserCommand(clientArgs)
+		cmd := command.NewCommand(command.RegisterUser, cmdUuid, registerUserCommand)
+
 		cmdBus := kernel.Instance.CommandBus()
 		cmdBus.Exec(*cmd, log)
+
 		switch log.Status() {
 		case valueObjects.Error:
 			if log.Error().InternalError() != nil {

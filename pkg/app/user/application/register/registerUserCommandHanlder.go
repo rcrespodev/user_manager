@@ -16,7 +16,7 @@ func NewRegisterUserCommandHandler(userRegistration *UserRegistration) *Register
 }
 
 func (r RegisterUserCommandHanlder) Handle(command command.Command, log *domain.ReturnLog, done chan bool) {
-	cmd, ok := command.Args().(ClientArgs)
+	cmd, ok := command.Args().(*RegisterUserCommand)
 	if !ok {
 		log.LogError(domain.NewErrorCommand{
 			Error: fmt.Errorf("invalid type assertion"),
@@ -24,7 +24,7 @@ func (r RegisterUserCommandHanlder) Handle(command command.Command, log *domain.
 		done <- true
 		return
 	}
-	r.cmd = NewRegisterUserCommand(cmd)
+	r.cmd = cmd
 	r.userRegistration.Exec(*r.cmd, log)
 	done <- true
 }
