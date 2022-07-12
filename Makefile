@@ -15,6 +15,6 @@ stop_services:
 	sudo service redis stop | sudo service mysql stop
 
 run_test:
-	docker-compose -f test/docker-compose.yaml up --build --abort-on-container-exit
+	docker-compose -f docker-compose.test.yaml up --build --abort-on-container-exit
 	#docker-compose -f test/docker-compose.yml down --volumes
-	docker-compose -f test/docker-compose.yaml down --volumes
+	#docker-compose -f test/docker-compose.test.yaml down --volumes

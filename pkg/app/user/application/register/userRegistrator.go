@@ -34,10 +34,26 @@ func (u *UserRegistration) Exec(command RegisterUserCommand, log *returnLog.Retu
 	var userEmail *domain.User
 	waitGroup.Add(2)
 	go func() {
-		userAlias = u.userRepository.FindUserByAlias(user.Alias(), log, waitGroup)
+		userAlias = u.userRepository.FindUserByAlias(domain.FindByAliasCommand{
+			Alias: user.Alias(),
+			FindUserCommand: domain.FindUserCommand{
+				Password: user.Password().String(),
+				Log:      log,
+				Wg:       waitGroup,
+			},
+		})
+		//userAlias = u.userRepository.FindUserByAlias(user.Alias(), log, waitGroup)
 	}()
 	go func() {
-		userEmail = u.userRepository.FindUserByEmail(user.Email(), log, waitGroup)
+		userEmail = u.userRepository.FindUserByEmail(domain.FindByEmailCommand{
+			Email: user.Email(),
+			FindUserCommand: domain.FindUserCommand{
+				Password: user.Password().String(),
+				Log:      log,
+				Wg:       waitGroup,
+			},
+		})
+		//userEmail = u.userRepository.FindUserByEmail(user.Email(), log, waitGroup)
 	}()
 	waitGroup.Wait()
 

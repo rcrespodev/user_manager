@@ -1,11 +1,12 @@
 package registerUser
 
 import (
-	"bytes"
 	"encoding/json"
 	"github.com/google/uuid"
 	"github.com/joho/godotenv"
 	"github.com/rcrespodev/user_manager/api"
+	"github.com/rcrespodev/user_manager/api/v1/handlers/registerUser"
+	"github.com/rcrespodev/user_manager/api/v1/routes"
 	"github.com/rcrespodev/user_manager/pkg/app/user/application/register"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/test/integration"
@@ -83,30 +84,31 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 				log.Fatalln(err)
 			}
 
-			response := integration.NewHttpRequest(integration.NewHttpRequestCommand{
-				Method: http.MethodPost,
-				Host:   "app",
-				//Host:        "0.0.0.0",
-				Port:        "8080",
-				Path:        registerUserRelPath,
-				Body:        bytes.NewReader(bytesCmd),
-				ContentType: "application/json",
-			})
-
-			//mockGinSrv := integration.NewTestServerHttpGin(&routes.Routes{Routes: []routes.Route{
-			//	{
-			//		HttpMethod:   http.MethodPost,
-			//		RelativePath: registerUserRelPath,
-			//		Handler:      registerUser.RegisterUserGinHandlerFunc(),
-			//	},
-			//}})
-
-			//response := mockGinSrv.DoRequest(integration.DoRequestCommand{
-			//	BodyRequest:  bytesCmd,
-			//	RelativePath: registerUserRelPath,
+			//response := integration.NewHttpRequest(integration.NewHttpRequestCommand{
+			//	Method: http.MethodPost,
+			//	//Host:   "app",
+			//	Host:        "0.0.0.0",
+			//	Port:        "8080",
+			//	Path:        registerUserRelPath,
+			//	Body:        bytes.NewReader(bytesCmd),
+			//	ContentType: "application/json",
 			//})
+
+			mockGinSrv := integration.NewTestServerHttpGin(&routes.Routes{Routes: []routes.Route{
+				{
+					HttpMethod:   http.MethodPost,
+					RelativePath: registerUserRelPath,
+					Handler:      registerUser.RegisterUserGinHandlerFunc(),
+				},
+			}})
+
+			response := mockGinSrv.DoRequest(integration.DoRequestCommand{
+				BodyRequest:  bytesCmd,
+				RelativePath: registerUserRelPath,
+			})
 			if gotHttpCode := response.HttpCode; !reflect.DeepEqual(gotHttpCode, tt.want.httpStatusCode) {
 				t.Errorf("HttpCode()\n\t- got: %v\n\t- want: %v", gotHttpCode, tt.want.httpStatusCode)
+				//return
 			}
 			var gotRespBody api.CommandResponse
 			if err := json.Unmarshal(response.Body, &gotRespBody); err != nil {
@@ -114,6 +116,7 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 			}
 			if !reflect.DeepEqual(gotRespBody, tt.want.response) {
 				t.Errorf("Body()\n\t- got: %v\n\t- want: %v", gotRespBody, tt.want.response)
+				return
 			}
 		})
 	}

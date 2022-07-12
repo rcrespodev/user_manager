@@ -3,6 +3,8 @@ package checkStatus
 import (
 	"encoding/json"
 	"github.com/rcrespodev/user_manager/api"
+	"github.com/rcrespodev/user_manager/api/v1/handlers/checkStatus"
+	"github.com/rcrespodev/user_manager/api/v1/routes"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/test/integration"
 	"net/http"
@@ -37,28 +39,28 @@ func TestCheckStatusGinHandlerFunc(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			response := integration.NewHttpRequest(integration.NewHttpRequestCommand{
-				Method: http.MethodGet,
-				Host:   "app",
-				//Host:        "0.0.0.0",
-				Port:        "8080",
-				Path:        "/check-status",
-				Body:        nil,
-				ContentType: "",
+			//response := integration.NewHttpRequest(integration.NewHttpRequestCommand{
+			//	Method: http.MethodGet,
+			//	//Host:   "app",
+			//	Host:        "0.0.0.0",
+			//	Port:        "8080",
+			//	Path:        "/check-status",
+			//	Body:        nil,
+			//	ContentType: "",
+			//})
+			testServer := integration.NewTestServerHttpGin(&routes.Routes{
+				Routes: []routes.Route{
+					{
+						HttpMethod:   http.MethodGet,
+						RelativePath: "/check-status",
+						Handler:      checkStatus.StatusGinHandlerFunc(),
+					},
+				},
 			})
-			//testServer := integration.NewTestServerHttpGin(&routes.Routes{
-			//	Routes: []routes.Route{
-			//		{
-			//			HttpMethod:   http.MethodGet,
-			//			RelativePath: "/check-status",
-			//			Handler:      checkStatus.StatusGinHandlerFunc(),
-			//		},
-			//	},
-			//})
-			//response := testServer.DoRequest(integration.DoRequestCommand{
-			//	BodyRequest:  nil,
-			//	RelativePath: "/check-status",
-			//})
+			response := testServer.DoRequest(integration.DoRequestCommand{
+				BodyRequest:  nil,
+				RelativePath: "/check-status",
+			})
 			var queryResponse api.QueryResponse
 			err := json.Unmarshal(response.Body, &queryResponse)
 			if err != nil {

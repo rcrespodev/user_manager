@@ -1,6 +1,8 @@
 package kernel
 
 import (
+	"database/sql"
+	"github.com/go-redis/redis/v8"
 	"github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	userRepository "github.com/rcrespodev/user_manager/pkg/app/user/repository"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
@@ -17,13 +19,13 @@ type Kernel struct {
 	userRepository    domain.UserRepository
 }
 
-func NewPrdKernel() *Kernel {
+func NewPrdKernel(mySqlClient *sql.DB, redisClient *redis.Client) *Kernel {
 	if Instance != nil {
 		return Instance
 	}
 	Instance = &Kernel{
-		messageRepository: repository.NewRedisMessageRepository(),
-		userRepository:    userRepository.NewMySqlUserRepository(),
+		messageRepository: repository.NewRedisMessageRepository(redisClient),
+		userRepository:    userRepository.NewMySqlUserRepository(mySqlClient),
 	}
 	Instance.commandBus = factory.NewCommandBusInstance(factory.NewCommandBusCommand{
 		UserRepository: Instance.userRepository,

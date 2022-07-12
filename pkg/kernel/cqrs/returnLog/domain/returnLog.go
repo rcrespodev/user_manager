@@ -35,6 +35,7 @@ type ReturnLog struct {
 type NewErrorCommand struct {
 	Error error
 	*message.NewMessageCommand
+	Caller int
 }
 
 type NewSuccessCommand *message.NewMessageCommand
@@ -62,8 +63,15 @@ func (r *ReturnLog) LogError(command NewErrorCommand) {
 		r.updateInternalData()
 	}()
 
+	var caller int
+	if command.Caller != 0 {
+		caller = command.Caller
+	} else {
+		caller = r.caller
+	}
+
 	if command.Error != nil {
-		r.error = customError.NewInternalError(command.Error, r.caller)
+		r.error = customError.NewInternalError(command.Error, caller)
 		return
 	}
 

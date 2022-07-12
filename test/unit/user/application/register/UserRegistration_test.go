@@ -200,7 +200,15 @@ func TestUserRegistration(t *testing.T) {
 			if tt.want.status == valueObjects.Success {
 				wg := &sync.WaitGroup{}
 				wg.Add(1)
-				if user := mockRepository.FindUserById(cmdUuid, retLog, wg); user == nil {
+				findUserCmd := userDomain.FindByIdCommand{
+					Uuid: cmdUuid,
+					FindUserCommand: userDomain.FindUserCommand{
+						Password: tt.args.password,
+						Log:      retLog,
+						Wg:       wg,
+					},
+				}
+				if user := mockRepository.FindUserById(findUserCmd); user == nil {
 					t.Errorf("FindUserById()\n\t- User not found in repository!!")
 				}
 			}

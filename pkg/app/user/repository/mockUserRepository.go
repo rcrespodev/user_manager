@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"github.com/google/uuid"
 	"github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	returnLog "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"sync"
@@ -28,35 +27,35 @@ func (m *MockUserRepository) SaveUser(user *domain.User, log *returnLog.ReturnLo
 	wg.Done()
 }
 
-func (m MockUserRepository) FindUserById(uuid uuid.UUID, log *returnLog.ReturnLog, wg *sync.WaitGroup) *domain.User {
+func (m MockUserRepository) FindUserById(command domain.FindByIdCommand) *domain.User {
 	for _, user := range m.userMockData.users {
-		if uuid == user.Uuid() {
-			wg.Done()
+		if command.Uuid == user.Uuid() {
+			command.FindUserCommand.Wg.Done()
 			return user
 		}
 	}
-	wg.Done()
+	command.FindUserCommand.Wg.Done()
 	return nil
 }
 
-func (m MockUserRepository) FindUserByEmail(email *domain.UserEmail, log *returnLog.ReturnLog, wg *sync.WaitGroup) *domain.User {
+func (m MockUserRepository) FindUserByEmail(command domain.FindByEmailCommand) *domain.User {
 	for _, user := range m.userMockData.users {
-		if email.Address() == user.Email().Address() {
-			wg.Done()
+		if command.Email.Address() == user.Email().Address() {
+			command.FindUserCommand.Wg.Done()
 			return user
 		}
 	}
-	wg.Done()
+	command.FindUserCommand.Wg.Done()
 	return nil
 }
 
-func (m MockUserRepository) FindUserByAlias(alias *domain.UserAlias, log *returnLog.ReturnLog, wg *sync.WaitGroup) *domain.User {
+func (m MockUserRepository) FindUserByAlias(command domain.FindByAliasCommand) *domain.User {
 	for _, user := range m.userMockData.users {
-		if alias.Alias() == user.Alias().Alias() {
-			wg.Done()
+		if command.Alias.Alias() == user.Alias().Alias() {
+			command.FindUserCommand.Wg.Done()
 			return user
 		}
 	}
-	wg.Done()
+	command.FindUserCommand.Wg.Done()
 	return nil
 }

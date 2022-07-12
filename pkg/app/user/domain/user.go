@@ -24,6 +24,7 @@ type NewUserCommand struct {
 	SecondName string
 	Email      string
 	Password   string
+	IgnorePass bool
 }
 
 func NewUser(cmd NewUserCommand, log *returnLog.ReturnLog) *User {
@@ -106,7 +107,7 @@ func (u User) Password() *UserPassword {
 }
 
 func checkMandatory(command NewUserCommand, log *returnLog.ReturnLog) {
-	mandatory := []string{"Uuid", "Alias", "Name", "SecondName", "Email", "Password"}
+	mandatory := []string{"Uuid", "Alias", "Name", "SecondName", "Email", "Password", "IgnorePass"}
 	valueOf := reflect.ValueOf(command)
 	for i := 0; i < valueOf.NumField(); i++ {
 		fieldName := valueOf.Type().Field(i).Name

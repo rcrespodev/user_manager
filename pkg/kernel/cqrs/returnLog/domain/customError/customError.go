@@ -2,6 +2,7 @@ package customError
 
 import (
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
+	"log"
 	"runtime"
 )
 
@@ -23,7 +24,7 @@ func NewExternalError(command message.NewMessageCommand, repository message.Mess
 
 func NewInternalError(error error, caller int) *CustomError {
 	_, file, line, _ := runtime.Caller(caller)
-	return &CustomError{
+	customerErr := &CustomError{
 		internalError: &InternalError{
 			error: error,
 			file:  file,
@@ -31,6 +32,10 @@ func NewInternalError(error error, caller int) *CustomError {
 		},
 		clientError: nil,
 	}
+
+	// see app logs
+	log.Printf("error:%v, file:%v, line:%v", customerErr.internalError.error, customerErr.internalError.file, customerErr.internalError.line)
+	return customerErr
 }
 
 func (c CustomError) InternalError() *InternalError {

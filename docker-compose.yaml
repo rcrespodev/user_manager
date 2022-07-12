@@ -5,20 +5,20 @@ networks:
     driver: bridge
 
 services:
-  test:
-    build:
-      context: .
-      dockerfile: ./test/Dockerfile
-    depends_on:
-      - app
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 3s
-        max_attempts: 2
-        window: 60s
-    networks:
-      - user_manager_app
+#  test:
+#    build:
+#      context: .
+#      dockerfile: ./test/Dockerfile.test
+#    depends_on:
+#      - app
+#    deploy:
+#      restart_policy:
+#        condition: on-failure
+#        delay: 3s
+#        max_attempts: 2
+#        window: 60s
+#    networks:
+#      - user_manager_app
   app:
     build:
       context: .

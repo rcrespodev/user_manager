@@ -10,7 +10,6 @@ import (
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/valueObjects"
-	log2 "log"
 	"time"
 )
 
@@ -53,7 +52,6 @@ func RegisterUserGinHandlerFunc() gin.HandlerFunc {
 		switch log.Status() {
 		case valueObjects.Error:
 			if log.Error().InternalError() != nil {
-				log2.Printf("%v", log.Error().InternalError().Error())
 				response.Message = message.MessageData{}
 			} else {
 				response.Message = *log.Error().Message()

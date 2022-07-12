@@ -5,6 +5,7 @@ import (
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/pkg/kernel/utils/stringValidations"
 	"golang.org/x/crypto/bcrypt"
+	"log"
 	"strconv"
 	"unicode"
 )
@@ -63,6 +64,7 @@ func (u *UserPassword) checkLen() {
 		minLen = 8
 	)
 	if len(u.stringPassword) > maxLen {
+		log.Printf("pass: %v", u.stringPassword)
 		u.log.LogError(returnLog.NewErrorCommand{
 			Error: nil,
 			NewMessageCommand: &message.NewMessageCommand{

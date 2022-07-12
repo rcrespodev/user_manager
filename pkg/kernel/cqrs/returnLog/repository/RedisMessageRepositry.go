@@ -3,14 +3,15 @@ package repository
 import (
 	"encoding/json"
 	"fmt"
+	redisClient "github.com/go-redis/redis/v8"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
-	"github.com/rcrespodev/user_manager/pkg/kernel/repository"
+	"github.com/rcrespodev/user_manager/pkg/kernel/repository/redis"
 	"log"
 	"os"
 )
 
 type RedisMessageRepository struct {
-	redisRepository *repository.RedisRepository
+	redisRepository *redis.RedisRepository
 }
 
 type MessagesSchema struct {
@@ -24,7 +25,7 @@ type MessageSchema struct {
 	ClientErrorType message.ClientErrorType `json:"client_error_type"`
 }
 
-func NewRedisMessageRepository() *RedisMessageRepository {
+func NewRedisMessageRepository(redisClient *redisClient.Client) *RedisMessageRepository {
 	sourcePath := os.Getenv("JSON_MESSAGES")
 	if sourcePath == "" {
 		log.Fatal("env JSON_MESSAGES not found")
@@ -48,7 +49,7 @@ func NewRedisMessageRepository() *RedisMessageRepository {
 	//}
 	//
 	r := &RedisMessageRepository{
-		redisRepository: repository.NewRedisRepository(),
+		redisRepository: redis.NewRedisRepository(redisClient),
 	}
 
 	//for _, messageSchema := range messages.Messages {
