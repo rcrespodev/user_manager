@@ -12,6 +12,8 @@ type Config struct {
 	MySql struct {
 		User     string `default:"root"`
 		Password string `default:"my_secret"`
-		database string `default:"user_manager"`
+		Database string `default:"user_manager"`
+		Host     string `default:"mysql"`
+		Port     string `default:"3306"`
 	}
 }
