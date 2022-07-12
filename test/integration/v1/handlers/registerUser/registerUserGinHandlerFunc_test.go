@@ -25,7 +25,7 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 	if err := godotenv.Load(".env"); err != nil {
 		log.Fatal(err)
 	}
-	//kernel.NewPrdKernel()
+
 	type args struct {
 		alias      string
 		name       string
@@ -83,16 +83,6 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 			if err != nil {
 				log.Fatalln(err)
 			}
-
-			//response := integration.NewHttpRequest(integration.NewHttpRequestCommand{
-			//	Method: http.MethodPost,
-			//	//Host:   "app",
-			//	Host:        "0.0.0.0",
-			//	Port:        "8080",
-			//	Path:        registerUserRelPath,
-			//	Body:        bytes.NewReader(bytesCmd),
-			//	ContentType: "application/json",
-			//})
 
 			mockGinSrv := integration.NewTestServerHttpGin(&routes.Routes{Routes: []routes.Route{
 				{
