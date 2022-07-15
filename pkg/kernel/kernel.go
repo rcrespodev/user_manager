@@ -27,10 +27,10 @@ func NewPrdKernel(mySqlClient *sql.DB, redisClient *redis.Client) *Kernel {
 	}
 
 	Instance = &Kernel{
-		messageRepository: repository.NewRedisMessageRepository(redisClient),
-		userRepository:    userRepository.NewMySqlUserRepository(mySqlClient),
-		config:            config.Setup(),
+		config: config.Setup(),
 	}
+	Instance.messageRepository = repository.NewRedisMessageRepository(redisClient)
+	Instance.userRepository = userRepository.NewMySqlUserRepository(mySqlClient)
 	Instance.commandBus = factory.NewCommandBusInstance(factory.NewCommandBusCommand{
 		UserRepository: Instance.userRepository,
 	})
