@@ -192,3 +192,7 @@ func (r ReturnLog) getObjectId(cmdObjectId string) string {
 
 	return cmdObjectId
 }
+
+func (r *ReturnLog) CurrentObjectId() string {
+	return r.currentObjectId
+}

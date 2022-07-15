@@ -28,7 +28,9 @@ type NewUserCommand struct {
 }
 
 func NewUser(cmd NewUserCommand, log *returnLog.ReturnLog) *User {
-	log.SetObjectId(cmd.Alias)
+	if log.CurrentObjectId() == "" {
+		log.SetObjectId(cmd.Alias)
+	}
 
 	checkMandatory(cmd, log)
 	if log.Error() != nil {

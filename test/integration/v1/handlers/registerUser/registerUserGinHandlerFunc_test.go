@@ -16,7 +16,6 @@ import (
 	"github.com/stretchr/testify/require"
 	"log"
 	"net/http"
-	"reflect"
 	"testing"
 	"time"
 )
@@ -36,14 +35,14 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 
 	tableUsersSetup()
 
-	type UserSchema struct {
-		Uuid       string
-		Alias      string
-		Name       string
-		SecondName string
-		Email      string
-		Password   string
-	}
+	mockGinSrv := integration.NewTestServerHttpGin(&routes.Routes{Routes: []routes.Route{
+		{
+			HttpMethod:   http.MethodPost,
+			RelativePath: registerUserRelPath,
+			Handler:      registerUser.RegisterUserGinHandlerFunc(),
+		},
+	}})
+
 	type args struct {
 		alias      string
 		name       string
@@ -54,7 +53,6 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 	type want struct {
 		response       *api.CommandResponse
 		httpStatusCode int
-		//user           *UserSchema
 	}
 	tests := []struct {
 		name string
@@ -88,7 +86,7 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 		{
 			name: "user alias already exists",
 			args: args{
-				alias:      "user_exists",
+				alias:      "user_exists_alias",
 				name:       "martin",
 				secondName: "fowler",
 				email:      "foo@test.com.ar",
@@ -97,11 +95,35 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 			want: want{
 				response: &api.CommandResponse{
 					Message: message.MessageData{
+						ObjectId:        "user_exists_alias",
+						MessageId:       14,
+						MessagePkg:      "user",
+						Variables:       message.Variables{"alias", "user_exists_alias"},
+						Text:            "user with component: alias and value: user_exists_alias already exists",
+						Time:            time.Time{},
+						ClientErrorType: message.ClientErrorBadRequest,
+					},
+				},
+				httpStatusCode: 400,
+			},
+		},
+		{
+			name: "user email already exists",
+			args: args{
+				alias:      "user_exists",
+				name:       "martin",
+				secondName: "fowler",
+				email:      "email_exists@test.com.ar",
+				password:   "Linux648$",
+			},
+			want: want{
+				response: &api.CommandResponse{
+					Message: message.MessageData{
 						ObjectId:        "user_exists",
 						MessageId:       14,
 						MessagePkg:      "user",
-						Variables:       message.Variables{"alias", "user_exists"},
-						Text:            "user with component: alias and value: user_exists already exists",
+						Variables:       message.Variables{"email", "email_exists@test.com.ar"},
+						Text:            "user with component: email and value: email_exists@test.com.ar already exists",
 						Time:            time.Time{},
 						ClientErrorType: message.ClientErrorBadRequest,
 					},
@@ -124,35 +146,22 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 
 			bytesCmd, err := json.Marshal(cmd)
 			if err != nil {
-				log.Fatalln(err)
+				log.Panic(err)
 			}
-
-			mockGinSrv := integration.NewTestServerHttpGin(&routes.Routes{Routes: []routes.Route{
-				{
-					HttpMethod:   http.MethodPost,
-					RelativePath: registerUserRelPath,
-					Handler:      registerUser.RegisterUserGinHandlerFunc(),
-				},
-			}})
 
 			response := mockGinSrv.DoRequest(integration.DoRequestCommand{
 				BodyRequest:  bytesCmd,
 				RelativePath: registerUserRelPath,
 			})
 
-			if gotHttpCode := response.HttpCode; !reflect.DeepEqual(gotHttpCode, tt.want.httpStatusCode) {
-				t.Errorf("HttpCode()\n\t- got: %v\n\t- want: %v", gotHttpCode, tt.want.httpStatusCode)
-			}
-
 			var gotRespBody *api.CommandResponse
 			if err := json.Unmarshal(response.Body, &gotRespBody); err != nil {
-				log.Fatalln(err)
+				log.Panicln(err)
 			}
-
 			gotRespBody.Message.Time = time.Time{}
-			if !reflect.DeepEqual(gotRespBody, tt.want.response) {
-				t.Errorf("Body()\n\t- got: %v\n\t- want: %v", gotRespBody, tt.want.response)
-			}
+
+			require.EqualValues(t, tt.want.httpStatusCode, response.HttpCode)
+			require.EqualValues(t, tt.want.response, gotRespBody)
 
 			if response.HttpCode == 200 {
 				retLog := returnLog.NewReturnLog(cmdUuid, kernel.Instance.MessageRepository(), "user")
@@ -180,15 +189,6 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 					panic(retLog.Error())
 				}
 
-				//userRepositoryInstance.FindUserById(domain.FindByIdCommand{
-				//	Uuid: cmdUuid,
-				//	FindUserCommand: domain.FindUserCommand{
-				//		Password: tt.args.password,
-				//		Log:      retLog,
-				//		//Wg:       wg,
-				//	},
-				//}, actualUser)
-				//wg.Wait()
 				require.EqualValues(t, expectedUser.Uuid(), actualUser.Uuid())
 				require.EqualValues(t, expectedUser.Alias(), actualUser.Alias())
 				require.EqualValues(t, expectedUser.Name(), actualUser.Name())
@@ -206,10 +206,18 @@ func tableUsersSetup() {
 	newUsersCommands := []*domain.NewUserCommand{
 		{
 			Uuid:       uuid.NewString(),
-			Alias:      "user_exists",
+			Alias:      "user_exists_alias",
 			Name:       "martin",
 			SecondName: "fowler",
 			Email:      "foo@test.com.ar",
+			Password:   "Linux648$",
+		},
+		{
+			Uuid:       uuid.NewString(),
+			Alias:      "user_exists_email",
+			Name:       "martin",
+			SecondName: "fowler",
+			Email:      "email_exists@test.com.ar",
 			Password:   "Linux648$",
 		},
 	}
