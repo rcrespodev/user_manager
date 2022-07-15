@@ -11,7 +11,6 @@ import (
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/valueObjects"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/repository"
 	"reflect"
-	"sync"
 	"testing"
 	"time"
 )
@@ -198,17 +197,18 @@ func TestUserRegistration(t *testing.T) {
 				}
 			}
 			if tt.want.status == valueObjects.Success {
-				wg := &sync.WaitGroup{}
-				wg.Add(1)
-				findUserCmd := userDomain.FindByIdCommand{
-					Uuid: cmdUuid,
-					FindUserCommand: userDomain.FindUserCommand{
-						Password: tt.args.password,
-						Log:      retLog,
-						Wg:       wg,
+				findUserCmd := userDomain.FindUserCommand{
+					Password: tt.args.password,
+					Log:      retLog,
+					Where: []userDomain.WhereArgs{
+						{
+							Field: "uuid",
+							Value: cmdUuid.String(),
+						},
 					},
 				}
-				if user := mockRepository.FindUserById(findUserCmd); user == nil {
+
+				if user := mockRepository.FindUser(findUserCmd); user == nil {
 					t.Errorf("FindUserById()\n\t- User not found in repository!!")
 				}
 			}

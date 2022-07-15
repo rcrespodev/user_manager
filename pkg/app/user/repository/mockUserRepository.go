@@ -3,11 +3,30 @@ package repository
 import (
 	"github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	returnLog "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
-	"sync"
 )
 
 type MockUserRepository struct {
 	userMockData UserMockData
+}
+
+func (m *MockUserRepository) FindUser(command domain.FindUserCommand) *domain.User {
+	var user *domain.User
+	for _, args := range command.Where {
+		value := args.Value
+		switch args.Field {
+		case "uuid":
+			user = m.findUserById(value)
+		case "email":
+			user = m.findUserByEmail(value)
+		case "alias":
+			user = m.findUserByAlias(value)
+		}
+		if user != nil {
+			break
+		}
+	}
+
+	return user
 }
 
 type UserMockData struct {
@@ -22,40 +41,33 @@ func (m *MockUserRepository) SetMockData(users []*domain.User) {
 	m.userMockData.users = users
 }
 
-func (m *MockUserRepository) SaveUser(user *domain.User, log *returnLog.ReturnLog, wg *sync.WaitGroup) {
+func (m *MockUserRepository) SaveUser(user *domain.User, log *returnLog.ReturnLog) {
 	m.userMockData.users = append(m.userMockData.users, user)
-	wg.Done()
 }
 
-func (m MockUserRepository) FindUserById(command domain.FindByIdCommand) *domain.User {
+func (m MockUserRepository) findUserById(uuid string) *domain.User {
 	for _, user := range m.userMockData.users {
-		if command.Uuid == user.Uuid() {
-			command.FindUserCommand.Wg.Done()
+		if uuid == user.Uuid().String() {
 			return user
 		}
 	}
-	command.FindUserCommand.Wg.Done()
 	return nil
 }
 
-func (m MockUserRepository) FindUserByEmail(command domain.FindByEmailCommand) *domain.User {
+func (m MockUserRepository) findUserByEmail(email string) *domain.User {
 	for _, user := range m.userMockData.users {
-		if command.Email.Address() == user.Email().Address() {
-			command.FindUserCommand.Wg.Done()
+		if email == user.Email().Address() {
 			return user
 		}
 	}
-	command.FindUserCommand.Wg.Done()
 	return nil
 }
 
-func (m MockUserRepository) FindUserByAlias(command domain.FindByAliasCommand) *domain.User {
+func (m MockUserRepository) findUserByAlias(alias string) *domain.User {
 	for _, user := range m.userMockData.users {
-		if command.Alias.Alias() == user.Alias().Alias() {
-			command.FindUserCommand.Wg.Done()
+		if alias == user.Alias().Alias() {
 			return user
 		}
 	}
-	command.FindUserCommand.Wg.Done()
 	return nil
 }
