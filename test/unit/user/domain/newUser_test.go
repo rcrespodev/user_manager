@@ -7,8 +7,8 @@ import (
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/valueObjects"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/repository"
+	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/bcrypt"
-	"reflect"
 	"testing"
 	"time"
 )
@@ -737,9 +737,6 @@ func TestNewUser(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			byteUuid, _ := uuid.Parse(tt.args.uuid)
-			//if err != nil {
-			//	log.Fatal(err)
-			//}
 			retLog := returnLog.NewReturnLog(byteUuid, messageRepository, "user")
 			user := domain.NewUser(domain.NewUserCommand{
 				Uuid:       tt.args.uuid,
@@ -751,83 +748,54 @@ func TestNewUser(t *testing.T) {
 			}, retLog)
 
 			// User Data check
-			switch user {
+			switch tt.want.userData {
 			case nil:
-				if tt.want.userData != nil {
-					t.Errorf("User()\n\t- got: %v\n\t- want: %v", user, tt.want.userData)
-				}
+				require.Nil(t, user)
 			default:
-				if gotUserEmail := user.Email().Address(); !reflect.DeepEqual(gotUserEmail, tt.want.userData.Email) {
-					t.Errorf("UserEmail()\n\t- got: %v\n\t- want: %v", gotUserEmail, tt.want.userData.Email)
-				}
-				if gotUserName := user.Name().Name(); !reflect.DeepEqual(gotUserName, tt.want.userData.Name) {
-					t.Errorf("UserName()\n\t- got: %v\n\t- want: %v", gotUserName, tt.want.userData.Name)
-				}
-				if gotUserSecondName := user.SecondName().Name(); !reflect.DeepEqual(gotUserSecondName, tt.want.userData.SecondName) {
-					t.Errorf("UserSecondName()\n\t- got: %v\n\t- want: %v", gotUserSecondName, tt.want.userData.SecondName)
-				}
-				if gotUserUuid := user.Uuid().String(); !reflect.DeepEqual(gotUserUuid, tt.want.userData.Uuid) {
-					t.Errorf("UserUuid()\n\t- got: %v\n\t- want: %v", gotUserUuid, tt.want.userData.Uuid)
-				}
-				if gotUserAlias := user.Alias().Alias(); !reflect.DeepEqual(gotUserAlias, tt.want.userData.Alias) {
-					t.Errorf("UserAlias()\n\t- got: %v\n\t- want: %v", gotUserAlias, tt.want.userData.Alias)
-				}
-				if gotUserPassword := user.Password().String(); !reflect.DeepEqual(gotUserPassword, tt.want.userData.Password) {
-					t.Errorf("UserPasswordString()\n\t- got: %v\n\t- want: %v", gotUserPassword, tt.want.userData.Password)
-				}
-				if gotUserPasswordHash := user.Password().Hash(); string(gotUserPasswordHash) == "" {
-					t.Errorf("UserPasswordHash is initial")
-				}
-				if err := bcrypt.CompareHashAndPassword(user.Password().Hash(), []byte(user.Password().String())); err != nil {
-					t.Errorf("Hashed password and password are not the same")
-				}
+				require.EqualValues(t, tt.want.userData.Email, user.Email().Address())
+				require.EqualValues(t, tt.want.userData.Name, user.Name().Name())
+				require.EqualValues(t, tt.want.userData.SecondName, user.SecondName().Name())
+				require.EqualValues(t, tt.want.userData.Uuid, user.Uuid().String())
+				require.EqualValues(t, tt.want.userData.Alias, user.Alias().Alias())
+				require.EqualValues(t, tt.want.userData.Password, user.Password().String())
+				require.NotNil(t, string(user.Password().Hash()))
+				err := bcrypt.CompareHashAndPassword(user.Password().Hash(), []byte(user.Password().String()))
+				require.NoError(t, err)
 			}
 
 			// ReturnLog check
-			if gotStatus := retLog.Status(); !reflect.DeepEqual(gotStatus, tt.want.status) {
-				t.Errorf("Stauts()\n\t- got: %v\n\t- want: %v", gotStatus, tt.want.status)
-			}
+			require.EqualValues(t, retLog.Status(), tt.want.status)
+			require.EqualValues(t, tt.want.httpCodeReturn, retLog.HttpCode())
 
-			if gotHttpCode := retLog.HttpCode(); !reflect.DeepEqual(gotHttpCode, tt.want.httpCodeReturn) {
-				t.Errorf("HttpCode()\n\t- got: %v\n\t- want: %v", gotHttpCode, tt.want.httpCodeReturn)
-			}
-
-			if tt.want.error != nil {
-				if gotError := retLog.Error().InternalError().Error(); !reflect.DeepEqual(gotError, tt.want.error) {
-					t.Errorf("Error()\n\t- got: %v\n\t- want: %v", gotError, tt.want.error)
-				}
-			} else {
+			// Check Client error messages
+			switch tt.want.error {
+			case nil:
 				if retLog.Error() != nil {
-					if retLog.Error().InternalError() != nil {
-						t.Errorf("Error()\n\t- got: %v\n\t- want: %v", retLog.Error().InternalError(), tt.want.error)
-					}
+					require.Nil(t, retLog.Error().InternalError())
 				}
+			default:
+				require.EqualValues(t, tt.want.error, retLog.Error().InternalError().Error())
 			}
 
-			if tt.want.successMessage != nil {
-				gotMessage := retLog.Success().MessageData()
-				gotMessage.Time = time.Time{}
-				if !reflect.DeepEqual(gotMessage, tt.want.successMessage) {
-					t.Errorf("SuccessMessage()\n\t- got: %v\n\t- want: %v", gotMessage, tt.want.successMessage)
+			switch tt.want.errorMessage {
+			case nil:
+				if retLog.Error() != nil {
+					require.Nil(t, retLog.Error().Message())
 				}
-			} else {
-				if retLog.Success() != nil {
-					t.Errorf("SuccessMessage()\n\t- got: %v\n\t- want: %v", retLog.Success(), tt.want.successMessage)
-				}
-			}
-
-			if tt.want.errorMessage != nil {
+			default:
 				gotMessage := retLog.Error().Message()
 				gotMessage.Time = time.Time{}
-				if !reflect.DeepEqual(gotMessage, tt.want.errorMessage) {
-					t.Errorf("ErrorMessage()\n\t- got: %v\n\t- want: %v", gotMessage, tt.want.errorMessage)
-				}
-			} else {
-				if retLog.Error() != nil {
-					if retLog.Error().Message() != nil {
-						t.Errorf("ErrorMessage()\n\t- got: %v\n\t- want: %v", retLog.Error().Message(), tt.want.successMessage)
-					}
-				}
+				require.EqualValues(t, tt.want.errorMessage, gotMessage)
+			}
+
+			// Check Success message
+			switch tt.want.successMessage {
+			case nil:
+				require.Nil(t, retLog.Success())
+			default:
+				gotMessage := retLog.Success().MessageData()
+				gotMessage.Time = tt.want.successMessage.Time
+				require.EqualValues(t, tt.want.successMessage, gotMessage)
 			}
 		})
 	}

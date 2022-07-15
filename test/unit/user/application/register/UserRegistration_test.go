@@ -10,7 +10,7 @@ import (
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/valueObjects"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/repository"
-	"reflect"
+	"github.com/stretchr/testify/require"
 	"testing"
 	"time"
 )
@@ -31,6 +31,9 @@ var messageRepository = repository.NewMockMessageRepository([]repository.MockDat
 })
 
 func TestUserRegistration(t *testing.T) {
+	mockRepository := userRepository.NewMockUserRepository()
+	setMockUserData(mockRepository)
+
 	type args struct {
 		alias      string
 		name       string
@@ -103,7 +106,7 @@ func TestUserRegistration(t *testing.T) {
 		{
 			name: "bad request - user email already exists",
 			args: args{
-				alias:      "martin_fowler",
+				alias:      "martin_fowler_2",
 				name:       "martin",
 				secondName: "fowler",
 				email:      "email_exists@test.com",
@@ -114,7 +117,7 @@ func TestUserRegistration(t *testing.T) {
 				httpCodeReturn: 400,
 				error:          nil,
 				errorMessage: &message.MessageData{
-					ObjectId:        "martin_fowler",
+					ObjectId:        "martin_fowler_2",
 					MessageId:       14,
 					MessagePkg:      "user",
 					Variables:       message.Variables{"email", "email_exists@test.com"},
@@ -141,8 +144,6 @@ func TestUserRegistration(t *testing.T) {
 			})
 
 			cmd := command.NewCommand(command.RegisterUser, cmdUuid, registerUserCommand)
-			mockRepository := userRepository.NewMockUserRepository()
-			setMockUserData(mockRepository)
 			userRegistration := register.NewUserRegistration(mockRepository)
 			handler := register.NewRegisterUserCommandHandler(userRegistration)
 			retLog := domain.NewReturnLog(cmd.Uuid(), messageRepository, "user")
@@ -151,51 +152,41 @@ func TestUserRegistration(t *testing.T) {
 			println(<-done)
 
 			// ReturnLog check
-			if gotStatus := retLog.Status(); !reflect.DeepEqual(gotStatus, tt.want.status) {
-				t.Errorf("Stauts()\n\t- got: %v\n\t- want: %v", gotStatus, tt.want.status)
-			}
+			require.EqualValues(t, tt.want.status, retLog.Status())
+			require.EqualValues(t, tt.want.httpCodeReturn, retLog.HttpCode())
 
-			if gotHttpCode := retLog.HttpCode(); !reflect.DeepEqual(gotHttpCode, tt.want.httpCodeReturn) {
-				t.Errorf("HttpCode()\n\t- got: %v\n\t- want: %v", gotHttpCode, tt.want.httpCodeReturn)
-			}
-
-			if tt.want.error != nil {
-				if gotError := retLog.Error().InternalError().Error(); !reflect.DeepEqual(gotError, tt.want.error) {
-					t.Errorf("Error()\n\t- got: %v\n\t- want: %v", gotError, tt.want.error)
-				}
-			} else {
+			// Check Internal error
+			switch tt.want.error {
+			case nil:
 				if retLog.Error() != nil {
-					if retLog.Error().InternalError() != nil {
-						t.Errorf("Error()\n\t- got: %v\n\t- want: %v", retLog.Error().InternalError(), tt.want.error)
-					}
+					require.Nil(t, retLog.Error().InternalError())
 				}
+			default:
+				require.EqualValues(t, tt.want.error, retLog.Error().InternalError().Error())
 			}
 
-			if tt.want.successMessage != nil {
-				gotMessage := retLog.Success().MessageData()
-				gotMessage.Time = tt.want.successMessage.Time
-				if !reflect.DeepEqual(gotMessage, tt.want.successMessage) {
-					t.Errorf("SuccessMessage()\n\t- got: %v\n\t- want: %v", gotMessage, tt.want.successMessage)
+			// Check Client error messages
+			switch tt.want.errorMessage {
+			case nil:
+				if retLog.Error() != nil {
+					require.Nil(t, retLog.Error().Message())
 				}
-			} else {
-				if retLog.Success() != nil {
-					t.Errorf("SuccessMessage()\n\t- got: %v\n\t- want: %v", retLog.Success(), tt.want.successMessage)
-				}
-			}
-
-			if tt.want.errorMessage != nil {
+			default:
 				gotMessage := retLog.Error().Message()
 				gotMessage.Time = time.Time{}
-				if !reflect.DeepEqual(gotMessage, tt.want.errorMessage) {
-					t.Errorf("ErrorMessage()\n\t- got: %v\n\t- want: %v", gotMessage, tt.want.errorMessage)
-				}
-			} else {
-				if retLog.Error() != nil {
-					if retLog.Error().Message() != nil {
-						t.Errorf("ErrorMessage()\n\t- got: %v\n\t- want: %v", retLog.Error().Message(), tt.want.successMessage)
-					}
-				}
+				require.EqualValues(t, tt.want.errorMessage, gotMessage)
 			}
+
+			// Check Success message
+			switch tt.want.successMessage {
+			case nil:
+				require.Nil(t, retLog.Success())
+			default:
+				gotMessage := retLog.Success().MessageData()
+				gotMessage.Time = tt.want.successMessage.Time
+				require.EqualValues(t, tt.want.successMessage, gotMessage)
+			}
+
 			if tt.want.status == valueObjects.Success {
 				findUserCmd := userDomain.FindUserCommand{
 					Password: tt.args.password,

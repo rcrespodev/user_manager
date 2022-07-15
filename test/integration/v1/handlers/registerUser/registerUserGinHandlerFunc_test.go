@@ -110,7 +110,7 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 		{
 			name: "user email already exists",
 			args: args{
-				alias:      "user_exists",
+				alias:      "martin_fowler_2",
 				name:       "martin",
 				secondName: "fowler",
 				email:      "email_exists@test.com.ar",
@@ -119,7 +119,7 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 			want: want{
 				response: &api.CommandResponse{
 					Message: message.MessageData{
-						ObjectId:        "user_exists",
+						ObjectId:        "martin_fowler_2",
 						MessageId:       14,
 						MessagePkg:      "user",
 						Variables:       message.Variables{"email", "email_exists@test.com.ar"},
