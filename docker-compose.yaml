@@ -5,20 +5,6 @@ networks:
     driver: bridge
 
 services:
-#  test:
-#    build:
-#      context: .
-#      dockerfile: ./test/Dockerfile.test
-#    depends_on:
-#      - app
-#    deploy:
-#      restart_policy:
-#        condition: on-failure
-#        delay: 3s
-#        max_attempts: 2
-#        window: 60s
-#    networks:
-#      - user_manager_app
   app:
     build:
       context: .
@@ -32,20 +18,11 @@ services:
     environment:
       APP_HOST: 0.0.0.0
       APP_PORT: 8080
-      #      HOME_PROJECT: /home/rcrespo/github.com/rcrespodev
-      #      HOME_PROJECT: /app
-      LOG_FILE_PATH: ./logs/errors.log
       REDIS_HOST: redis
       REDIS_PORT: 6379
       MYSQL_USER: root
       MYSQL_PASSWORD: my_secret
       MYSQL_DATABASE: user_manager
-      JSON_MESSAGES: /app/pkg/kernel/cqrs/returnLog/repository/messages.json
-#    healthcheck:
-#      test: [ "CMD", "curl", "-f", "http://localhost:15672" ]
-#      interval: 30s
-#      timeout: 10s
-#      retries: 5
     networks:
       - user_manager_app
   mysql:
