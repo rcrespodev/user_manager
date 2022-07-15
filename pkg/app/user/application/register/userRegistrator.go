@@ -32,45 +32,6 @@ func (u *UserRegistration) Exec(command RegisterUserCommand, log *returnLog.Retu
 		return
 	}
 
-	//var userAlias chan *domain.User
-	//var userEmail chan *domain.User
-	//go u.userRepository.FindUserByAlias(domain.FindByAliasCommand{
-	//	Alias: user.Alias(),
-	//	FindUserCommand: domain.FindUserCommand{
-	//		Password: user.Password().String(),
-	//		Log:      log,
-	//		//Wg:       wg,
-	//	},
-	//}, userChan)
-	//wg.Add(2)
-	//go func() {
-	//u.userRepository.FindUserByAlias(domain.FindByAliasCommand{
-	//	Alias: user.Alias(),
-	//	FindUserCommand: domain.FindUserCommand{
-	//		Password: user.Password().String(),
-	//		Log:      log,
-	//		//Wg:       wg,
-	//	},
-	//}, userAlias)
-	////userAlias = u.userRepository.FindUserByAlias(user.Alias(), log, wg)
-	//}()
-	//go func() {
-	//go u.userRepository.FindUserByEmail(domain.FindByEmailCommand{
-	//	Email: user.Email(),
-	//	FindUserCommand: domain.FindUserCommand{
-	//		Password: user.Password().String(),
-	//		Log:      log,
-	//		//Wg:       wg,
-	//	},
-	//}, userChan)
-	//userEmail = u.userRepository.FindUserByEmail(user.Email(), log, wg)
-	//}()
-	//wg.Wait()
-
-	//if log.Error() != nil {
-	//	return
-	//}
-
 	wg := &sync.WaitGroup{}
 	done := make(chan bool)
 
@@ -106,34 +67,6 @@ func (u *UserRegistration) Exec(command RegisterUserCommand, log *returnLog.Retu
 		return
 	}
 
-	//go u.userRepository.FindUser(domain.FindUserCommand{
-	//	Password: u.user.Password().String(),
-	//	Log:      log,
-	//	Wg:       wg,
-	//	Where: []domain.WhereArgs{
-	//		{
-	//			Field: "email",
-	//			Value: u.user.Email().Address(),
-	//		},
-	//	},
-	//})
-	//
-	//wg.Wait()
-
-	//users := make([]*domain.User, 2)
-	//for i, _ := range users {
-	//	users[i] = <-userChan
-	//	if users[i] != nil {
-	//		log.LogError(returnLog.NewErrorCommand{
-	//			NewMessageCommand: u.userExistsMessage(user, users[i]),
-	//		})
-	//		//break
-	//	}
-	//}
-	//if log.Error() != nil {
-	//	return
-	//}
-
 	u.userRepository.SaveUser(u.user, log)
 	if log.Error() != nil {
 		return
@@ -150,7 +83,6 @@ func (u *UserRegistration) finUserByAlias(wg *sync.WaitGroup, log *returnLog.Ret
 	u.userByAlias = u.userRepository.FindUser(domain.FindUserCommand{
 		Password: u.user.Password().String(),
 		Log:      log,
-		//Wg:       wg,
 		Where: []domain.WhereArgs{
 			{
 				Field: "alias",
@@ -165,7 +97,6 @@ func (u *UserRegistration) finUserByEmail(wg *sync.WaitGroup, log *returnLog.Ret
 	u.userByEmail = u.userRepository.FindUser(domain.FindUserCommand{
 		Password: u.user.Password().String(),
 		Log:      log,
-		//Wg:       waitGroup,
 		Where: []domain.WhereArgs{
 			{
 				Field: "email",
@@ -174,20 +105,4 @@ func (u *UserRegistration) finUserByEmail(wg *sync.WaitGroup, log *returnLog.Ret
 		},
 	})
 	wg.Done()
-}
-
-func (u UserRegistration) userExistsMessage(userA, userB *domain.User) *message.NewMessageCommand {
-	if userA.Email() == userB.Email() {
-		return &message.NewMessageCommand{
-			MessageId: 14,
-			Variables: message.Variables{"email", userA.Email().Address()},
-		}
-	}
-	if userA.Alias() == userB.Alias() {
-		return &message.NewMessageCommand{
-			MessageId: 14,
-			Variables: message.Variables{"alias", userA.Alias().Alias()},
-		}
-	}
-	return nil
 }
