@@ -14,15 +14,6 @@ type MySqlUserRepository struct {
 	trx             *sql.Tx
 }
 
-type UserSchema struct {
-	Uuid       string
-	Alias      string
-	Name       string
-	SecondName string
-	Email      string
-	Password   string
-}
-
 func NewMySqlUserRepository(mySqlClient *sql.DB) *MySqlUserRepository {
 	return &MySqlUserRepository{
 		mySqlRepository: mySql.NewMySqlRepository(mySqlClient),
@@ -59,7 +50,7 @@ func (m *MySqlUserRepository) SaveUser(user *domain.User, log *returnLog.ReturnL
 	return
 }
 
-func (m *MySqlUserRepository) FindUser(command domain.FindUserCommand) *domain.User {
+func (m *MySqlUserRepository) FindUser(command domain.FindUserCommand) *domain.UserSchema {
 	whereValues, whereFields := make([]interface{}, len(command.Where)), make([]string, len(command.Where))
 
 	for i, args := range command.Where {
@@ -69,26 +60,27 @@ func (m *MySqlUserRepository) FindUser(command domain.FindUserCommand) *domain.U
 	queryString := fmt.Sprintf("SELECT uuid, alias, name, second_name, email, password FROM users WHERE %s;",
 		strings.Join(whereFields, " AND "))
 
-	userSchema := &UserSchema{}
+	userSchema := &domain.UserSchema{}
 	if err := m.newTrx(); err != nil {
 		command.Log.LogError(returnLog.NewErrorCommand{Error: err})
 		return nil
 	}
 
 	err := m.trx.QueryRow(queryString, whereValues...).Scan(&userSchema.Uuid, &userSchema.Alias,
-		&userSchema.Name, &userSchema.SecondName, &userSchema.Email, &userSchema.Password)
+		&userSchema.Name, &userSchema.SecondName, &userSchema.Email, &userSchema.HashedPassword)
 	if err == sql.ErrNoRows || userSchema.Uuid == "" {
 		return nil
 	}
 
-	return domain.NewUser(domain.NewUserCommand{
-		Uuid:       userSchema.Uuid,
-		Alias:      userSchema.Alias,
-		Name:       userSchema.Name,
-		SecondName: userSchema.SecondName,
-		Email:      userSchema.Email,
-		Password:   command.Password,
-	}, command.Log)
+	return userSchema
+	//return domain.NewUser(domain.NewUserCommand{
+	//	Uuid:       userSchema.Uuid,
+	//	Alias:      userSchema.Alias,
+	//	Name:       userSchema.Name,
+	//	SecondName: userSchema.SecondName,
+	//	Email:      userSchema.Email,
+	//	Password:   command.Password,
+	//}, command.Log)
 }
 
 func (m *MySqlUserRepository) newTrx() error {

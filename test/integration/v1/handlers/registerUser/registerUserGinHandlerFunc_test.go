@@ -14,6 +14,7 @@ import (
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/test/integration"
 	"github.com/stretchr/testify/require"
+	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/http"
 	"testing"
@@ -83,31 +84,6 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 					},
 				},
 				httpStatusCode: 200,
-			},
-		},
-		{
-			name: "user uuid already exists",
-			args: args{
-				uuid:       "123e4567-e89b-12d3-a456-426614174000",
-				alias:      "linus_torvalds",
-				name:       "linus",
-				secondName: "torvalds",
-				email:      "linus@test.com.ar",
-				password:   "Linux648$",
-			},
-			want: want{
-				response: &api.CommandResponse{
-					Message: message.MessageData{
-						ObjectId:        "linus_torvalds",
-						MessageId:       14,
-						MessagePkg:      "user",
-						Variables:       message.Variables{"uuid", "linus_torvalds"},
-						Text:            "user with component: uuid and value: 123e4567-e89b-12d3-a456-426614174000 already exists",
-						Time:            time.Time{},
-						ClientErrorType: message.ClientErrorBadRequest,
-					},
-				},
-				httpStatusCode: 400,
 			},
 		},
 		{
@@ -216,12 +192,14 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 					panic(retLog.Error())
 				}
 
-				require.EqualValues(t, expectedUser.Uuid(), actualUser.Uuid())
-				require.EqualValues(t, expectedUser.Alias(), actualUser.Alias())
-				require.EqualValues(t, expectedUser.Name(), actualUser.Name())
-				require.EqualValues(t, expectedUser.SecondName(), actualUser.SecondName())
-				require.EqualValues(t, expectedUser.Email(), actualUser.Email())
-				require.EqualValues(t, expectedUser.Password().String(), actualUser.Password().String())
+				require.EqualValues(t, expectedUser.Uuid().String(), actualUser.Uuid)
+				require.EqualValues(t, expectedUser.Alias().Alias(), actualUser.Alias)
+				require.EqualValues(t, expectedUser.Name().Name(), actualUser.Name)
+				require.EqualValues(t, expectedUser.SecondName().Name(), actualUser.SecondName)
+				require.EqualValues(t, expectedUser.Email().Address(), actualUser.Email)
+				// password are stored in hash format in DB.
+				err := bcrypt.CompareHashAndPassword([]byte(actualUser.HashedPassword), []byte(expectedUser.Password().String()))
+				require.NoError(t, err)
 			}
 		})
 	}

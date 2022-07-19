@@ -80,7 +80,7 @@ func (u *UserRegistration) Exec(command RegisterUserCommand, log *returnLog.Retu
 }
 
 func (u *UserRegistration) finUserByAlias(wg *sync.WaitGroup, log *returnLog.ReturnLog) {
-	u.userByAlias = u.userRepository.FindUser(domain.FindUserCommand{
+	userSchema := u.userRepository.FindUser(domain.FindUserCommand{
 		Password: u.user.Password().String(),
 		Log:      log,
 		Where: []domain.WhereArgs{
@@ -90,11 +90,25 @@ func (u *UserRegistration) finUserByAlias(wg *sync.WaitGroup, log *returnLog.Ret
 			},
 		},
 	})
+	switch userSchema {
+	case nil:
+		u.userByAlias = nil
+	default:
+		u.userByAlias = domain.NewUser(domain.NewUserCommand{
+			Uuid:       userSchema.Uuid,
+			Alias:      userSchema.Alias,
+			Name:       userSchema.Name,
+			SecondName: userSchema.SecondName,
+			Email:      userSchema.Email,
+			Password:   u.user.Password().String(),
+			IgnorePass: false,
+		}, log)
+	}
 	wg.Done()
 }
 
 func (u *UserRegistration) finUserByEmail(wg *sync.WaitGroup, log *returnLog.ReturnLog) {
-	u.userByEmail = u.userRepository.FindUser(domain.FindUserCommand{
+	userSchema := u.userRepository.FindUser(domain.FindUserCommand{
 		Password: u.user.Password().String(),
 		Log:      log,
 		Where: []domain.WhereArgs{
@@ -104,5 +118,19 @@ func (u *UserRegistration) finUserByEmail(wg *sync.WaitGroup, log *returnLog.Ret
 			},
 		},
 	})
+	switch userSchema {
+	case nil:
+		u.userByEmail = nil
+	default:
+		u.userByEmail = domain.NewUser(domain.NewUserCommand{
+			Uuid:       userSchema.Uuid,
+			Alias:      userSchema.Alias,
+			Name:       userSchema.Name,
+			SecondName: userSchema.SecondName,
+			Email:      userSchema.Email,
+			Password:   u.user.Password().String(),
+			IgnorePass: false,
+		}, log)
+	}
 	wg.Done()
 }

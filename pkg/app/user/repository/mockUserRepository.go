@@ -9,28 +9,8 @@ type MockUserRepository struct {
 	userMockData UserMockData
 }
 
-func (m *MockUserRepository) FindUser(command domain.FindUserCommand) *domain.User {
-	var user *domain.User
-	for _, args := range command.Where {
-		value := args.Value
-		switch args.Field {
-		case "uuid":
-			user = m.findUserById(value)
-		case "email":
-			user = m.findUserByEmail(value)
-		case "alias":
-			user = m.findUserByAlias(value)
-		}
-		if user != nil {
-			break
-		}
-	}
-
-	return user
-}
-
 type UserMockData struct {
-	users []*domain.User
+	users []*domain.UserSchema
 }
 
 func NewMockUserRepository() *MockUserRepository {
@@ -38,35 +18,73 @@ func NewMockUserRepository() *MockUserRepository {
 }
 
 func (m *MockUserRepository) SetMockData(users []*domain.User) {
-	m.userMockData.users = users
+	for _, user := range users {
+		userSchema := &domain.UserSchema{
+			Uuid:           user.Uuid().String(),
+			Alias:          user.Alias().Alias(),
+			Name:           user.Name().Name(),
+			SecondName:     user.SecondName().Name(),
+			Email:          user.Email().Address(),
+			HashedPassword: user.Password().String(),
+		}
+		m.userMockData.users = append(m.userMockData.users, userSchema)
+	}
 }
 
 func (m *MockUserRepository) SaveUser(user *domain.User, log *returnLog.ReturnLog) {
-	m.userMockData.users = append(m.userMockData.users, user)
+	userSchema := &domain.UserSchema{
+		Uuid:           user.Uuid().String(),
+		Alias:          user.Alias().Alias(),
+		Name:           user.Name().Name(),
+		SecondName:     user.SecondName().Name(),
+		Email:          user.Email().Address(),
+		HashedPassword: user.Password().String(),
+	}
+	m.userMockData.users = append(m.userMockData.users, userSchema)
 }
 
-func (m MockUserRepository) findUserById(uuid string) *domain.User {
-	for _, user := range m.userMockData.users {
-		if uuid == user.Uuid().String() {
-			return user
+func (m *MockUserRepository) FindUser(command domain.FindUserCommand) *domain.UserSchema {
+	var userSchema *domain.UserSchema
+	for _, args := range command.Where {
+		value := args.Value
+		switch args.Field {
+		case "uuid":
+			userSchema = m.findUserById(value)
+		case "email":
+			userSchema = m.findUserByEmail(value)
+		case "alias":
+			userSchema = m.findUserByAlias(value)
+		}
+		if userSchema != nil {
+			break
+		}
+	}
+
+	return userSchema
+}
+
+func (m MockUserRepository) findUserById(uuid string) *domain.UserSchema {
+	for _, userSchema := range m.userMockData.users {
+		if uuid == userSchema.Uuid {
+			return userSchema
 		}
 	}
 	return nil
 }
 
-func (m MockUserRepository) findUserByEmail(email string) *domain.User {
-	for _, user := range m.userMockData.users {
-		if email == user.Email().Address() {
-			return user
+func (m MockUserRepository) findUserByEmail(email string) *domain.UserSchema {
+	for _, userSchema := range m.userMockData.users {
+		if email == userSchema.Email {
+			return userSchema
 		}
 	}
 	return nil
 }
 
-func (m MockUserRepository) findUserByAlias(alias string) *domain.User {
-	for _, user := range m.userMockData.users {
-		if alias == user.Alias().Alias() {
-			return user
+func (m MockUserRepository) findUserByAlias(alias string) *domain.UserSchema {
+	for _, userSchema := range m.userMockData.users {
+		if alias == userSchema.Alias {
+			return userSchema
 		}
 	}
 	return nil
