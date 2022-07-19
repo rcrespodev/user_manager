@@ -30,7 +30,9 @@ func NewMySqlUserRepository(mySqlClient *sql.DB) *MySqlUserRepository {
 }
 
 func (m *MySqlUserRepository) SaveUser(user *domain.User, log *returnLog.ReturnLog) {
-	const saveUser = "INSERT INTO users (uuid, alias, name, second_name, email, password) values (?, ?, ?, ?, ?, ?);"
+	const (
+		saveUser = "INSERT INTO users (uuid, alias, name, second_name, email, password) values (?, ?, ?, ?, ?, ?);"
+	)
 
 	if err := m.newTrx(); err != nil {
 		log.LogError(returnLog.NewErrorCommand{Error: err})
@@ -64,7 +66,7 @@ func (m *MySqlUserRepository) FindUser(command domain.FindUserCommand) *domain.U
 		whereFields[i] = fmt.Sprintf("%s = ?", args.Field)
 		whereValues[i] = args.Value
 	}
-	queryString := fmt.Sprintf("SELECT * FROM users WHERE %s;",
+	queryString := fmt.Sprintf("SELECT uuid, alias, name, second_name, email, password FROM users WHERE %s;",
 		strings.Join(whereFields, " AND "))
 
 	userSchema := &UserSchema{}

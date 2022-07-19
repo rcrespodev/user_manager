@@ -23,6 +23,8 @@ services:
       MYSQL_USER: root
       MYSQL_PASSWORD: my_secret
       MYSQL_DATABASE: user_manager
+    volumes:
+      - ./:/app
     networks:
       - user_manager_app
   mysql:
@@ -37,6 +39,9 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: my_secret
       MYSQL_DATABASE: user_manager
+    volumes:
+      - mysql:/var/lib/mysql
+      - mysql_config:/etc/mysql
     networks:
       - user_manager_app
 
@@ -49,3 +54,7 @@ services:
       - "6379"
     networks:
       - user_manager_app
+
+volumes:
+  mysql:
+  mysql_config:

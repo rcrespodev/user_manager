@@ -44,6 +44,7 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 	}})
 
 	type args struct {
+		uuid       string
 		alias      string
 		name       string
 		secondName string
@@ -62,6 +63,7 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 		{
 			name: "good request",
 			args: args{
+				uuid:       "123e4567-e89b-12d3-a456-426614174000",
 				alias:      "martin_fowler",
 				name:       "martin",
 				secondName: "fowler",
@@ -81,6 +83,31 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 					},
 				},
 				httpStatusCode: 200,
+			},
+		},
+		{
+			name: "user uuid already exists",
+			args: args{
+				uuid:       "123e4567-e89b-12d3-a456-426614174000",
+				alias:      "linus_torvalds",
+				name:       "linus",
+				secondName: "torvalds",
+				email:      "linus@test.com.ar",
+				password:   "Linux648$",
+			},
+			want: want{
+				response: &api.CommandResponse{
+					Message: message.MessageData{
+						ObjectId:        "linus_torvalds",
+						MessageId:       14,
+						MessagePkg:      "user",
+						Variables:       message.Variables{"uuid", "linus_torvalds"},
+						Text:            "user with component: uuid and value: 123e4567-e89b-12d3-a456-426614174000 already exists",
+						Time:            time.Time{},
+						ClientErrorType: message.ClientErrorBadRequest,
+					},
+				},
+				httpStatusCode: 400,
 			},
 		},
 		{
