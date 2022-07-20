@@ -170,8 +170,7 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 				retLog := returnLog.NewReturnLog(cmdUuid, kernel.Instance.MessageRepository(), "user")
 
 				actualUser := userRepositoryInstance.FindUser(domain.FindUserQuery{
-					Password: tt.args.password,
-					Log:      retLog,
+					Log: retLog,
 					Where: []domain.WhereArgs{
 						{
 							Field: "uuid",

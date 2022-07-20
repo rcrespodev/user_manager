@@ -189,8 +189,7 @@ func TestUserRegistration(t *testing.T) {
 
 			if tt.want.status == valueObjects.Success {
 				findUserCmd := userDomain.FindUserQuery{
-					Password: tt.args.password,
-					Log:      retLog,
+					Log: retLog,
 					Where: []userDomain.WhereArgs{
 						{
 							Field: "uuid",

@@ -10,9 +10,8 @@ type UserRepository interface {
 }
 
 type FindUserQuery struct {
-	Password string
-	Log      *returnLog.ReturnLog
-	Where    []WhereArgs
+	Log   *returnLog.ReturnLog
+	Where []WhereArgs
 }
 
 type WhereArgs struct {

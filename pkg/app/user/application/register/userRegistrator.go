@@ -81,8 +81,7 @@ func (u *UserRegistration) Exec(command RegisterUserCommand, log *returnLog.Retu
 
 func (u *UserRegistration) finUserByAlias(wg *sync.WaitGroup, log *returnLog.ReturnLog) {
 	userSchema := u.userRepository.FindUser(domain.FindUserQuery{
-		Password: u.user.Password().String(),
-		Log:      log,
+		Log: log,
 		Where: []domain.WhereArgs{
 			{
 				Field: "alias",
@@ -109,8 +108,8 @@ func (u *UserRegistration) finUserByAlias(wg *sync.WaitGroup, log *returnLog.Ret
 
 func (u *UserRegistration) finUserByEmail(wg *sync.WaitGroup, log *returnLog.ReturnLog) {
 	userSchema := u.userRepository.FindUser(domain.FindUserQuery{
-		Password: u.user.Password().String(),
-		Log:      log,
+		//Password: u.user.Password().String(),
+		Log: log,
 		Where: []domain.WhereArgs{
 			{
 				Field: "email",
