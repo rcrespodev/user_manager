@@ -17,5 +17,8 @@ stop_services:
 stop_test_services:
 	docker stop test_app_mysql test_app_redis
 
-run_test:
+run_tests:
+	sudo chmod u+x ./test.sh && ./test.sh
+
+go_test:
 	export GO111MODULE=on && go test -v ./...

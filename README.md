@@ -53,22 +53,32 @@ All the Api documentation are built using open api 3.0
 specification. Please see [swagger yaml](swagger.yaml).
 
 # Usage. <a name=""></a>
+## Dependencies.
+- Docker.
+- Docker-compose.
+- Bash script.
+
 ## Testing. <a name=""></a>
-To execute unit and integration test just run:
-```shell
-make run_test
-```
+
+Integration tests run on docker containers
+created automatically in every main_test.go
 Containers created for testing are not always
 automatically destroyed.
-If some test containers can´t start because port is
-already allocated, just run:
+That's why the script takes care of destroying
+existing test containers.
+To run test.sh just run:
+```shell
+make run_tests
+```
+If you not have bin bash, use:
+```shell
+make go_test
+```
+and use:
 ```shell
 make stop_test_services
 ```
-or
-```shell
-make stop_services
-```
+to stop the test containers.
 
 ## Install. <a name=""></a>
 Deploy and run up in background mode:
@@ -79,4 +89,10 @@ make run
 Deploy and run up online:
 ```shell
 make run_online
+```
+
+If some redis port or mysql port are allocated,
+try with:
+```shell
+make stop_services
 ```
