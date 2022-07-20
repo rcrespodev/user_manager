@@ -169,7 +169,7 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 			if response.HttpCode == 200 {
 				retLog := returnLog.NewReturnLog(cmdUuid, kernel.Instance.MessageRepository(), "user")
 
-				actualUser := userRepositoryInstance.FindUser(domain.FindUserCommand{
+				actualUser := userRepositoryInstance.FindUser(domain.FindUserQuery{
 					Password: tt.args.password,
 					Log:      retLog,
 					Where: []domain.WhereArgs{

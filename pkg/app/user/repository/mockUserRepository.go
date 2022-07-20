@@ -43,9 +43,9 @@ func (m *MockUserRepository) SaveUser(user *domain.User, log *returnLog.ReturnLo
 	m.userMockData.users = append(m.userMockData.users, userSchema)
 }
 
-func (m *MockUserRepository) FindUser(command domain.FindUserCommand) *domain.UserSchema {
+func (m *MockUserRepository) FindUser(query domain.FindUserQuery) *domain.UserSchema {
 	var userSchema *domain.UserSchema
-	for _, args := range command.Where {
+	for _, args := range query.Where {
 		value := args.Value
 		switch args.Field {
 		case "uuid":

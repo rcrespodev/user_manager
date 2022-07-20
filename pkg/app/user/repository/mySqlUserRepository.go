@@ -50,10 +50,10 @@ func (m *MySqlUserRepository) SaveUser(user *domain.User, log *returnLog.ReturnL
 	return
 }
 
-func (m *MySqlUserRepository) FindUser(command domain.FindUserCommand) *domain.UserSchema {
-	whereValues, whereFields := make([]interface{}, len(command.Where)), make([]string, len(command.Where))
+func (m *MySqlUserRepository) FindUser(query domain.FindUserQuery) *domain.UserSchema {
+	whereValues, whereFields := make([]interface{}, len(query.Where)), make([]string, len(query.Where))
 
-	for i, args := range command.Where {
+	for i, args := range query.Where {
 		whereFields[i] = fmt.Sprintf("%s = ?", args.Field)
 		whereValues[i] = args.Value
 	}
@@ -62,7 +62,7 @@ func (m *MySqlUserRepository) FindUser(command domain.FindUserCommand) *domain.U
 
 	userSchema := &domain.UserSchema{}
 	if err := m.newTrx(); err != nil {
-		command.Log.LogError(returnLog.NewErrorCommand{Error: err})
+		query.Log.LogError(returnLog.NewErrorCommand{Error: err})
 		return nil
 	}
 
@@ -73,14 +73,6 @@ func (m *MySqlUserRepository) FindUser(command domain.FindUserCommand) *domain.U
 	}
 
 	return userSchema
-	//return domain.NewUser(domain.NewUserCommand{
-	//	Uuid:       userSchema.Uuid,
-	//	Alias:      userSchema.Alias,
-	//	Name:       userSchema.Name,
-	//	SecondName: userSchema.SecondName,
-	//	Email:      userSchema.Email,
-	//	Password:   command.Password,
-	//}, command.Log)
 }
 
 func (m *MySqlUserRepository) newTrx() error {

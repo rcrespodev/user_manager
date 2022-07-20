@@ -6,10 +6,10 @@ import (
 
 type UserRepository interface {
 	SaveUser(user *User, log *returnLog.ReturnLog)
-	FindUser(Command FindUserCommand) *UserSchema
+	FindUser(Query FindUserQuery) *UserSchema
 }
 
-type FindUserCommand struct {
+type FindUserQuery struct {
 	Password string
 	Log      *returnLog.ReturnLog
 	Where    []WhereArgs
