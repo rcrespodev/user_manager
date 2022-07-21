@@ -35,7 +35,8 @@ type ReturnLog struct {
 type NewErrorCommand struct {
 	Error error
 	*message.NewMessageCommand
-	Caller int
+	Caller      int
+	Overwritten bool
 }
 
 type NewSuccessCommand *message.NewMessageCommand
@@ -58,6 +59,7 @@ func NewReturnLog(uuid uuid.UUID, repository message.MessageRepository, defaultP
 // See NewErrorCommand usage.
 // The log can only contain one error. If the log already contain an error, no new
 // errors are logged, that is, the original error is not overwritten.
+// If you want overwritten the original message set NewErrorCommand.overwritten=true
 func (r *ReturnLog) LogError(command NewErrorCommand) {
 	defer func() {
 		r.updateInternalData()
@@ -70,7 +72,7 @@ func (r *ReturnLog) LogError(command NewErrorCommand) {
 		caller = r.caller
 	}
 
-	if command.Error != nil {
+	if command.Error != nil && command.Overwritten == false {
 		r.error = customError.NewInternalError(command.Error, caller)
 		return
 	}

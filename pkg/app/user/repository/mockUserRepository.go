@@ -25,7 +25,7 @@ func (m *MockUserRepository) SetMockData(users []*domain.User) {
 			Name:           user.Name().Name(),
 			SecondName:     user.SecondName().Name(),
 			Email:          user.Email().Address(),
-			HashedPassword: user.Password().String(),
+			HashedPassword: user.Password().Hash(),
 		}
 		m.userMockData.users = append(m.userMockData.users, userSchema)
 	}
@@ -38,7 +38,7 @@ func (m *MockUserRepository) SaveUser(user *domain.User, log *returnLog.ReturnLo
 		Name:           user.Name().Name(),
 		SecondName:     user.SecondName().Name(),
 		Email:          user.Email().Address(),
-		HashedPassword: user.Password().String(),
+		HashedPassword: user.Password().Hash(),
 	}
 	m.userMockData.users = append(m.userMockData.users, userSchema)
 }

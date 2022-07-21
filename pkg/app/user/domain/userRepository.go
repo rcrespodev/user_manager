@@ -25,5 +25,5 @@ type UserSchema struct {
 	Name           string
 	SecondName     string
 	Email          string
-	HashedPassword string
+	HashedPassword []byte
 }
