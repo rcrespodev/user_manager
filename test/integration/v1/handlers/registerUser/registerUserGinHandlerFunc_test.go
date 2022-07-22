@@ -7,7 +7,7 @@ import (
 	"github.com/rcrespodev/user_manager/api"
 	"github.com/rcrespodev/user_manager/api/v1/handlers/registerUser"
 	"github.com/rcrespodev/user_manager/api/v1/routes"
-	"github.com/rcrespodev/user_manager/pkg/app/user/application/register"
+	"github.com/rcrespodev/user_manager/pkg/app/user/application/commands/register"
 	"github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel"
 	returnLog "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"

@@ -2,7 +2,7 @@ package register
 
 import (
 	uuid "github.com/google/uuid"
-	"github.com/rcrespodev/user_manager/pkg/app/user/application/register"
+	register2 "github.com/rcrespodev/user_manager/pkg/app/user/application/commands/register"
 	userDomain "github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	userRepository "github.com/rcrespodev/user_manager/pkg/app/user/repository"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
@@ -134,7 +134,7 @@ func TestUserRegistration(t *testing.T) {
 			done := make(chan bool)
 			cmdUuid := uuid.New()
 
-			registerUserCommand := register.NewRegisterUserCommand(register.ClientArgs{
+			registerUserCommand := register2.NewRegisterUserCommand(register2.ClientArgs{
 				Uuid:       cmdUuid.String(),
 				Alias:      tt.args.alias,
 				Name:       tt.args.name,
@@ -144,8 +144,8 @@ func TestUserRegistration(t *testing.T) {
 			})
 
 			cmd := command.NewCommand(command.RegisterUser, cmdUuid, registerUserCommand)
-			userRegistration := register.NewUserRegistration(mockRepository)
-			handler := register.NewRegisterUserCommandHandler(userRegistration)
+			userRegistration := register2.NewUserRegistration(mockRepository)
+			handler := register2.NewRegisterUserCommandHandler(userRegistration)
 			retLog := domain.NewReturnLog(cmd.Uuid(), messageRepository, "user")
 			go handler.Handle(*cmd, retLog, done)
 

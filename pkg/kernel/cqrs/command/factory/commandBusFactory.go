@@ -1,7 +1,7 @@
 package factory
 
 import (
-	"github.com/rcrespodev/user_manager/pkg/app/user/application/register"
+	"github.com/rcrespodev/user_manager/pkg/app/user/application/commands/register"
 	"github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
 )
