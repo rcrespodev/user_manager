@@ -1,6 +1,7 @@
 package register
 
 import (
+	userFinderPkg "github.com/rcrespodev/user_manager/pkg/app/user/application/querys/userFinder"
 	"github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	returnLog "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
@@ -32,40 +33,79 @@ func (u *UserRegistration) Exec(command RegisterUserCommand, log *returnLog.Retu
 		return
 	}
 
-	wg := &sync.WaitGroup{}
-	done := make(chan bool)
+	//wg := &sync.WaitGroup{}
+	//done := make(chan bool)
+	//
+	//wg.Add(1)
+	//go u.finUserByAlias(wg, log)
+	//wg.Add(1)
+	//go u.finUserByEmail(wg, log)
+	//
+	//go func() {
+	//	wg.Wait()
+	//	done <- true
+	//}()
+	//
+	//<-done
 
-	wg.Add(1)
-	go u.finUserByAlias(wg, log)
-	wg.Add(1)
-	go u.finUserByEmail(wg, log)
+	userFinder := userFinderPkg.NewUserFinder(u.userRepository)
+	sourceUser := userFinder.Exec([]domain.FindUserQuery{
+		{
+			Log: log,
+			Where: []domain.WhereArgs{
+				{
+					Field: "alias",
+					Value: u.user.Alias().Alias(),
+				},
+			},
+		},
+		{
+			Log: log,
+			Where: []domain.WhereArgs{
+				{
+					Field: "email",
+					Value: u.user.Email().Address(),
+				},
+			},
+		},
+	})
 
-	go func() {
-		wg.Wait()
-		done <- true
-	}()
-
-	<-done
-
-	if u.userByAlias != nil {
+	if sourceUser != nil {
+		var variables message.Variables
+		if sourceUser.Alias == u.user.Alias().Alias() {
+			variables = message.Variables{"alias", u.user.Alias().Alias()}
+		}
+		if sourceUser.Email == u.user.Email().Address() {
+			variables = message.Variables{"email", u.user.Email().Address()}
+		}
 		log.LogError(returnLog.NewErrorCommand{
 			NewMessageCommand: &message.NewMessageCommand{
 				MessageId: 14,
-				Variables: message.Variables{"alias", u.user.Alias().Alias()},
+				Variables: variables,
 			},
 		})
 		return
 	}
 
-	if u.userByEmail != nil {
-		log.LogError(returnLog.NewErrorCommand{
-			NewMessageCommand: &message.NewMessageCommand{
-				MessageId: 14,
-				Variables: message.Variables{"email", u.user.Email().Address()},
-			},
-		})
-		return
-	}
+	//if u.userByAlias != nil {
+	//	log.LogError(returnLog.NewErrorCommand{
+	//		NewMessageCommand: &message.NewMessageCommand{
+	//			MessageId: 14,
+	//			Variables: message.Variables{"alias", u.user.Alias().Alias()},
+	//		},
+	//	})
+	//	return
+	//}
+	//
+	//if u.userByEmail != nil {
+	//	log.LogError(returnLog.NewErrorCommand{
+	//		NewMessageCommand: &message.NewMessageCommand{
+	//			MessageId: 14,
+	//			Variables: message.Variables{"email", u.user.Email().Address()},
+	//		},
+	//	})
+	//	return
+	//}
 
 	u.userRepository.SaveUser(u.user, log)
 	if log.Error() != nil {

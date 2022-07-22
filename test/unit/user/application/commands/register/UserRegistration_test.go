@@ -1,4 +1,4 @@
-package register
+package regster
 
 import (
 	uuid "github.com/google/uuid"
@@ -59,7 +59,7 @@ func TestUserRegistration(t *testing.T) {
 				alias:      "martin_fowler",
 				name:       "martin",
 				secondName: "fowler",
-				email:      "foo@test.com",
+				email:      "userRegistred@test.com",
 				password:   "Linux648$",
 			},
 			want: want{

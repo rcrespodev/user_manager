@@ -68,7 +68,7 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 				alias:      "martin_fowler",
 				name:       "martin",
 				secondName: "fowler",
-				email:      "foo@test.com",
+				email:      "user_registred@test.com",
 				password:   "Linux648$",
 			},
 			want: want{
@@ -92,7 +92,7 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 				alias:      "user_exists_alias",
 				name:       "martin",
 				secondName: "fowler",
-				email:      "foo@test.com.ar",
+				email:      "test@test.com.ar",
 				password:   "Linux648$",
 			},
 			want: want{
