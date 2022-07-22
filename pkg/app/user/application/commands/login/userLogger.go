@@ -1,10 +1,10 @@
 package login
 
 import (
+	userFinderPkg "github.com/rcrespodev/user_manager/pkg/app/user/application/querys/userFinder"
 	"github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	returnLog "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
-	"sync"
 )
 
 type UserLogger struct {
@@ -53,20 +53,27 @@ func (u *UserLogger) Exec(cmd *LoginUserCommand, log *returnLog.ReturnLog) {
 		return
 	}
 
-	wg := &sync.WaitGroup{}
-	done := make(chan bool)
-
-	wg.Add(1)
-	go u.loginWithAlias(alias, wg)
-	wg.Add(1)
-	go u.loginWithEmail(email, wg)
-
-	go func() {
-		wg.Wait()
-		done <- true
-	}()
-
-	<-done
+	userFinder := userFinderPkg.NewUserFinder(u.repository)
+	u.userSchema = userFinder.Exec([]domain.FindUserQuery{
+		{
+			Log: u.log,
+			Where: []domain.WhereArgs{
+				{
+					Field: "alias",
+					Value: u.getAliasQueryValue(alias),
+				},
+			},
+		},
+		{
+			Log: u.log,
+			Where: []domain.WhereArgs{
+				{
+					Field: "email",
+					Value: u.getEmailQueryValue(email),
+				},
+			},
+		},
+	})
 
 	if u.userSchema != nil {
 		u.user = domain.LoginUser(u.password, u.userSchema, u.log)
@@ -81,46 +88,16 @@ func (u *UserLogger) Exec(cmd *LoginUserCommand, log *returnLog.ReturnLog) {
 	}
 }
 
-func (u *UserLogger) loginWithAlias(alias *domain.UserAlias, wg *sync.WaitGroup) {
-	if alias == nil {
-		wg.Done()
-		return
+func (u UserLogger) getEmailQueryValue(email *domain.UserEmail) string {
+	if email != nil {
+		return email.Address()
 	}
-	userSchema := u.repository.FindUser(domain.FindUserQuery{
-		Log: u.log,
-		Where: []domain.WhereArgs{
-			{
-				Field: "alias",
-				Value: alias.Alias(),
-			},
-		},
-	})
-	if u.userSchema == nil {
-		u.userSchema = userSchema
-		wg.Done()
-		return
-	}
-	wg.Done()
+	return ""
 }
 
-func (u *UserLogger) loginWithEmail(email *domain.UserEmail, wg *sync.WaitGroup) {
-	if email == nil {
-		wg.Done()
-		return
+func (u UserLogger) getAliasQueryValue(alias *domain.UserAlias) string {
+	if alias != nil {
+		return alias.Alias()
 	}
-	userSchema := u.repository.FindUser(domain.FindUserQuery{
-		Log: u.log,
-		Where: []domain.WhereArgs{
-			{
-				Field: "email",
-				Value: email.Address(),
-			},
-		},
-	})
-	if u.userSchema == nil {
-		u.userSchema = userSchema
-		wg.Done()
-		return
-	}
-	wg.Done()
+	return ""
 }

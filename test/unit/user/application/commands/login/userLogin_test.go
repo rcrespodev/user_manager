@@ -2,7 +2,7 @@ package login
 
 import (
 	"github.com/google/uuid"
-	"github.com/rcrespodev/user_manager/pkg/app/user/application/login"
+	login2 "github.com/rcrespodev/user_manager/pkg/app/user/application/commands/login"
 	userDomain "github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	userRepository "github.com/rcrespodev/user_manager/pkg/app/user/repository"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
@@ -56,12 +56,12 @@ func TestUserLogin(t *testing.T) {
 	}
 	tests := []struct {
 		name string
-		args login.ClientArgs
+		args login2.ClientArgs
 		want want
 	}{
 		{
 			name: "invalid user or email",
-			args: login.ClientArgs{
+			args: login2.ClientArgs{
 				AliasOrEmail: "test.test$",
 				Password:     "Linux638$01",
 			},
@@ -83,7 +83,7 @@ func TestUserLogin(t *testing.T) {
 		},
 		{
 			name: "invalid password",
-			args: login.ClientArgs{
+			args: login2.ClientArgs{
 				AliasOrEmail: "test@test.com",
 				Password:     "without_numbers_and_special_chars",
 			},
@@ -105,7 +105,7 @@ func TestUserLogin(t *testing.T) {
 		},
 		{
 			name: "user not exists",
-			args: login.ClientArgs{
+			args: login2.ClientArgs{
 				AliasOrEmail: "user_not_found@test.com",
 				Password:     "Linux638$01",
 			},
@@ -127,7 +127,7 @@ func TestUserLogin(t *testing.T) {
 		},
 		{
 			name: "user alias exists but password is incorrect",
-			args: login.ClientArgs{
+			args: login2.ClientArgs{
 				AliasOrEmail: "user_alias_exists",
 				Password:     "Linux638$01",
 			},
@@ -149,7 +149,7 @@ func TestUserLogin(t *testing.T) {
 		},
 		{
 			name: "user email exists but password is incorrect",
-			args: login.ClientArgs{
+			args: login2.ClientArgs{
 				AliasOrEmail: "email_exists@gmail.com",
 				Password:     "Linux638$01",
 			},
@@ -171,7 +171,7 @@ func TestUserLogin(t *testing.T) {
 		},
 		{
 			name: "correct login with user alias",
-			args: login.ClientArgs{
+			args: login2.ClientArgs{
 				AliasOrEmail: "user_alias_exists",
 				Password:     "Linux648$",
 			},
@@ -192,7 +192,7 @@ func TestUserLogin(t *testing.T) {
 		},
 		{
 			name: "correct login with user email",
-			args: login.ClientArgs{
+			args: login2.ClientArgs{
 				AliasOrEmail: "email_exists@gmail.com",
 				Password:     "Linux648$",
 			},
@@ -214,11 +214,11 @@ func TestUserLogin(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			userLoginCmd := login.NewLoginUserCommand(tt.args)
+			userLoginCmd := login2.NewLoginUserCommand(tt.args)
 			cmd := command.NewCommand(command.LoginUser, uuid.New(), userLoginCmd)
 			retLog := domain.NewReturnLog(cmd.Uuid(), messageRepository, "user")
-			userLogger := login.NewUserLogger(mockUserRepository)
-			cmdHandler := login.NewLoginUserCommandHandler(userLogger)
+			userLogger := login2.NewUserLogger(mockUserRepository)
+			cmdHandler := login2.NewLoginUserCommandHandler(userLogger)
 
 			done := make(chan bool)
 			go cmdHandler.Handle(*cmd, retLog, done)
