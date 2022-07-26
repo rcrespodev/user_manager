@@ -9,7 +9,13 @@ import (
 	"log"
 )
 
-func NewDockerTestRedis() *redis.Client {
+type RedisPoolConnection struct {
+	RedisClient    *redis.Client
+	DockerPool     *dockertest.Pool
+	DockerResource *dockertest.Resource
+}
+
+func NewDockerTestRedis() *RedisPoolConnection {
 	pool, err := dockertest.NewPool("")
 	if err != nil {
 		log.Fatalf("Could not connect to docker: %s", err)
@@ -47,5 +53,9 @@ func NewDockerTestRedis() *redis.Client {
 		log.Fatalf("Could not connect to docker: %s", err)
 	}
 
-	return redisClient
+	return &RedisPoolConnection{
+		RedisClient:    redisClient,
+		DockerPool:     pool,
+		DockerResource: redisResource,
+	}
 }

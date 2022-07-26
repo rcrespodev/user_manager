@@ -109,8 +109,8 @@ func GetMessagesSourceData() *MessagesSchema {
 			{
 				Id:              15,
 				Pkg:             "user",
-				Text:            "name, alias or password are not correct. Repeat the access data.",
-				ClientErrorType: 0,
+				Text:            "email, alias or password are not correct. Repeat the access data.",
+				ClientErrorType: 1,
 			},
 		},
 	}

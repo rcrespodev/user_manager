@@ -1,8 +1,6 @@
-package registerUser
+package loginUser
 
 import (
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/joho/godotenv"
 	"github.com/rcrespodev/user_manager/pkg/kernel"
 	"github.com/rcrespodev/user_manager/test/integration"
 	"log"
@@ -11,9 +9,6 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	if err := godotenv.Load(".env"); err != nil {
-		log.Fatalf("%v", err)
-	}
 	mySqlPool := integration.NewDockerTestMySql()
 	redisPool := integration.NewDockerTestRedis()
 

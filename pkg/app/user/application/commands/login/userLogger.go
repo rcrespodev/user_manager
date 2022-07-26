@@ -25,6 +25,8 @@ func (u *UserLogger) Exec(cmd *LoginUserCommand, log *returnLog.ReturnLog) {
 		login = false
 	)
 
+	u.user = nil
+
 	u.log = log
 	u.log.SetObjectId(cmd.aliasOrEmail)
 

@@ -10,7 +10,13 @@ import (
 	"os"
 )
 
-func NewDockerTestMySql() *sql.DB {
+type MySqlPoolConnection struct {
+	MySqlClient    *sql.DB
+	DockerPool     *dockertest.Pool
+	DockerResource *dockertest.Resource
+}
+
+func NewDockerTestMySql() *MySqlPoolConnection {
 	pool, err := dockertest.NewPool("")
 	if err != nil {
 		log.Fatalf("Could not connect to docker: %s", err)
@@ -56,5 +62,9 @@ func NewDockerTestMySql() *sql.DB {
 	}); err != nil {
 		log.Fatalf("Could not connect to mysql: %s", err.Error())
 	}
-	return mySqlClient
+	return &MySqlPoolConnection{
+		MySqlClient:    mySqlClient,
+		DockerPool:     pool,
+		DockerResource: mySqlResource,
+	}
 }

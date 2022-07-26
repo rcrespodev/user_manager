@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/rcrespodev/user_manager/api/v1/handlers/checkStatus"
+	"github.com/rcrespodev/user_manager/api/v1/handlers/loginUser"
 	"github.com/rcrespodev/user_manager/api/v1/handlers/registerUser"
 	"net/http"
 )
@@ -40,6 +41,11 @@ func NewRoutes() Routes {
 			HttpMethod:   http.MethodPost,
 			RelativePath: "/register_user",
 			Handler:      registerUser.RegisterUserGinHandlerFunc(),
+		},
+		{
+			HttpMethod:   http.MethodPost,
+			RelativePath: "/login",
+			Handler:      loginUser.LoginUserGinHandlerFunc(),
 		},
 	}
 	return Routes{Routes: routes}
