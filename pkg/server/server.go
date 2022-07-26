@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/rcrespodev/user_manager/api/v1/handlers/jwtAuth"
 	apiRoutes "github.com/rcrespodev/user_manager/api/v1/routes"
 	kernel "github.com/rcrespodev/user_manager/pkg/kernel"
 	"log"
@@ -25,6 +26,7 @@ func newServer(host, port string) *server {
 		engine:      gin.New(),
 		kernel:      kernel.NewPrdKernel(nil, nil),
 	}
+	Server.engine.Use(jwtAuth.ValidateJwt())
 	return Server
 }
 

@@ -23,6 +23,9 @@ type Config struct {
 		Host     string `envconfig:"default=mysql"`
 		Port     string `envconfig:"default=3306"`
 	}
+	Jwt struct {
+		Secret string `envconfig:"default=my_secret"`
+	}
 }
 
 func Setup() *Config {

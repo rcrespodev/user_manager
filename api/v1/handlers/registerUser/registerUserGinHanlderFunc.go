@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/rcrespodev/user_manager/api"
+	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/auth/domain"
 	"github.com/rcrespodev/user_manager/pkg/app/user/application/commands/register"
 	"github.com/rcrespodev/user_manager/pkg/kernel"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
@@ -63,6 +64,16 @@ func RegisterUserGinHandlerFunc() gin.HandlerFunc {
 		case valueObjects.Success:
 			response.Message = *log.Success().MessageData()
 		}
-		ctx.JSON(int(log.HttpCode()), response)
+
+		token, err := jwtDomain.SignJwt(cmdUuid, kernel.Instance.JwtConfig())
+		if err != nil {
+			ctx.JSON(401, nil)
+			return
+		} else {
+			if log.HttpCode() == 200 {
+				ctx.Header("Token", token)
+			}
+			ctx.JSON(int(log.HttpCode()), response)
+		}
 	}
 }

@@ -7,6 +7,7 @@ import (
 	"github.com/rcrespodev/user_manager/api"
 	"github.com/rcrespodev/user_manager/api/v1/handlers/registerUser"
 	"github.com/rcrespodev/user_manager/api/v1/routes"
+	domain2 "github.com/rcrespodev/user_manager/pkg/app/auth/domain"
 	"github.com/rcrespodev/user_manager/pkg/app/user/application/commands/register"
 	"github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel"
@@ -166,7 +167,14 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 			require.EqualValues(t, tt.want.httpStatusCode, response.HttpCode)
 			require.EqualValues(t, tt.want.response, gotRespBody)
 
-			if response.HttpCode == 200 {
+			switch response.HttpCode {
+			case 200:
+				// Token validation
+				require.NotNil(t, response.Header.Get("Token"))
+				err := domain2.ParseJwt(response.Header.Get("Token"), kernel.Instance.JwtConfig())
+				require.NoError(t, err)
+
+				// Database validation
 				retLog := returnLog.NewReturnLog(cmdUuid, kernel.Instance.MessageRepository(), "user")
 
 				actualUser := userRepositoryInstance.FindUser(domain.FindUserQuery{
@@ -197,8 +205,10 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 				require.EqualValues(t, expectedUser.SecondName().Name(), actualUser.SecondName)
 				require.EqualValues(t, expectedUser.Email().Address(), actualUser.Email)
 				// password are stored in hash format in DB.
-				err := bcrypt.CompareHashAndPassword([]byte(actualUser.HashedPassword), []byte(expectedUser.Password().String()))
+				err = bcrypt.CompareHashAndPassword(actualUser.HashedPassword, []byte(expectedUser.Password().String()))
 				require.NoError(t, err)
+			default:
+				require.EqualValues(t, "", response.Header.Get("Token"))
 			}
 		})
 	}
