@@ -39,15 +39,6 @@ func TestCheckStatusGinHandlerFunc(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			//response := integration.NewHttpRequest(integration.NewHttpRequestCommand{
-			//	Method: http.MethodGet,
-			//	//Host:   "app",
-			//	Host:        "0.0.0.0",
-			//	Port:        "8080",
-			//	Path:        "/check-status",
-			//	Body:        nil,
-			//	ContentType: "",
-			//})
 			testServer := integration.NewTestServerHttpGin(&endpoints.Endpoints{
 				Endpoints: []endpoints.Endpoint{
 					{

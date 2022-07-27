@@ -3,7 +3,6 @@ package registerUser
 import (
 	"encoding/json"
 	"github.com/google/uuid"
-	"github.com/joho/godotenv"
 	"github.com/rcrespodev/user_manager/api"
 	"github.com/rcrespodev/user_manager/api/v1/endpoints"
 	"github.com/rcrespodev/user_manager/api/v1/handlers/registerUser"
@@ -29,10 +28,6 @@ const (
 var userRepositoryInstance domain.UserRepository
 
 func TestRegisterUserGinHandlerFunc(t *testing.T) {
-	if err := godotenv.Load(".env"); err != nil {
-		log.Fatal(err)
-	}
-
 	userRepositoryInstance = kernel.Instance.UserRepository()
 
 	tableUsersSetup()
