@@ -3,8 +3,8 @@ package checkStatus
 import (
 	"encoding/json"
 	"github.com/rcrespodev/user_manager/api"
+	"github.com/rcrespodev/user_manager/api/v1/endpoints"
 	"github.com/rcrespodev/user_manager/api/v1/handlers/checkStatus"
-	"github.com/rcrespodev/user_manager/api/v1/routes"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/test/integration"
 	"net/http"
@@ -48,8 +48,8 @@ func TestCheckStatusGinHandlerFunc(t *testing.T) {
 			//	Body:        nil,
 			//	ContentType: "",
 			//})
-			testServer := integration.NewTestServerHttpGin(&routes.Routes{
-				Routes: []routes.Route{
+			testServer := integration.NewTestServerHttpGin(&endpoints.Endpoints{
+				Endpoints: []endpoints.Endpoint{
 					{
 						HttpMethod:   http.MethodGet,
 						RelativePath: "/check-status",

@@ -1,4 +1,4 @@
-package routes
+package endpoints
 
 import (
 	"github.com/gin-gonic/gin"
@@ -8,45 +8,39 @@ import (
 	"net/http"
 )
 
-type Routes struct {
-	Routes []Route
+const (
+	EndpointCheckStatus  = "/check-status"
+	EndpointRegisterUser = "/register_user"
+	EndpointLogin        = "/login"
+)
+
+type Endpoints struct {
+	Endpoints []Endpoint
 }
 
-type Route struct {
+type Endpoint struct {
 	HttpMethod   string
 	RelativePath string
 	Handler      gin.HandlerFunc
 }
 
-//func (r Route) RelativePath() string {
-//	return r.RelativePath
-//}
-//
-//func (r Route) Handler() gin.HandlerFunc {
-//	return r.Handler
-//}
-//
-//func (r Route) HttpMethod() string {
-//	return r.HttpMethod
-//}
-
-func NewRoutes() Routes {
-	routes := []Route{
+func NewEndpoints() Endpoints {
+	endpoints := []Endpoint{
 		{
 			HttpMethod:   http.MethodGet,
-			RelativePath: "/check-status",
+			RelativePath: EndpointCheckStatus,
 			Handler:      checkStatus.StatusGinHandlerFunc(),
 		},
 		{
 			HttpMethod:   http.MethodPost,
-			RelativePath: "/register_user",
+			RelativePath: EndpointRegisterUser,
 			Handler:      registerUser.RegisterUserGinHandlerFunc(),
 		},
 		{
 			HttpMethod:   http.MethodPost,
-			RelativePath: "/login",
+			RelativePath: EndpointLogin,
 			Handler:      loginUser.LoginUserGinHandlerFunc(),
 		},
 	}
-	return Routes{Routes: routes}
+	return Endpoints{Endpoints: endpoints}
 }

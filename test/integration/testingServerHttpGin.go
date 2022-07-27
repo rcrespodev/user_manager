@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/rcrespodev/user_manager/api/v1/endpoints"
 	"github.com/rcrespodev/user_manager/api/v1/handlers/jwtAuth"
-	"github.com/rcrespodev/user_manager/api/v1/routes"
 	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/auth/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel"
 	"io/ioutil"
@@ -17,20 +17,20 @@ import (
 
 type TestServerHttpGin struct {
 	engine *gin.Engine
-	routes *routes.Routes
+	routes *endpoints.Endpoints
 }
 
-func NewTestServerHttpGin(routes *routes.Routes) *TestServerHttpGin {
+func NewTestServerHttpGin(endPoints *endpoints.Endpoints) *TestServerHttpGin {
 	engine := gin.Default()
 	engine.Use(jwtAuth.ValidateJwt()) //Jwt Auth
 
-	for _, route := range routes.Routes {
+	for _, route := range endPoints.Endpoints {
 		engine.Handle(route.HttpMethod, route.RelativePath, route.Handler)
 	}
 
 	return &TestServerHttpGin{
 		engine: engine,
-		routes: routes,
+		routes: endPoints,
 	}
 }
 
@@ -48,7 +48,7 @@ type Response struct {
 func (t TestServerHttpGin) DoRequest(cmd DoRequestCommand) Response {
 	var method string
 	var path string
-	for _, route := range t.routes.Routes {
+	for _, route := range t.routes.Endpoints {
 		if route.RelativePath == cmd.RelativePath {
 			method = route.HttpMethod
 			path = route.RelativePath

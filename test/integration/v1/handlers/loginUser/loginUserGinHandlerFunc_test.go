@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"github.com/google/uuid"
 	"github.com/rcrespodev/user_manager/api"
+	"github.com/rcrespodev/user_manager/api/v1/endpoints"
 	"github.com/rcrespodev/user_manager/api/v1/handlers/loginUser"
-	"github.com/rcrespodev/user_manager/api/v1/routes"
 	"github.com/rcrespodev/user_manager/pkg/app/user/application/commands/login"
 	"github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel"
@@ -30,7 +30,7 @@ func TestLoginUserGinHandlerFunc(t *testing.T) {
 
 	tableUsersSetup()
 
-	mockGinSrv := integration.NewTestServerHttpGin(&routes.Routes{Routes: []routes.Route{
+	mockGinSrv := integration.NewTestServerHttpGin(&endpoints.Endpoints{Endpoints: []endpoints.Endpoint{
 		{
 			HttpMethod:   http.MethodPost,
 			RelativePath: relPath,

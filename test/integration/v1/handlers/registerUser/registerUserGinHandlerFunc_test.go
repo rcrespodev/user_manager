@@ -5,8 +5,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/joho/godotenv"
 	"github.com/rcrespodev/user_manager/api"
+	"github.com/rcrespodev/user_manager/api/v1/endpoints"
 	"github.com/rcrespodev/user_manager/api/v1/handlers/registerUser"
-	"github.com/rcrespodev/user_manager/api/v1/routes"
 	domain2 "github.com/rcrespodev/user_manager/pkg/app/auth/domain"
 	"github.com/rcrespodev/user_manager/pkg/app/user/application/commands/register"
 	"github.com/rcrespodev/user_manager/pkg/app/user/domain"
@@ -37,7 +37,7 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 
 	tableUsersSetup()
 
-	mockGinSrv := integration.NewTestServerHttpGin(&routes.Routes{Routes: []routes.Route{
+	mockGinSrv := integration.NewTestServerHttpGin(&endpoints.Endpoints{Endpoints: []endpoints.Endpoint{
 		{
 			HttpMethod:   http.MethodPost,
 			RelativePath: registerUserRelPath,
