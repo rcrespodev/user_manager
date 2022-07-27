@@ -9,9 +9,9 @@ import (
 )
 
 const (
-	EndpointCheckStatus  = "/check-status"
-	EndpointRegisterUser = "/register_user"
-	EndpointLogin        = "/login"
+	EndpointCheckStatus  = "/v1/check-status"
+	EndpointRegisterUser = "/v1/register_user"
+	EndpointLogin        = "/v1/login"
 )
 
 type Endpoints struct {

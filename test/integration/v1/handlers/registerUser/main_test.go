@@ -4,7 +4,6 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/rcrespodev/user_manager/pkg/kernel"
 	"github.com/rcrespodev/user_manager/test/integration"
-	"log"
 	"os"
 	"testing"
 )
@@ -17,13 +16,14 @@ func TestMain(m *testing.M) {
 
 	code := m.Run()
 
-	if err := mySqlPool.DockerPool.Purge(mySqlPool.DockerResource); err != nil {
-		log.Fatal(err)
-	}
+	defer func() {
+		if err := mySqlPool.DockerPool.Purge(mySqlPool.DockerResource); err != nil {
+			os.Exit(3)
+		}
 
-	if err := redisPool.DockerPool.Purge(redisPool.DockerResource); err != nil {
-		log.Fatal(err)
-	}
-
-	os.Exit(code)
+		if err := redisPool.DockerPool.Purge(redisPool.DockerResource); err != nil {
+			os.Exit(3)
+		}
+		os.Exit(code)
+	}()
 }
