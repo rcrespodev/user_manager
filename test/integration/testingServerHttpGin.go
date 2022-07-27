@@ -4,7 +4,11 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+	"github.com/rcrespodev/user_manager/api/v1/handlers/jwtAuth"
 	"github.com/rcrespodev/user_manager/api/v1/routes"
+	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/auth/domain"
+	"github.com/rcrespodev/user_manager/pkg/kernel"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -18,9 +22,12 @@ type TestServerHttpGin struct {
 
 func NewTestServerHttpGin(routes *routes.Routes) *TestServerHttpGin {
 	engine := gin.Default()
+	engine.Use(jwtAuth.ValidateJwt()) //Jwt Auth
+
 	for _, route := range routes.Routes {
 		engine.Handle(route.HttpMethod, route.RelativePath, route.Handler)
 	}
+
 	return &TestServerHttpGin{
 		engine: engine,
 		routes: routes,
@@ -55,6 +62,12 @@ func (t TestServerHttpGin) DoRequest(cmd DoRequestCommand) Response {
 	}
 
 	request.Header.Set("Content-type", "application/json")
+
+	if request.URL.Path != "/check-status" {
+		jwt, _ := jwtDomain.SignJwt(uuid.New(), kernel.Instance.JwtConfig())
+		request.Header.Set("Authorization", jwt)
+	}
+
 	writer := httptest.NewRecorder()
 	t.engine.ServeHTTP(writer, request)
 

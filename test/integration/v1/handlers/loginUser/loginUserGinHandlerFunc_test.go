@@ -115,7 +115,6 @@ func TestLoginUserGinHandlerFunc(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			//cmdUuid := uuid.New()
 			cmd := login.ClientArgs{
 				AliasOrEmail: tt.args.aliasOrEmail,
 				Password:     tt.args.password,
@@ -131,13 +130,14 @@ func TestLoginUserGinHandlerFunc(t *testing.T) {
 				RelativePath: relPath,
 			})
 
+			require.EqualValues(t, tt.want.httpStatusCode, response.HttpCode)
+
 			var gotRespBody *api.CommandResponse
 			if err := json.Unmarshal(response.Body, &gotRespBody); err != nil {
 				log.Panicln(err)
 			}
 			gotRespBody.Message.Time = time.Time{}
 
-			require.EqualValues(t, tt.want.httpStatusCode, response.HttpCode)
 			require.EqualValues(t, tt.want.response, gotRespBody)
 		})
 	}
