@@ -2,6 +2,7 @@ package jwtAuth
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/rcrespodev/user_manager/api/v1/endpoints"
 	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/auth/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel"
 	"net/http"
@@ -10,7 +11,7 @@ import (
 func ValidateJwt() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		path := ctx.Request.URL.Path
-		if path == "/register_user" || path == "/check-status" {
+		if path == endpoints.EndpointRegisterUser || path == endpoints.EndpointCheckStatus {
 			ctx.Next()
 			return
 		}

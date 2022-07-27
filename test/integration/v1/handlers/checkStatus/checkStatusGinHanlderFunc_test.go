@@ -43,14 +43,14 @@ func TestCheckStatusGinHandlerFunc(t *testing.T) {
 				Endpoints: []endpoints.Endpoint{
 					{
 						HttpMethod:   http.MethodGet,
-						RelativePath: "/check-status",
+						RelativePath: endpoints.EndpointCheckStatus,
 						Handler:      checkStatus.StatusGinHandlerFunc(),
 					},
 				},
 			})
 			response := testServer.DoRequest(integration.DoRequestCommand{
 				BodyRequest:  nil,
-				RelativePath: "/check-status",
+				RelativePath: endpoints.EndpointCheckStatus,
 			})
 			var queryResponse api.QueryResponse
 			err := json.Unmarshal(response.Body, &queryResponse)

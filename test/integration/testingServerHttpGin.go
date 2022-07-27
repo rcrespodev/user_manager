@@ -63,7 +63,7 @@ func (t TestServerHttpGin) DoRequest(cmd DoRequestCommand) Response {
 
 	request.Header.Set("Content-type", "application/json")
 
-	if request.URL.Path != "/check-status" {
+	if request.URL.Path != endpoints.EndpointCheckStatus {
 		jwt, _ := jwtDomain.SignJwt(uuid.New(), kernel.Instance.JwtConfig())
 		request.Header.Set("Authorization", jwt)
 	}

@@ -20,7 +20,7 @@ import (
 )
 
 const (
-	relPath = "/login"
+	relPath = endpoints.EndpointLogin
 )
 
 var userRepositoryInstance domain.UserRepository
