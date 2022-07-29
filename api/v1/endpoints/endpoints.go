@@ -14,33 +14,26 @@ const (
 	EndpointLogin        = "/v1/login"
 )
 
-type Endpoints struct {
-	Endpoints []Endpoint
-}
+type Endpoints map[string]Endpoint
 
 type Endpoint struct {
-	HttpMethod   string
-	RelativePath string
-	Handler      gin.HandlerFunc
+	HttpMethod string
+	Handler    gin.HandlerFunc
 }
 
 func NewEndpoints() Endpoints {
-	endpoints := []Endpoint{
-		{
-			HttpMethod:   http.MethodGet,
-			RelativePath: EndpointCheckStatus,
-			Handler:      checkStatus.StatusGinHandlerFunc(),
+	return Endpoints{
+		EndpointCheckStatus: Endpoint{
+			HttpMethod: http.MethodGet,
+			Handler:    checkStatus.StatusGinHandlerFunc(),
 		},
-		{
-			HttpMethod:   http.MethodPost,
-			RelativePath: EndpointRegisterUser,
-			Handler:      registerUser.RegisterUserGinHandlerFunc(),
+		EndpointRegisterUser: Endpoint{
+			HttpMethod: http.MethodPost,
+			Handler:    registerUser.RegisterUserGinHandlerFunc(),
 		},
-		{
-			HttpMethod:   http.MethodPost,
-			RelativePath: EndpointLogin,
-			Handler:      loginUser.LoginUserGinHandlerFunc(),
+		EndpointLogin: Endpoint{
+			HttpMethod: http.MethodPost,
+			Handler:    loginUser.LoginUserGinHandlerFunc(),
 		},
 	}
-	return Endpoints{Endpoints: endpoints}
 }

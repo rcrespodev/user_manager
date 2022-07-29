@@ -30,13 +30,12 @@ func TestLoginUserGinHandlerFunc(t *testing.T) {
 
 	tableUsersSetup()
 
-	mockGinSrv := integration.NewTestServerHttpGin(&endpoints.Endpoints{Endpoints: []endpoints.Endpoint{
-		{
-			HttpMethod:   http.MethodPost,
-			RelativePath: relPath,
-			Handler:      loginUser.LoginUserGinHandlerFunc(),
+	mockGinSrv := integration.NewTestServerHttpGin(endpoints.Endpoints{
+		relPath: endpoints.Endpoint{
+			HttpMethod: http.MethodPost,
+			Handler:    loginUser.LoginUserGinHandlerFunc(),
 		},
-	}})
+	})
 
 	type args struct {
 		aliasOrEmail string

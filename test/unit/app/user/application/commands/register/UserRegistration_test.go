@@ -149,7 +149,7 @@ func TestUserRegistration(t *testing.T) {
 			retLog := domain.NewReturnLog(cmd.Uuid(), messageRepository, "user")
 			go handler.Handle(*cmd, retLog, done)
 
-			println(<-done)
+			<-done
 
 			// ReturnLog check
 			require.EqualValues(t, tt.want.status, retLog.Status())

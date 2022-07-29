@@ -32,13 +32,12 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 
 	tableUsersSetup()
 
-	mockGinSrv := integration.NewTestServerHttpGin(&endpoints.Endpoints{Endpoints: []endpoints.Endpoint{
-		{
-			HttpMethod:   http.MethodPost,
-			RelativePath: registerUserRelPath,
-			Handler:      registerUser.RegisterUserGinHandlerFunc(),
+	mockGinSrv := integration.NewTestServerHttpGin(endpoints.Endpoints{
+		registerUserRelPath: endpoints.Endpoint{
+			HttpMethod: http.MethodPost,
+			Handler:    registerUser.RegisterUserGinHandlerFunc(),
 		},
-	}})
+	})
 
 	type args struct {
 		uuid       string

@@ -31,9 +31,10 @@ func newServer(host, port string) *server {
 }
 
 func (s *server) run() error {
-	routes := apiEndpoints.NewEndpoints()
-	for _, route := range routes.Endpoints {
-		s.engine.Handle(route.HttpMethod, route.RelativePath, route.Handler)
+	endPoints := apiEndpoints.NewEndpoints()
+
+	for path, endpointData := range endPoints {
+		s.engine.Handle(endpointData.HttpMethod, path, endpointData.Handler)
 	}
 
 	log.Printf("Server running on %v", s.httpAddress)

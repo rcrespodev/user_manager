@@ -16,21 +16,21 @@ import (
 )
 
 type TestServerHttpGin struct {
-	engine *gin.Engine
-	routes *endpoints.Endpoints
+	engine    *gin.Engine
+	endpoints endpoints.Endpoints
 }
 
-func NewTestServerHttpGin(endPoints *endpoints.Endpoints) *TestServerHttpGin {
+func NewTestServerHttpGin(endPointsMap endpoints.Endpoints) *TestServerHttpGin {
 	engine := gin.Default()
 	engine.Use(jwtAuth.ValidateJwt()) //Jwt Auth
 
-	for _, route := range endPoints.Endpoints {
-		engine.Handle(route.HttpMethod, route.RelativePath, route.Handler)
+	for path, endpointData := range endPointsMap {
+		engine.Handle(endpointData.HttpMethod, path, endpointData.Handler)
 	}
 
 	return &TestServerHttpGin{
-		engine: engine,
-		routes: endPoints,
+		engine:    engine,
+		endpoints: endPointsMap,
 	}
 }
 
@@ -48,12 +48,11 @@ type Response struct {
 func (t TestServerHttpGin) DoRequest(cmd DoRequestCommand) Response {
 	var method string
 	var path string
-	for _, route := range t.routes.Endpoints {
-		if route.RelativePath == cmd.RelativePath {
-			method = route.HttpMethod
-			path = route.RelativePath
-			break
-		}
+
+	endpointData, ok := t.endpoints[cmd.RelativePath]
+	if ok {
+		method = endpointData.HttpMethod
+		path = cmd.RelativePath
 	}
 
 	request, err := http.NewRequest(method, fmt.Sprintf("http://0.0.0.0:8080%v", path), bytes.NewReader(cmd.BodyRequest))

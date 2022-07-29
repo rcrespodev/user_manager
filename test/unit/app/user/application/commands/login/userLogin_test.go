@@ -222,7 +222,7 @@ func TestUserLogin(t *testing.T) {
 
 			done := make(chan bool)
 			go cmdHandler.Handle(*cmd, retLog, done)
-			println(<-done)
+			<-done
 
 			// ReturnLog check
 			require.EqualValues(t, tt.want.status, retLog.Status())

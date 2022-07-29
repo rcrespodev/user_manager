@@ -39,14 +39,18 @@ func TestCheckStatusGinHandlerFunc(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			testServer := integration.NewTestServerHttpGin(&endpoints.Endpoints{
-				Endpoints: []endpoints.Endpoint{
-					{
-						HttpMethod:   http.MethodGet,
-						RelativePath: endpoints.EndpointCheckStatus,
-						Handler:      checkStatus.StatusGinHandlerFunc(),
-					},
+			testServer := integration.NewTestServerHttpGin(endpoints.Endpoints{
+				endpoints.EndpointCheckStatus: endpoints.Endpoint{
+					HttpMethod: http.MethodGet,
+					Handler:    checkStatus.StatusGinHandlerFunc(),
 				},
+				//Endpoints: []endpoints.Endpoint{
+				//	{
+				//		HttpMethod:   http.MethodGet,
+				//		RelativePath: endpoints.EndpointCheckStatus,
+				//		Handler:      checkStatus.StatusGinHandlerFunc(),
+				//	},
+
 			})
 			response := testServer.DoRequest(integration.DoRequestCommand{
 				BodyRequest:  nil,
