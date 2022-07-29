@@ -325,7 +325,7 @@ func TestNewUser(t *testing.T) {
 		},
 		// special characters validations
 		{
-			name: "bad request - Invalid alias (Special chars)",
+			name: "bad request - Invalid alias (Special chars - sql injection)",
 			args: &args{
 				uuid:       "123e4567-e89b-12d3-a456-426614174000",
 				alias:      "OR 5=5",
@@ -344,6 +344,33 @@ func TestNewUser(t *testing.T) {
 					MessagePkg:      "user",
 					Variables:       message.Variables{"alias", "="},
 					Text:            "attribute alias can´t contain special characters (=)",
+					Time:            time.Time{},
+					ClientErrorType: message.ClientErrorBadRequest,
+				},
+				successMessage: nil,
+				userData:       nil,
+			},
+		},
+		{
+			name: "bad request - Invalid email (Special chars - sql injection)",
+			args: &args{
+				uuid:       "123e4567-e89b-12d3-a456-426614174000",
+				alias:      "martin_fowler",
+				name:       "martin",
+				secondName: "fowler",
+				email:      "OR 5=5",
+				password:   "Linux648$",
+			},
+			want: &want{
+				status:         valueObjects.Error,
+				httpCodeReturn: 400,
+				error:          nil,
+				errorMessage: &message.MessageData{
+					ObjectId:        "martin_fowler",
+					MessageId:       004,
+					MessagePkg:      "user",
+					Variables:       message.Variables{"OR 5=5", "email"},
+					Text:            "value OR 5=5 is invalid as email attribute",
 					Time:            time.Time{},
 					ClientErrorType: message.ClientErrorBadRequest,
 				},
