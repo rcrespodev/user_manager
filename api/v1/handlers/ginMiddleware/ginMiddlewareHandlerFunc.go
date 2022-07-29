@@ -32,7 +32,7 @@ func MiddlewareHandlerFunc() gin.HandlerFunc {
 
 		// JWT validation
 		tokenString := ctx.GetHeader("Authorization")
-		if err := jwtDomain.ParseJwt(tokenString, kernel.Instance.JwtConfig()); err != nil {
+		if err := jwtDomain.IsValidJwt(tokenString, kernel.Instance.JwtConfig()); err != nil {
 			ctx.JSON(401, nil)
 			ctx.AbortWithStatus(http.StatusUnauthorized)
 			return

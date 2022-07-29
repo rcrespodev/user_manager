@@ -5,7 +5,7 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-func ParseJwt(tokenString string, config *JwtConfig) error {
+func IsValidJwt(tokenString string, config *JwtConfig) error {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
@@ -18,7 +18,7 @@ func ParseJwt(tokenString string, config *JwtConfig) error {
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
-	if !ok && !token.Valid {
+	if !ok || !token.Valid {
 		return err
 	}
 

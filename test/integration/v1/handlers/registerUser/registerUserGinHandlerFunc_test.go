@@ -165,7 +165,7 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 			case 200:
 				// Token validation
 				require.NotNil(t, response.Header.Get("Token"))
-				err := domain2.ParseJwt(response.Header.Get("Token"), kernel.Instance.JwtConfig())
+				err := domain2.IsValidJwt(response.Header.Get("Token"), kernel.Instance.JwtConfig())
 				require.NoError(t, err)
 
 				// Database validation

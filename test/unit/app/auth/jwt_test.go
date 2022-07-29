@@ -56,7 +56,7 @@ func TestJwt(t *testing.T) {
 			if tt.want.err != nil {
 				tokenString = exampleJwt
 			}
-			err = domain.ParseJwt(tokenString, jwtConfig)
+			err = domain.IsValidJwt(tokenString, jwtConfig)
 			require.EqualValues(t, tt.want.err, err)
 		})
 	}
