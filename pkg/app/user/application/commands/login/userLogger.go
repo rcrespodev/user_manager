@@ -5,18 +5,23 @@ import (
 	"github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	returnLog "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
+	"time"
 )
 
 type UserLogger struct {
-	repository domain.UserRepository
-	userSchema *domain.UserSchema
-	log        *returnLog.ReturnLog
-	password   *domain.UserPassword
-	user       *domain.User
+	userRepository        domain.UserRepository
+	userSessionRepository domain.UserSessionRepository
+	userSchema            *domain.UserSchema
+	log                   *returnLog.ReturnLog
+	password              *domain.UserPassword
+	user                  *domain.User
 }
 
-func NewUserLogger(repository domain.UserRepository) *UserLogger {
-	return &UserLogger{repository: repository}
+func NewUserLogger(repository domain.UserRepository, sessionRepository domain.UserSessionRepository) *UserLogger {
+	return &UserLogger{
+		userRepository:        repository,
+		userSessionRepository: sessionRepository,
+	}
 }
 
 func (u *UserLogger) Exec(cmd *LoginUserCommand, log *returnLog.ReturnLog) {
@@ -55,7 +60,7 @@ func (u *UserLogger) Exec(cmd *LoginUserCommand, log *returnLog.ReturnLog) {
 		return
 	}
 
-	userFinder := userFinderPkg.NewUserFinder(u.repository)
+	userFinder := userFinderPkg.NewUserFinder(u.userRepository)
 	u.userSchema = userFinder.Exec([]domain.FindUserQuery{
 		{
 			Log: u.log,
@@ -82,6 +87,11 @@ func (u *UserLogger) Exec(cmd *LoginUserCommand, log *returnLog.ReturnLog) {
 	}
 
 	if u.user != nil {
+		u.startUserSession(log)
+		if log.Error() != nil {
+			return
+		}
+
 		log.LogSuccess(&message.NewMessageCommand{
 			MessageId: 0,
 			Variables: message.Variables{u.user.Alias().Alias()},
@@ -102,4 +112,25 @@ func (u UserLogger) getAliasQueryValue(alias *domain.UserAlias) string {
 		return alias.Alias()
 	}
 	return ""
+}
+
+func (u UserLogger) startUserSession(log *returnLog.ReturnLog) {
+	var lastLogoutOn time.Time
+
+	getUserSession := u.userSessionRepository.GetUserSession(u.user.Uuid().String())
+
+	if getUserSession != nil {
+		if getUserSession.IsLogged {
+			return
+		}
+		lastLogoutOn = getUserSession.LastLogoutOn
+	}
+
+	cmd := domain.UpdateUserSessionCommand{
+		UserUuid:     u.user.Uuid().String(),
+		IsLogged:     true,
+		LastLoginOn:  time.Now(),
+		LastLogoutOn: lastLogoutOn,
+	}
+	u.userSessionRepository.UpdateUserSession(cmd, log)
 }

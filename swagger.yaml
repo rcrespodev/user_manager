@@ -8,7 +8,7 @@ info:
 servers:
   - url: 'http://0.0.0.0:8080'
 paths:
-  /check-status:
+  /v1/check-status:
     description: Check the status of Http Application Server.
     get:
       responses:
@@ -44,7 +44,7 @@ paths:
         500:
           description: Internal error in Http Application server.
 
-  /register_user:
+  /v1/register_user:
     description: Register an new user in Application.
     post:
       requestBody:

@@ -4,7 +4,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/rcrespodev/user_manager/pkg/app/user/application/querys/userFinder"
 	"github.com/rcrespodev/user_manager/pkg/app/user/domain"
-	userRepository "github.com/rcrespodev/user_manager/pkg/app/user/repository"
+	"github.com/rcrespodev/user_manager/pkg/app/user/repository/userRepository"
 	domain2 "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/repository"
 	"github.com/stretchr/testify/require"

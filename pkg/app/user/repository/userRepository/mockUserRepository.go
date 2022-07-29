@@ -1,4 +1,4 @@
-package repository
+package userRepository
 
 import (
 	"github.com/rcrespodev/user_manager/pkg/app/user/domain"

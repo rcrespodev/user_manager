@@ -2,9 +2,10 @@ package login
 
 import (
 	"github.com/google/uuid"
-	login2 "github.com/rcrespodev/user_manager/pkg/app/user/application/commands/login"
+	login "github.com/rcrespodev/user_manager/pkg/app/user/application/commands/login"
 	userDomain "github.com/rcrespodev/user_manager/pkg/app/user/domain"
-	userRepository "github.com/rcrespodev/user_manager/pkg/app/user/repository"
+	"github.com/rcrespodev/user_manager/pkg/app/user/repository/userRepository"
+	"github.com/rcrespodev/user_manager/pkg/app/user/repository/userSessionRepository"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
@@ -56,12 +57,12 @@ func TestUserLogin(t *testing.T) {
 	}
 	tests := []struct {
 		name string
-		args login2.ClientArgs
+		args login.ClientArgs
 		want want
 	}{
 		{
 			name: "invalid user or email",
-			args: login2.ClientArgs{
+			args: login.ClientArgs{
 				AliasOrEmail: "test.test$",
 				Password:     "Linux638$01",
 			},
@@ -83,7 +84,7 @@ func TestUserLogin(t *testing.T) {
 		},
 		{
 			name: "invalid password",
-			args: login2.ClientArgs{
+			args: login.ClientArgs{
 				AliasOrEmail: "test@test.com",
 				Password:     "without_numbers_and_special_chars",
 			},
@@ -105,7 +106,7 @@ func TestUserLogin(t *testing.T) {
 		},
 		{
 			name: "user not exists",
-			args: login2.ClientArgs{
+			args: login.ClientArgs{
 				AliasOrEmail: "user_not_found@test.com",
 				Password:     "Linux638$01",
 			},
@@ -127,7 +128,7 @@ func TestUserLogin(t *testing.T) {
 		},
 		{
 			name: "user alias exists but password is incorrect",
-			args: login2.ClientArgs{
+			args: login.ClientArgs{
 				AliasOrEmail: "user_alias_exists",
 				Password:     "Linux638$01",
 			},
@@ -149,7 +150,7 @@ func TestUserLogin(t *testing.T) {
 		},
 		{
 			name: "user email exists but password is incorrect",
-			args: login2.ClientArgs{
+			args: login.ClientArgs{
 				AliasOrEmail: "email_exists@gmail.com",
 				Password:     "Linux638$01",
 			},
@@ -171,7 +172,7 @@ func TestUserLogin(t *testing.T) {
 		},
 		{
 			name: "correct login with user alias",
-			args: login2.ClientArgs{
+			args: login.ClientArgs{
 				AliasOrEmail: "user_alias_exists",
 				Password:     "Linux648$",
 			},
@@ -192,7 +193,7 @@ func TestUserLogin(t *testing.T) {
 		},
 		{
 			name: "correct login with user email",
-			args: login2.ClientArgs{
+			args: login.ClientArgs{
 				AliasOrEmail: "email_exists@gmail.com",
 				Password:     "Linux648$",
 			},
@@ -214,11 +215,12 @@ func TestUserLogin(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			userLoginCmd := login2.NewLoginUserCommand(tt.args)
+			mockUserSessionRepository := userSessionRepository.NewMockUserSessionRepository(userSessionRepository.MockData{})
+			userLoginCmd := login.NewLoginUserCommand(tt.args)
 			cmd := command.NewCommand(command.LoginUser, uuid.New(), userLoginCmd)
 			retLog := domain.NewReturnLog(cmd.Uuid(), messageRepository, "user")
-			userLogger := login2.NewUserLogger(mockUserRepository)
-			cmdHandler := login2.NewLoginUserCommandHandler(userLogger)
+			userLogger := login.NewUserLogger(mockUserRepository, mockUserSessionRepository)
+			cmdHandler := login.NewLoginUserCommandHandler(userLogger)
 
 			done := make(chan bool)
 			go cmdHandler.Handle(*cmd, retLog, done)
@@ -259,6 +261,18 @@ func TestUserLogin(t *testing.T) {
 				gotMessage.Time = tt.want.successMessage.Time
 				require.EqualValues(t, tt.want.successMessage, gotMessage)
 			}
+
+			// Check User Session persistence
+			userUuid := "123e4567-e89b-12d3-a456-426614174000"
+			switch retLog.Status() {
+			case valueObjects.Success:
+				userSession := mockUserSessionRepository.GetUserSession(userUuid)
+				require.NotNil(t, userSession)
+				require.True(t, userSession.IsLogged)
+			default:
+				userSession := mockUserSessionRepository.GetUserSession(userUuid)
+				require.Nil(t, userSession)
+			}
 		})
 	}
 }
@@ -266,7 +280,7 @@ func TestUserLogin(t *testing.T) {
 func setUserMockData(userRepository *userRepository.MockUserRepository) {
 	mockDataArgs := []userDomain.NewUserCommand{
 		{
-			Uuid:       uuid.New().String(),
+			Uuid:       "123e4567-e89b-12d3-a456-426614174000",
 			Alias:      "user_alias_exists",
 			Name:       "martin",
 			SecondName: "fowler",

@@ -13,8 +13,9 @@ func SignJwt(uuid uuid.UUID, config *JwtConfig) (string, error) {
 	key0 := config.claimsKey[0]
 	key1 := config.claimsKey[1]
 	token := jwt.NewWithClaims(config.signMethod, jwt.MapClaims{
-		key0: uuid.String(),
-		key1: time.Now().Unix(),
+		key0:  uuid.String(),
+		key1:  time.Now().Unix(),
+		"exp": time.Now().Add(config.expirationTime).Unix(),
 	})
 	tokenString, err := token.SignedString([]byte(config.secret))
 	if err != nil {

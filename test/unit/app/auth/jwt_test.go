@@ -14,8 +14,9 @@ const (
 
 func TestJwt(t *testing.T) {
 	type args struct {
-		uuid   uuid.UUID
-		secret string
+		uuid           uuid.UUID
+		secret         string
+		expirationTime string
 	}
 	type want struct {
 		err error
@@ -48,7 +49,7 @@ func TestJwt(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			jwtConfig := domain.NewJwtConfig(tt.args.secret)
+			jwtConfig := domain.NewJwtConfig(tt.args.secret, tt.args.expirationTime)
 			tokenString, err := domain.SignJwt(tt.args.uuid, jwtConfig)
 			require.Nil(t, err)
 

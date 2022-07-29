@@ -5,7 +5,8 @@ import (
 	"github.com/go-redis/redis/v8"
 	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/auth/domain"
 	"github.com/rcrespodev/user_manager/pkg/app/user/domain"
-	userRepository "github.com/rcrespodev/user_manager/pkg/app/user/repository"
+	"github.com/rcrespodev/user_manager/pkg/app/user/repository/userRepository"
+	"github.com/rcrespodev/user_manager/pkg/app/user/repository/userSessionRepository"
 	"github.com/rcrespodev/user_manager/pkg/kernel/config"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command/factory"
@@ -16,11 +17,12 @@ import (
 var Instance *Kernel
 
 type Kernel struct {
-	commandBus        *command.Bus
-	messageRepository message.MessageRepository
-	userRepository    domain.UserRepository
-	config            *config.Config
-	jwtConfig         *jwtDomain.JwtConfig
+	commandBus            *command.Bus
+	messageRepository     message.MessageRepository
+	userRepository        domain.UserRepository
+	userSessionRepository domain.UserSessionRepository
+	config                *config.Config
+	jwtConfig             *jwtDomain.JwtConfig
 }
 
 func NewPrdKernel(mySqlClient *sql.DB, redisClient *redis.Client) *Kernel {
@@ -31,11 +33,13 @@ func NewPrdKernel(mySqlClient *sql.DB, redisClient *redis.Client) *Kernel {
 	Instance = &Kernel{
 		config: config.Setup(),
 	}
-	Instance.jwtConfig = jwtDomain.NewJwtConfig(config.Conf.Jwt.Secret)
+	Instance.jwtConfig = jwtDomain.NewJwtConfig(config.Conf.Jwt.Secret, config.Conf.Jwt.ExpirationTime)
 	Instance.messageRepository = repository.NewRedisMessageRepository(redisClient)
+	Instance.userSessionRepository = userSessionRepository.NewRedisUserSessionRepository(redisClient)
 	Instance.userRepository = userRepository.NewMySqlUserRepository(mySqlClient)
 	Instance.commandBus = factory.NewCommandBusInstance(factory.NewCommandBusCommand{
-		UserRepository: Instance.userRepository,
+		UserRepository:        Instance.userRepository,
+		UserSessionRepository: Instance.userSessionRepository,
 	})
 	return Instance
 }
@@ -58,4 +62,8 @@ func (k Kernel) Config() *config.Config {
 
 func (k Kernel) JwtConfig() *jwtDomain.JwtConfig {
 	return k.jwtConfig
+}
+
+func (k Kernel) UserSessionRepository() domain.UserSessionRepository {
+	return k.userSessionRepository
 }

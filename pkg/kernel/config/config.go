@@ -24,7 +24,8 @@ type Config struct {
 		Port     string `envconfig:"default=3306"`
 	}
 	Jwt struct {
-		Secret string `envconfig:"default=my_secret"`
+		Secret         string `envconfig:"default=my_secret"`
+		ExpirationTime string `envconfig:"default=15"`
 	}
 }
 

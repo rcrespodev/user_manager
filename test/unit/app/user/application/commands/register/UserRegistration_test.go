@@ -4,7 +4,7 @@ import (
 	uuid "github.com/google/uuid"
 	register2 "github.com/rcrespodev/user_manager/pkg/app/user/application/commands/register"
 	userDomain "github.com/rcrespodev/user_manager/pkg/app/user/domain"
-	userRepository "github.com/rcrespodev/user_manager/pkg/app/user/repository"
+	"github.com/rcrespodev/user_manager/pkg/app/user/repository/userRepository"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"

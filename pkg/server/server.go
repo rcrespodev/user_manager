@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	apiEndpoints "github.com/rcrespodev/user_manager/api/v1/endpoints"
-	"github.com/rcrespodev/user_manager/api/v1/handlers/jwtAuth"
+	"github.com/rcrespodev/user_manager/api/v1/handlers/ginMiddleware"
 	kernel "github.com/rcrespodev/user_manager/pkg/kernel"
 	"log"
 )
@@ -26,7 +26,7 @@ func newServer(host, port string) *server {
 		engine:      gin.New(),
 		kernel:      kernel.NewPrdKernel(nil, nil),
 	}
-	Server.engine.Use(jwtAuth.ValidateJwt()) //Jwt Auth
+	Server.engine.Use(ginMiddleware.MiddlewareHandlerFunc())
 	return Server
 }
 
