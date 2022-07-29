@@ -13,6 +13,7 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"time"
 )
 
 type TestServerHttpGin struct {
@@ -63,7 +64,7 @@ func (t TestServerHttpGin) DoRequest(cmd DoRequestCommand) Response {
 	request.Header.Set("Content-type", "application/json")
 
 	if request.URL.Path != endpoints.EndpointCheckStatus {
-		jwt, _ := jwtDomain.SignJwt(uuid.New(), kernel.Instance.JwtConfig())
+		jwt, _ := jwtDomain.SignJwt(uuid.New(), time.Now(), kernel.Instance.JwtConfig())
 		request.Header.Set("Authorization", jwt)
 	}
 

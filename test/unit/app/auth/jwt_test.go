@@ -6,6 +6,7 @@ import (
 	"github.com/rcrespodev/user_manager/pkg/app/auth/domain"
 	"github.com/stretchr/testify/require"
 	"testing"
+	"time"
 )
 
 const (
@@ -50,7 +51,7 @@ func TestJwt(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			jwtConfig := domain.NewJwtConfig(tt.args.secret, tt.args.expirationTime)
-			tokenString, err := domain.SignJwt(tt.args.uuid, jwtConfig)
+			tokenString, err := domain.SignJwt(tt.args.uuid, time.Now(), jwtConfig)
 			require.Nil(t, err)
 
 			if tt.want.err != nil {

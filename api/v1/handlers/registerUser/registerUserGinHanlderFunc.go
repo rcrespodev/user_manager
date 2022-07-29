@@ -65,7 +65,7 @@ func RegisterUserGinHandlerFunc() gin.HandlerFunc {
 			response.Message = *log.Success().MessageData()
 		}
 
-		token, err := jwtDomain.SignJwt(cmdUuid, kernel.Instance.JwtConfig())
+		token, err := jwtDomain.SignJwt(cmdUuid, time.Now(), kernel.Instance.JwtConfig())
 		if err != nil {
 			ctx.JSON(401, nil)
 			return

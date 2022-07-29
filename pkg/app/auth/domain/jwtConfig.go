@@ -24,7 +24,7 @@ func NewJwtConfig(secret, expirationTime string) *JwtConfig {
 
 	return &JwtConfig{
 		secret:         secret,
-		claimsKey:      [2]string{"uuid", "time"},
+		claimsKey:      [2]string{"uuid", "loggedOn"},
 		signMethod:     jwt.SigningMethodHS256,
 		expirationTime: time.Minute * tokenMinutesDuration,
 	}
