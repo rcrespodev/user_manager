@@ -17,23 +17,27 @@ const (
 type Endpoints map[string]Endpoint
 
 type Endpoint struct {
-	HttpMethod string
-	Handler    gin.HandlerFunc
+	HttpMethod     string
+	Handler        gin.HandlerFunc
+	AuthValidation bool
 }
 
 func NewEndpoints() Endpoints {
 	return Endpoints{
 		EndpointCheckStatus: Endpoint{
-			HttpMethod: http.MethodGet,
-			Handler:    checkStatus.StatusGinHandlerFunc(),
+			HttpMethod:     http.MethodGet,
+			Handler:        checkStatus.StatusGinHandlerFunc(),
+			AuthValidation: false,
 		},
 		EndpointRegisterUser: Endpoint{
-			HttpMethod: http.MethodPost,
-			Handler:    registerUser.RegisterUserGinHandlerFunc(),
+			HttpMethod:     http.MethodPost,
+			Handler:        registerUser.RegisterUserGinHandlerFunc(),
+			AuthValidation: false,
 		},
 		EndpointLogin: Endpoint{
-			HttpMethod: http.MethodPost,
-			Handler:    loginUser.LoginUserGinHandlerFunc(),
+			HttpMethod:     http.MethodPost,
+			Handler:        loginUser.LoginUserGinHandlerFunc(),
+			AuthValidation: false,
 		},
 	}
 }
