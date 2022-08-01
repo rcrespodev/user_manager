@@ -7,4 +7,6 @@ const (
 	LoginUser
 	UpdateUser
 	DeleteUser
+	TokenValidation
+	UserLogged
 )
