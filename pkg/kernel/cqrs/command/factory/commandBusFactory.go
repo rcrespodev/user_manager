@@ -8,8 +8,7 @@ import (
 )
 
 type NewCommandBusCommand struct {
-	UserRepository        domain.UserRepository
-	UserSessionRepository domain.UserSessionRepository
+	UserRepository domain.UserRepository
 }
 
 func NewCommandBusInstance(busCommand NewCommandBusCommand) *command.Bus {
@@ -17,7 +16,7 @@ func NewCommandBusInstance(busCommand NewCommandBusCommand) *command.Bus {
 		register.NewUserRegistration(busCommand.UserRepository))
 
 	loginUserCommandHandler := login.NewLoginUserCommandHandler(
-		login.NewUserLogger(busCommand.UserRepository, busCommand.UserSessionRepository))
+		login.NewUserLogger(busCommand.UserRepository))
 
 	return command.NewBus(command.HandlersMap{
 		command.RegisterUser: registerUserCommandHandler,

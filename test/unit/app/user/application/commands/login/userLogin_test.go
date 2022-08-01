@@ -5,7 +5,6 @@ import (
 	login "github.com/rcrespodev/user_manager/pkg/app/user/application/commands/login"
 	userDomain "github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	"github.com/rcrespodev/user_manager/pkg/app/user/repository/userRepository"
-	"github.com/rcrespodev/user_manager/pkg/app/user/repository/userSessionRepository"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
@@ -215,11 +214,11 @@ func TestUserLogin(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mockUserSessionRepository := userSessionRepository.NewMockUserSessionRepository(userSessionRepository.MockData{})
+			//mockUserSessionRepository := userSessionRepository.NewMockUserSessionRepository(userSessionRepository.MockData{})
 			userLoginCmd := login.NewLoginUserCommand(tt.args)
 			cmd := command.NewCommand(command.LoginUser, uuid.New(), userLoginCmd)
 			retLog := domain.NewReturnLog(cmd.Uuid(), messageRepository, "user")
-			userLogger := login.NewUserLogger(mockUserRepository, mockUserSessionRepository)
+			userLogger := login.NewUserLogger(mockUserRepository)
 			cmdHandler := login.NewLoginUserCommandHandler(userLogger)
 
 			done := make(chan bool)
@@ -260,18 +259,6 @@ func TestUserLogin(t *testing.T) {
 				gotMessage := retLog.Success().MessageData()
 				gotMessage.Time = tt.want.successMessage.Time
 				require.EqualValues(t, tt.want.successMessage, gotMessage)
-			}
-
-			// Check User Session persistence
-			userUuid := "123e4567-e89b-12d3-a456-426614174000"
-			switch retLog.Status() {
-			case valueObjects.Success:
-				userSession := mockUserSessionRepository.GetUserSession(userUuid)
-				require.NotNil(t, userSession)
-				require.True(t, userSession.IsLogged)
-			default:
-				userSession := mockUserSessionRepository.GetUserSession(userUuid)
-				require.Nil(t, userSession)
 			}
 		})
 	}

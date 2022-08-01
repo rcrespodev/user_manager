@@ -138,13 +138,6 @@ func TestLoginUserGinHandlerFunc(t *testing.T) {
 			gotRespBody.Message.Time = time.Time{}
 
 			require.EqualValues(t, tt.want.response, gotRespBody)
-
-			if response.HttpCode == http.StatusOK {
-				userUuid := "123e4567-e89b-12d3-a456-426614174000"
-				userSession := kernel.Instance.UserSessionRepository().GetUserSession(userUuid)
-				require.NotNil(t, userSession)
-				require.True(t, userSession.IsLogged)
-			}
 		})
 	}
 }
