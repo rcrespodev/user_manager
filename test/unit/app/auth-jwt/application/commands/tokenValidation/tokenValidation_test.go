@@ -4,6 +4,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/rcrespodev/user_manager/pkg/app/auth-jwt/application/commands/tokenValidation"
 	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/auth-jwt/domain"
+	jwtRepository "github.com/rcrespodev/user_manager/pkg/app/auth-jwt/repository"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
@@ -21,6 +22,19 @@ var mockRepository = repository.NewMockMessageRepository([]repository.MockData{
 		Pkg:             message.AuthorizationPkg,
 		Text:            "Unauthorized",
 		ClientErrorType: message.ClientErrorUnauthorized,
+	},
+})
+
+var mockJwtRepository = jwtRepository.NewMockJwtRepository(jwtRepository.MockData{
+	"123e4567-e89b-12d3-a456-426614174000": &jwtDomain.JwtSchema{
+		Uuid:    "123e4567-e89b-12d3-a456-426614174000",
+		IsValid: true,
+		Token:   "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NTkzODQxOTAsImtleSI6IjEyM2U0NTY3LWU4OWItMTJkMy1hNDU2LTQyNjYxNDE3NDAwMCJ9.sqCpS8ISEnmvVCMQMNkWvmb7OAhM8HIuXE6L4rl2X2uvn5wXbfRD79FmjaST3nFekSeNtr9SwicVxU9VRnylKK5xexDHaoPoBZ4h7W6KYsYcJGfF-SN2dKAUGkwHUExFbkwGEgny9dFZKXMArBSLkzG8wWx5QSn38j3a4D1fvBKvLazTAEhP3SAfm2idlgnSGV3BvwATsIDlO_WCpToBgTre9pumKJXHGm43Tay2Zk6vYLyR1-2J2he9jkZec6pS4Dxe52PuVQnGiC6RFv6ttqEP42H9t_dTzfxcz_cwbj0fd5zURK_5F5zTI0aZfd7siACwleB7qAF9jgw6-vyh0kad25S0q5n2NGOK5YULfCbMGg3zDHOKhKEKuWu5aqKEVSUtTowZCl-LGsuU1a3ngKEBvEpCyS7lDRRA8zOCMIWTYbaJCYGsSWdb7d4f0N_jzHTj_8HCPwl8AxBtpCUYFFKEKthVRUz5sh3YGfTOVJVvXoFYUdU-jN4CpDrQiPbSEcFa8NzVdylch5WT06f_KMzJ-_yKW_DPG_6zYKJmZM5l7VtnPzgXRyVXQfOlsE0WWdigZv_2nE7WyhlRwHtrZknqLT9Dr5LA3nn1nN4EEAk90R2pKFfXOlIwbNaO4bufbEgRN6TkQB0eiu80-4didZtJEJMJVRpz1Qfn7fwpcsM",
+	},
+	"123e4567-e89b-12d3-a456-426614174001": &jwtDomain.JwtSchema{
+		Uuid:    "123e4567-e89b-12d3-a456-426614174001",
+		IsValid: false,
+		Token:   "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NTkzODcyNjIsImtleSI6IjEyM2U0NTY3LWU4OWItMTJkMy1hNDU2LTQyNjYxNDE3NDAwMSJ9.KGzLvI6GZg261KDLmWLpNf75d-7i_i1upvuvW6-_knqzRhvItcNR9nAyFO4AXM9Q2CQWnreaEqhrX5R49Q6vzIS19ykt5qpf7FgBrRVQQ5M7f05JkrqzvHBMe0yjGKPA3sdED1stLiwScBn8xhK7dEU7sj6WrYL7HxdNHyymZ5n7Neywpzp_bS_ssWYtAcxQq7waBR7V_eb633VgcOWVl0VpKQ4YfhqKN8i5YSUSASQUAF86MQ-f28dCuKYM4EVLenguDjl8-50mwBzwYKvFMRID0ys-EFlcm2jXvF3J6_QgoFeElGUIL7Hw4gCDwXrcmhRbJv1jN13O1zmQdL8cL5YVnoJBKLLggET2J8WmC5p3C0ILDQ2P60FcTtqLYV0uGOiGHthXvvq6MzXvcBebEGceV3XZvzouWTeowWvIrjZk-_ObfLxu5MctN7NFm1pKybjnwHVH_ToF3sf0pQoGEDQ-lRY0iOKIAlFBhYTpkFfs4VaNiRnR0GnVPog09JU9jFJN6YfCY5jjd21DOamS3hGHIts1vvJtRdGnUxCwFsnoaSgqnv76MMo9O9lm_G1CaBohdmz9uF-NsBf3N36zYNDuyqKxnaXI2_4fuLDnJ4qQ-6-y8gcFn9UQN3kX2nsekeqxgPHooaKgLNuvIUQRew-7oGp5acl9_eTiMMD38XY",
 	},
 })
 
@@ -57,6 +71,26 @@ func TestTokenValidation(t *testing.T) {
 				error:          nil,
 				errorMessage:   nil,
 				successMessage: nil,
+			},
+		},
+		{
+			name: "correct token but the token was invalidated",
+			args: args{
+				uuid:           "123e4567-e89b-12d3-a456-426614174001",
+				token:          "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NTkzODcyNjIsImtleSI6IjEyM2U0NTY3LWU4OWItMTJkMy1hNDU2LTQyNjYxNDE3NDAwMSJ9.KGzLvI6GZg261KDLmWLpNf75d-7i_i1upvuvW6-_knqzRhvItcNR9nAyFO4AXM9Q2CQWnreaEqhrX5R49Q6vzIS19ykt5qpf7FgBrRVQQ5M7f05JkrqzvHBMe0yjGKPA3sdED1stLiwScBn8xhK7dEU7sj6WrYL7HxdNHyymZ5n7Neywpzp_bS_ssWYtAcxQq7waBR7V_eb633VgcOWVl0VpKQ4YfhqKN8i5YSUSASQUAF86MQ-f28dCuKYM4EVLenguDjl8-50mwBzwYKvFMRID0ys-EFlcm2jXvF3J6_QgoFeElGUIL7Hw4gCDwXrcmhRbJv1jN13O1zmQdL8cL5YVnoJBKLLggET2J8WmC5p3C0ILDQ2P60FcTtqLYV0uGOiGHthXvvq6MzXvcBebEGceV3XZvzouWTeowWvIrjZk-_ObfLxu5MctN7NFm1pKybjnwHVH_ToF3sf0pQoGEDQ-lRY0iOKIAlFBhYTpkFfs4VaNiRnR0GnVPog09JU9jFJN6YfCY5jjd21DOamS3hGHIts1vvJtRdGnUxCwFsnoaSgqnv76MMo9O9lm_G1CaBohdmz9uF-NsBf3N36zYNDuyqKxnaXI2_4fuLDnJ4qQ-6-y8gcFn9UQN3kX2nsekeqxgPHooaKgLNuvIUQRew-7oGp5acl9_eTiMMD38XY",
+				publicKeyPath:  "id_rsa.pub",
+				privateKeyPath: "id_rsa",
+			},
+			want: want{
+				status:         valueObjects.Error,
+				httpCodeReturn: 401,
+				errorMessage: &message.MessageData{
+					ObjectId:        "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NTkzODcyNjIsImtleSI6IjEyM2U0NTY3LWU4OWItMTJkMy1hNDU2LTQyNjYxNDE3NDAwMSJ9.KGzLvI6GZg261KDLmWLpNf75d-7i_i1upvuvW6-_knqzRhvItcNR9nAyFO4AXM9Q2CQWnreaEqhrX5R49Q6vzIS19ykt5qpf7FgBrRVQQ5M7f05JkrqzvHBMe0yjGKPA3sdED1stLiwScBn8xhK7dEU7sj6WrYL7HxdNHyymZ5n7Neywpzp_bS_ssWYtAcxQq7waBR7V_eb633VgcOWVl0VpKQ4YfhqKN8i5YSUSASQUAF86MQ-f28dCuKYM4EVLenguDjl8-50mwBzwYKvFMRID0ys-EFlcm2jXvF3J6_QgoFeElGUIL7Hw4gCDwXrcmhRbJv1jN13O1zmQdL8cL5YVnoJBKLLggET2J8WmC5p3C0ILDQ2P60FcTtqLYV0uGOiGHthXvvq6MzXvcBebEGceV3XZvzouWTeowWvIrjZk-_ObfLxu5MctN7NFm1pKybjnwHVH_ToF3sf0pQoGEDQ-lRY0iOKIAlFBhYTpkFfs4VaNiRnR0GnVPog09JU9jFJN6YfCY5jjd21DOamS3hGHIts1vvJtRdGnUxCwFsnoaSgqnv76MMo9O9lm_G1CaBohdmz9uF-NsBf3N36zYNDuyqKxnaXI2_4fuLDnJ4qQ-6-y8gcFn9UQN3kX2nsekeqxgPHooaKgLNuvIUQRew-7oGp5acl9_eTiMMD38XY",
+					MessageId:       0,
+					MessagePkg:      message.AuthorizationPkg,
+					ClientErrorType: message.ClientErrorUnauthorized,
+					Text:            "Unauthorized",
+				},
 			},
 		},
 		{
@@ -115,7 +149,7 @@ func TestTokenValidation(t *testing.T) {
 			jwt := jwtDomain.NewJwt(publicKey, privateKey, 10)
 			require.NoError(t, err)
 
-			tokenValidator := tokenValidation.NewTokenValidator(jwt)
+			tokenValidator := tokenValidation.NewTokenValidator(jwt, mockJwtRepository)
 			handler := tokenValidation.NewCommandHandler(tokenValidator)
 
 			//token, err := jwt.CreateNewToken(cmdUuid.String())

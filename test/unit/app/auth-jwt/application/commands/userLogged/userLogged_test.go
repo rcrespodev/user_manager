@@ -4,7 +4,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/rcrespodev/user_manager/pkg/app/auth-jwt/application/commands/userLogged"
 	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/auth-jwt/domain"
-	repository2 "github.com/rcrespodev/user_manager/pkg/app/auth-jwt/repository"
+	jwtRepository "github.com/rcrespodev/user_manager/pkg/app/auth-jwt/repository"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
@@ -25,7 +25,7 @@ var mockMessageRepository = repository.NewMockMessageRepository([]repository.Moc
 	},
 })
 
-var mockJwtRepository = repository2.NewMockJwtRepository(repository2.MockData{})
+var mockJwtRepository = jwtRepository.NewMockJwtRepository(jwtRepository.MockData{})
 
 func TestUserLogged(t *testing.T) {
 	type args struct {
@@ -128,7 +128,7 @@ func TestUserLogged(t *testing.T) {
 			}
 
 			// repository check
-			token := mockJwtRepository.FindByUuid(jwtDomain.FindByUuidQuery{Uuid: cmdUuid})
+			token := mockJwtRepository.FindByUuid(jwtDomain.FindByUuidQuery{Uuid: cmdUuid.String()})
 			switch tt.want.token {
 			case nil:
 				require.Nil(t, token)
