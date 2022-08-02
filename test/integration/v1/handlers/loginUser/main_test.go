@@ -1,13 +1,19 @@
 package loginUser
 
 import (
+	"github.com/joho/godotenv"
 	"github.com/rcrespodev/user_manager/pkg/kernel"
 	"github.com/rcrespodev/user_manager/test/integration"
+	"log"
 	"os"
 	"testing"
 )
 
 func TestMain(m *testing.M) {
+	if err := godotenv.Load("./../.env"); err != nil {
+		log.Fatal(err)
+	}
+
 	mySqlPool := integration.NewDockerTestMySql()
 	redisPool := integration.NewDockerTestRedis()
 

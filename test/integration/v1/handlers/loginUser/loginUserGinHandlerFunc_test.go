@@ -130,6 +130,7 @@ func TestLoginUserGinHandlerFunc(t *testing.T) {
 			})
 
 			require.EqualValues(t, tt.want.httpStatusCode, response.HttpCode)
+			require.NotNil(t, response.Header.Get("Token"))
 
 			var gotRespBody *api.CommandResponse
 			if err := json.Unmarshal(response.Body, &gotRespBody); err != nil {

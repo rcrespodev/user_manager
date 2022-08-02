@@ -4,16 +4,13 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"github.com/rcrespodev/user_manager/api/v1/endpoints"
-	"github.com/rcrespodev/user_manager/api/v1/handlers/jwtAuth"
-	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/auth/domain"
+	"github.com/rcrespodev/user_manager/api/v1/handlers/ginMiddleware"
 	"github.com/rcrespodev/user_manager/pkg/kernel"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/http/httptest"
-	"time"
 )
 
 type TestServerHttpGin struct {
@@ -23,7 +20,7 @@ type TestServerHttpGin struct {
 
 func NewTestServerHttpGin(endPointsMap endpoints.Endpoints) *TestServerHttpGin {
 	engine := gin.Default()
-	engine.Use(jwtAuth.ValidateJwt()) //Jwt Auth
+	engine.Use(ginMiddleware.MiddlewareHandlerFunc()) //Prd middleware
 
 	for path, endpointData := range endPointsMap {
 		engine.Handle(endpointData.HttpMethod, path, endpointData.Handler)
@@ -38,6 +35,7 @@ func NewTestServerHttpGin(endPointsMap endpoints.Endpoints) *TestServerHttpGin {
 type DoRequestCommand struct {
 	BodyRequest  []byte
 	RelativePath string
+	Uuid         string
 }
 
 type Response struct {
@@ -63,9 +61,12 @@ func (t TestServerHttpGin) DoRequest(cmd DoRequestCommand) Response {
 
 	request.Header.Set("Content-type", "application/json")
 
-	if request.URL.Path != endpoints.EndpointCheckStatus {
-		jwt, _ := jwtDomain.SignJwt(uuid.New(), time.Now(), kernel.Instance.JwtConfig())
-		request.Header.Set("Authorization", jwt)
+	if endpointData.AuthValidation {
+		token, err := kernel.Instance.Jwt().CreateNewToken(cmd.Uuid)
+		if err != nil {
+			log.Fatal(err)
+		}
+		request.Header.Set("Authorization", token)
 	}
 
 	writer := httptest.NewRecorder()

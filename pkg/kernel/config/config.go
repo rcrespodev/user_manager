@@ -24,7 +24,10 @@ type Config struct {
 		Port     string `envconfig:"default=3306"`
 	}
 	Jwt struct {
-		Secret         string `envconfig:"default=my_secret"`
+		Key struct {
+			Private string `envconfig:"default=/app/cert/id_rsa"`
+			Public  string `envconfig:"default=/app/cert/id_rsa.pub"`
+		}
 		ExpirationTime string `envconfig:"default=15"`
 	}
 }

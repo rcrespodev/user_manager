@@ -3,7 +3,7 @@ package kernel
 import (
 	"database/sql"
 	"github.com/go-redis/redis/v8"
-	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/auth/domain"
+	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/auth-jwt/domain"
 	"github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	"github.com/rcrespodev/user_manager/pkg/app/user/repository/userRepository"
 	"github.com/rcrespodev/user_manager/pkg/kernel/config"
@@ -11,6 +11,10 @@ import (
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command/factory"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/repository"
+	"log"
+	"os"
+	"strconv"
+	"time"
 )
 
 var Instance *Kernel
@@ -20,7 +24,7 @@ type Kernel struct {
 	messageRepository message.MessageRepository
 	userRepository    domain.UserRepository
 	config            *config.Config
-	jwtConfig         *jwtDomain.JwtConfig
+	jwt               *jwtDomain.Jwt
 }
 
 func NewPrdKernel(mySqlClient *sql.DB, redisClient *redis.Client) *Kernel {
@@ -31,7 +35,21 @@ func NewPrdKernel(mySqlClient *sql.DB, redisClient *redis.Client) *Kernel {
 	Instance = &Kernel{
 		config: config.Setup(),
 	}
-	Instance.jwtConfig = jwtDomain.NewJwtConfig(config.Conf.Jwt.Secret, config.Conf.Jwt.ExpirationTime)
+	certPublicKey, err := os.ReadFile(config.Conf.Jwt.Key.Public)
+	if err != nil {
+		log.Fatal(err)
+	}
+	certPrivateKey, err := os.ReadFile(config.Conf.Jwt.Key.Private)
+	if err != nil {
+		log.Fatal(err)
+	}
+	expirationTime := config.Conf.Jwt.ExpirationTime
+	expirationTimeInt, err := strconv.Atoi(expirationTime)
+	if err != nil {
+		log.Fatal(err)
+	}
+	Instance.jwt = jwtDomain.NewJwt(certPublicKey, certPrivateKey, time.Duration(expirationTimeInt))
+
 	Instance.messageRepository = repository.NewRedisMessageRepository(redisClient)
 	Instance.userRepository = userRepository.NewMySqlUserRepository(mySqlClient)
 	Instance.commandBus = factory.NewCommandBusInstance(factory.NewCommandBusCommand{
@@ -56,6 +74,6 @@ func (k *Kernel) Config() *config.Config {
 	return k.config
 }
 
-func (k *Kernel) JwtConfig() *jwtDomain.JwtConfig {
-	return k.jwtConfig
+func (k *Kernel) Jwt() *jwtDomain.Jwt {
+	return k.jwt
 }

@@ -2,17 +2,22 @@ package checkStatus
 
 import (
 	"encoding/json"
+	"github.com/joho/godotenv"
 	"github.com/rcrespodev/user_manager/api"
 	"github.com/rcrespodev/user_manager/api/v1/endpoints"
 	"github.com/rcrespodev/user_manager/api/v1/handlers/checkStatus"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/test/integration"
+	"log"
 	"net/http"
 	"reflect"
 	"testing"
 )
 
 func TestCheckStatusGinHandlerFunc(t *testing.T) {
+	if err := godotenv.Load("./../.env"); err != nil {
+		log.Fatal(err)
+	}
 	type args struct {
 		path string
 	}

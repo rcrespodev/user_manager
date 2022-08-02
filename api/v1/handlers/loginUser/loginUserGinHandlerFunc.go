@@ -40,5 +40,7 @@ func LoginUserGinHandlerFunc() gin.HandlerFunc {
 			response.Message = *log.Success().MessageData()
 		}
 		ctx.JSON(int(log.HttpCode()), response)
+		ctx.Set("jwt_key", cmdUuid)
+		handlers.GinResponse(ctx)
 	}
 }

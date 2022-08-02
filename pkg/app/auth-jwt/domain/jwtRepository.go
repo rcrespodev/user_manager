@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"github.com/google/uuid"
 	returnLog "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 )
 
@@ -21,5 +20,5 @@ type UpdateCommand struct {
 }
 
 type FindByUuidQuery struct {
-	Uuid uuid.UUID
+	Uuid string
 }
