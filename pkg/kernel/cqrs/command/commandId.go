@@ -9,4 +9,5 @@ const (
 	DeleteUser
 	TokenValidation
 	UserLogged
+	UserLoggedOut
 )

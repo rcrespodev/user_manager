@@ -55,13 +55,19 @@ func TestReturnLogSrv(t *testing.T) {
 			Id:              005,
 			Pkg:             "testing",
 			Text:            "message 005, pkg testing with vars %v, %v, %v, %v.",
-			ClientErrorType: message.ClientErrorFordibben,
+			ClientErrorType: message.ClientErrorForbidden,
 		},
 		{
 			Id:              006,
 			Pkg:             "testing",
 			Text:            "message 006, pkg testing with vars %v, %v, %v, %v.",
 			ClientErrorType: message.ClientErrorNotFound,
+		},
+		{
+			Id:              0,
+			Pkg:             message.AuthorizationPkg,
+			Text:            "Unauthorized",
+			ClientErrorType: message.ClientErrorUnauthorized,
 		},
 		{
 			Id:   998,
@@ -75,7 +81,7 @@ func TestReturnLogSrv(t *testing.T) {
 		file  string
 	}
 	type wantCustomError struct {
-		clienteError *message.MessageData
+		clientError *message.MessageData
 		*internalError
 	}
 	type wantSuccess struct {
@@ -168,7 +174,7 @@ func TestReturnLogSrv(t *testing.T) {
 				status: valueObjects.Error,
 				error: &wantCustomError{
 					internalError: nil,
-					clienteError: &message.MessageData{
+					clientError: &message.MessageData{
 						ObjectId:        "reference",
 						MessageId:       001,
 						MessagePkg:      "testing",
@@ -203,7 +209,7 @@ func TestReturnLogSrv(t *testing.T) {
 						Error: fmt.Errorf("internal Error"),
 						file:  fmt.Sprintf("%v/test/unit/kernel/cqrs/returnLog/returnLog_test.go", homeProject),
 					},
-					clienteError: nil,
+					clientError: nil,
 				},
 				success:        &wantSuccess{message: nil},
 				httpCodeReturn: 500,
@@ -231,7 +237,7 @@ func TestReturnLogSrv(t *testing.T) {
 				status: valueObjects.Error,
 				error: &wantCustomError{
 					internalError: nil,
-					clienteError: &message.MessageData{
+					clientError: &message.MessageData{
 						ObjectId:        "reference error",
 						MessageId:       001,
 						MessagePkg:      "testing",
@@ -267,6 +273,33 @@ func TestReturnLogSrv(t *testing.T) {
 					Time:       time.Time{},
 				}},
 				httpCodeReturn: 200,
+			},
+		},
+		{
+			name: "Unauthorized",
+			args: &args{
+				defaultPkg: defaultPkg,
+				error: &domain.NewErrorCommand{
+					NewMessageCommand: &message.NewMessageCommand{
+						ObjectId:   "Unauthorized",
+						MessageId:  0,
+						MessagePkg: message.AuthorizationPkg,
+					},
+				},
+			},
+			want: &want{
+				status: valueObjects.Error,
+				error: &wantCustomError{
+					clientError: &message.MessageData{
+						ObjectId:        "Unauthorized",
+						MessageId:       0,
+						MessagePkg:      message.AuthorizationPkg,
+						Text:            "Unauthorized",
+						ClientErrorType: message.ClientErrorUnauthorized,
+					},
+				},
+				success:        &wantSuccess{message: nil},
+				httpCodeReturn: 401,
 			},
 		},
 		//{
@@ -312,7 +345,7 @@ func TestReturnLogSrv(t *testing.T) {
 				status: valueObjects.Error,
 				error: &wantCustomError{
 					internalError: nil,
-					clienteError: &message.MessageData{
+					clientError: &message.MessageData{
 						ObjectId:        "reference error",
 						MessageId:       003,
 						MessagePkg:      "testing",
@@ -343,7 +376,7 @@ func TestReturnLogSrv(t *testing.T) {
 				status: valueObjects.Error,
 				error: &wantCustomError{
 					internalError: nil,
-					clienteError: &message.MessageData{
+					clientError: &message.MessageData{
 						ObjectId:        "reference error",
 						MessageId:       004,
 						MessagePkg:      "testing",
@@ -374,13 +407,13 @@ func TestReturnLogSrv(t *testing.T) {
 				status: valueObjects.Error,
 				error: &wantCustomError{
 					internalError: nil,
-					clienteError: &message.MessageData{
+					clientError: &message.MessageData{
 						ObjectId:        "reference error",
 						MessageId:       005,
 						MessagePkg:      "testing",
 						Variables:       message.Variables{"var1", "var2", "var3", "var4"},
 						Text:            "message 005, pkg testing with vars var1, var2, var3, var4.",
-						ClientErrorType: message.ClientErrorFordibben,
+						ClientErrorType: message.ClientErrorForbidden,
 					},
 				},
 				success:        &wantSuccess{message: nil},
@@ -405,7 +438,7 @@ func TestReturnLogSrv(t *testing.T) {
 				status: valueObjects.Error,
 				error: &wantCustomError{
 					internalError: nil,
-					clienteError: &message.MessageData{
+					clientError: &message.MessageData{
 						ObjectId:        "reference error",
 						MessageId:       006,
 						MessagePkg:      "testing",
@@ -444,8 +477,8 @@ func TestReturnLogSrv(t *testing.T) {
 				if gotErrorMsg != nil {
 					gotErrorMsg.Time = time.Time{} // clear time field
 				}
-				if !reflect.DeepEqual(gotErrorMsg, tt.want.error.clienteError) {
-					t.Errorf("ErrorMessage()\n\t- got: %v\n\t- want: %v", gotErrorMsg, tt.want.error.clienteError)
+				if !reflect.DeepEqual(gotErrorMsg, tt.want.error.clientError) {
+					t.Errorf("ErrorMessage()\n\t- got: %v\n\t- want: %v", gotErrorMsg, tt.want.error.clientError)
 				}
 
 				internalError := errorLog.InternalError()

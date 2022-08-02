@@ -40,7 +40,7 @@ func (j Jwt) CreateNewToken(key string) (string, error) {
 	return token, nil
 }
 
-func (j Jwt) ValidateToken(tokenString string) (interface{}, error) {
+func (j Jwt) ValidateToken(tokenString string) (jwt.MapClaims, error) {
 	key, err := jwt.ParseRSAPublicKeyFromPEM(j.publicKey)
 	if err != nil {
 		return nil, err
