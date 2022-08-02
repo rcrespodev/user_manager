@@ -19,7 +19,7 @@ func (m *MockJwtRepository) Update(command domain.UpdateCommand, log *returnLog.
 }
 
 func (m *MockJwtRepository) FindByUuid(query domain.FindByUuidQuery) *domain.JwtSchema {
-	v, ok := m.MockData[query.Uuid.String()]
+	v, ok := m.MockData[query.Uuid]
 	if !ok {
 		return nil
 	}
