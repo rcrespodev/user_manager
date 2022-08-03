@@ -2,6 +2,7 @@ package domain
 
 import (
 	returnLog "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
+	"time"
 )
 
 type JwtRepository interface {
@@ -10,9 +11,10 @@ type JwtRepository interface {
 }
 
 type JwtSchema struct {
-	Uuid    string
-	IsValid bool
-	Token   string
+	Uuid     string
+	IsValid  bool
+	Token    string
+	Duration time.Duration
 }
 
 type UpdateCommand struct {

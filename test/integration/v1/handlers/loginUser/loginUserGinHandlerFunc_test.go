@@ -12,6 +12,7 @@ import (
 	returnLog "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/test/integration"
+	"github.com/rcrespodev/user_manager/test/integration/v1/handlers"
 	"github.com/stretchr/testify/require"
 	"log"
 	"net/http"
@@ -129,9 +130,10 @@ func TestLoginUserGinHandlerFunc(t *testing.T) {
 				RelativePath: relPath,
 			})
 
+			// Header check
 			require.EqualValues(t, tt.want.httpStatusCode, response.HttpCode)
-			require.NotNil(t, response.Header.Get("Token"))
 
+			// Body check
 			var gotRespBody *api.CommandResponse
 			if err := json.Unmarshal(response.Body, &gotRespBody); err != nil {
 				log.Panicln(err)
@@ -139,6 +141,11 @@ func TestLoginUserGinHandlerFunc(t *testing.T) {
 			gotRespBody.Message.Time = time.Time{}
 
 			require.EqualValues(t, tt.want.response, gotRespBody)
+
+			// Jwt Check
+			if response.HttpCode == 200 {
+				handlers.TokenValidationForTesting(t, response.Header)
+			}
 		})
 	}
 }

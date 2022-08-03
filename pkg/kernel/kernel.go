@@ -11,10 +11,6 @@ import (
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command/factory"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/repository"
-	"log"
-	"os"
-	"strconv"
-	"time"
 )
 
 var Instance *Kernel
@@ -25,6 +21,7 @@ type Kernel struct {
 	userRepository    domain.UserRepository
 	config            *config.Config
 	jwt               *jwtDomain.Jwt
+	jwtRepository     jwtDomain.JwtRepository
 }
 
 func NewPrdKernel(mySqlClient *sql.DB, redisClient *redis.Client) *Kernel {
@@ -35,25 +32,17 @@ func NewPrdKernel(mySqlClient *sql.DB, redisClient *redis.Client) *Kernel {
 	Instance = &Kernel{
 		config: config.Setup(),
 	}
-	certPublicKey, err := os.ReadFile(config.Conf.Jwt.Key.Public)
-	if err != nil {
-		log.Fatal(err)
-	}
-	certPrivateKey, err := os.ReadFile(config.Conf.Jwt.Key.Private)
-	if err != nil {
-		log.Fatal(err)
-	}
-	expirationTime := config.Conf.Jwt.ExpirationTime
-	expirationTimeInt, err := strconv.Atoi(expirationTime)
-	if err != nil {
-		log.Fatal(err)
-	}
-	Instance.jwt = jwtDomain.NewJwt(certPublicKey, certPrivateKey, time.Duration(expirationTimeInt))
+
+	jwt, jwtRepository := jwtFactory(redisClient)
+	Instance.jwt = jwt
+	Instance.jwtRepository = jwtRepository
 
 	Instance.messageRepository = repository.NewRedisMessageRepository(redisClient)
 	Instance.userRepository = userRepository.NewMySqlUserRepository(mySqlClient)
 	Instance.commandBus = factory.NewCommandBusInstance(factory.NewCommandBusCommand{
 		UserRepository: Instance.userRepository,
+		Jwt:            Instance.jwt,
+		JwtRepository:  Instance.jwtRepository,
 	})
 	return Instance
 }
@@ -76,4 +65,8 @@ func (k *Kernel) Config() *config.Config {
 
 func (k *Kernel) Jwt() *jwtDomain.Jwt {
 	return k.jwt
+}
+
+func (k *Kernel) JwtRepository() jwtDomain.JwtRepository {
+	return k.jwtRepository
 }
