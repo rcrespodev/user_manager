@@ -6,23 +6,19 @@ import (
 	"github.com/rcrespodev/user_manager/api"
 	"github.com/rcrespodev/user_manager/api/v1/endpoints"
 	"github.com/rcrespodev/user_manager/api/v1/handlers/registerUser"
-	domain2 "github.com/rcrespodev/user_manager/pkg/app/auth/domain"
 	"github.com/rcrespodev/user_manager/pkg/app/user/application/commands/register"
 	"github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel"
 	returnLog "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/test/integration"
+	"github.com/rcrespodev/user_manager/test/integration/v1/handlers"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/http"
 	"testing"
 	"time"
-)
-
-const (
-	registerUserRelPath = "/register_user"
 )
 
 var userRepositoryInstance domain.UserRepository
@@ -33,7 +29,7 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 	tableUsersSetup()
 
 	mockGinSrv := integration.NewTestServerHttpGin(endpoints.Endpoints{
-		registerUserRelPath: endpoints.Endpoint{
+		endpoints.EndpointRegisterUser: endpoints.Endpoint{
 			HttpMethod: http.MethodPost,
 			Handler:    registerUser.RegisterUserGinHandlerFunc(),
 		},
@@ -149,25 +145,25 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 
 			response := mockGinSrv.DoRequest(integration.DoRequestCommand{
 				BodyRequest:  bytesCmd,
-				RelativePath: registerUserRelPath,
+				RelativePath: endpoints.EndpointRegisterUser,
 			})
 
+			// Header check
+			require.EqualValues(t, tt.want.httpStatusCode, response.HttpCode)
+
+			// Body check
 			var gotRespBody *api.CommandResponse
 			if err := json.Unmarshal(response.Body, &gotRespBody); err != nil {
-				log.Panicln(err)
+				log.Fatal(err)
 			}
 			gotRespBody.Message.Time = time.Time{}
-
-			require.EqualValues(t, tt.want.httpStatusCode, response.HttpCode)
 			require.EqualValues(t, tt.want.response, gotRespBody)
+
+			// Token validation
+			handlers.TokenValidationForTesting(t, response.Header)
 
 			switch response.HttpCode {
 			case 200:
-				// Token validation
-				require.NotNil(t, response.Header.Get("Token"))
-				err := domain2.IsValidJwt(response.Header.Get("Token"), kernel.Instance.JwtConfig())
-				require.NoError(t, err)
-
 				// Database validation
 				retLog := returnLog.NewReturnLog(cmdUuid, kernel.Instance.MessageRepository(), "user")
 
@@ -201,8 +197,6 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 				// password are stored in hash format in DB.
 				err = bcrypt.CompareHashAndPassword(actualUser.HashedPassword, []byte(expectedUser.Password().String()))
 				require.NoError(t, err)
-			default:
-				require.EqualValues(t, "", response.Header.Get("Token"))
 			}
 		})
 	}

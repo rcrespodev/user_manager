@@ -38,10 +38,11 @@ func GinResponse(cmd GinResponseCommand) {
 
 	userLoggedCommand := userLogged.NewCommand(jwtKeyUuid)
 	c := command.NewCommand(command.UserLogged, jwtKeyUuid, userLoggedCommand)
-	kernel.Instance.CommandBus().Exec(*c, cmd.Log)
-	if cmd.Log.Error() != nil {
-		response := api.NewCommandResponse(cmd.Log)
-		cmd.Ctx.JSON(int(cmd.Log.HttpCode()), response)
+	userLoggedLog := domain.NewReturnLog(jwtKeyUuid, kernel.Instance.MessageRepository(), "authorization")
+	kernel.Instance.CommandBus().Exec(*c, userLoggedLog)
+	if userLoggedLog.Error() != nil {
+		response := api.NewCommandResponse(userLoggedLog)
+		cmd.Ctx.JSON(int(userLoggedLog.HttpCode()), response)
 		return
 	}
 
