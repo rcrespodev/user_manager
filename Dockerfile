@@ -30,17 +30,21 @@
 
 FROM golang:1.18-alpine as SRC
 
-# Install git
-RUN set -ex; \
-    apk update; \
-    apk add --no-cache git
-
 # Set destination for COPY
 WORKDIR /app
 
 # Copy the source code. Note the slash at the end, as explained in
 # https://docs.docker.com/engine/reference/builder/#copy
 COPY . ./
+
+# Install dependencies
+RUN set -ex; \
+    apk get update; \
+    apk add openssl; \
+    apk update; \
+    apk add --no-cache git; \
+	openssl genrsa -out cert/id_rsa 4096; \
+	openssl rsa -in cert/id_rsa -pubout -out cert/id_rsa.pub
 
 # Build Go Binary
 RUN set -ex; \

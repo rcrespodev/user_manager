@@ -18,18 +18,11 @@ func RegisterUserGinHandlerFunc() gin.HandlerFunc {
 		var clientArgs register.ClientArgs
 		var response *api.CommandResponse
 		if err := ctx.BindJSON(&clientArgs); err != nil {
-			response.Message = message.MessageData{
-				ObjectId:        "",
-				MessageId:       1,
-				MessagePkg:      "http handler",
-				Variables:       message.Variables{},
-				Text:            "body request has´t correct type",
-				Time:            time.Now(),
-				ClientErrorType: message.ClientErrorBadRequest,
-			}
+			response.Message = handlers.BodyRequestBadType()
 			ctx.JSON(400, response)
 			return
 		}
+
 		cmdUuid, err := uuid.Parse(clientArgs.Uuid)
 		if err != nil {
 			response.Message = message.MessageData{
@@ -53,18 +46,7 @@ func RegisterUserGinHandlerFunc() gin.HandlerFunc {
 		cmdBus := kernel.Instance.CommandBus()
 		cmdBus.Exec(*cmd, log)
 
-		//switch log.Status() {
-		//case valueObjects.Error:
-		//	if log.Error().InternalError() != nil {
-		//		response.Message = message.MessageData{}
-		//	} else {
-		//		response.Message = *log.Error().Message()
-		//	}
-		//case valueObjects.Success:
-		//	response.Message = *log.Success().MessageData()
-		//}
 		response = api.NewCommandResponse(log)
-		//ctx.JSON(int(log.HttpCode()), response)
 		ctx.Set("jwt_key", cmdUuid.String())
 		handlers.GinResponse(handlers.GinResponseCommand{
 			Ctx:        ctx,
@@ -72,16 +54,5 @@ func RegisterUserGinHandlerFunc() gin.HandlerFunc {
 			StatusCode: int(log.HttpCode()),
 			Data:       response,
 		})
-
-		//token, err := jwtDomain.SignJwt(cmdUuid, time.Now(), kernel.Instance.Jwt())
-		//if err != nil {
-		//	ctx.JSON(401, nil)
-		//	return
-		//} else {
-		//	if log.HttpCode() == 200 {
-		//		ctx.Header("Token", token)
-		//	}
-		//	ctx.JSON(int(log.HttpCode()), response)
-		//}
 	}
 }

@@ -25,11 +25,7 @@ func GinResponse(cmd GinResponseCommand) {
 		cmd.Ctx.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
-	//jwtKeyString, ok := jwtKey.(string)
-	//if !ok {
-	//	cmd.Ctx.AbortWithStatus(http.StatusInternalServerError)
-	//	return
-	//}
+
 	jwtKeyUuid, err := uuid.Parse(jwtKey)
 	if err != nil {
 		cmd.Ctx.AbortWithStatus(http.StatusInternalServerError)

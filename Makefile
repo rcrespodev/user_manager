@@ -22,3 +22,7 @@ run_tests:
 
 go_test:
 	export GO111MODULE=on && go test -v ./...
+
+cert:
+	openssl genrsa -out cert/id_rsa 4096
+	openssl rsa -in cert/id_rsa -pubout -out cert/id_rsa.pub

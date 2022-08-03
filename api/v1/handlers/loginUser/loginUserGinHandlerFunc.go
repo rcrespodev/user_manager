@@ -27,18 +27,7 @@ func LoginUserGinHandlerFunc() gin.HandlerFunc {
 		cmdBus := kernel.Instance.CommandBus()
 		cmdBus.Exec(*cmd, log)
 
-		//switch log.Status() {
-		//case valueObjects.Error:
-		//	if log.Error().InternalError() != nil {
-		//		response.Message = message.MessageData{}
-		//	} else {
-		//		response.Message = *log.Error().Message()
-		//	}
-		//case valueObjects.Success:
-		//	response.Message = *log.Success().MessageData()
-		//}
 		response = api.NewCommandResponse(log)
-		//ctx.JSON(int(log.HttpCode()), response)
 		ctx.Set("jwt_key", cmdUuid.String())
 		handlers.GinResponse(handlers.GinResponseCommand{
 			Ctx:        ctx,
