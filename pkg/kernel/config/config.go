@@ -30,6 +30,11 @@ type Config struct {
 		}
 		ExpirationTime string `envconfig:"default=15"`
 	}
+	Log struct {
+		File struct {
+			Path string `envconfig:"default=/app/logs"`
+		}
+	}
 }
 
 func Setup() *Config {

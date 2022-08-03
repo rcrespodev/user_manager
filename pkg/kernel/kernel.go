@@ -11,6 +11,7 @@ import (
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command/factory"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/repository"
+	"github.com/rcrespodev/user_manager/pkg/kernel/log/file"
 )
 
 var Instance *Kernel
@@ -22,6 +23,7 @@ type Kernel struct {
 	config            *config.Config
 	jwt               *jwtDomain.Jwt
 	jwtRepository     jwtDomain.JwtRepository
+	logFile           *file.LogFile
 }
 
 func NewPrdKernel(mySqlClient *sql.DB, redisClient *redis.Client) *Kernel {
@@ -33,12 +35,19 @@ func NewPrdKernel(mySqlClient *sql.DB, redisClient *redis.Client) *Kernel {
 		config: config.Setup(),
 	}
 
+	// log File instance
+	Instance.logFile = file.NewLogFile(config.Conf.Log.File.Path)
+
+	// jwt instance
 	jwt, jwtRepository := jwtFactory(redisClient)
 	Instance.jwt = jwt
 	Instance.jwtRepository = jwtRepository
 
+	// repositories instance
 	Instance.messageRepository = repository.NewRedisMessageRepository(redisClient)
 	Instance.userRepository = userRepository.NewMySqlUserRepository(mySqlClient)
+
+	// command bus instance
 	Instance.commandBus = factory.NewCommandBusInstance(factory.NewCommandBusCommand{
 		UserRepository: Instance.userRepository,
 		Jwt:            Instance.jwt,
