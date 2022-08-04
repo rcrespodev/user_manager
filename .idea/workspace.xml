@@ -1,0 +1,732 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="SPLITTER_PROPORTION" value="0.2959276" />
+    <option name="GROUP_BY_SEVERITY" value="true" />
+  </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="79ec640a-17bf-4245-87c1-8202ea6de316" name="Changes" comment="login endpoint documentation.">
+      <change afterPath="$PROJECT_DIR$/api/v1/handlers/logOutUser/logOutUserGinHandlerFunc.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/v1/endpoints/endpoints.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/v1/endpoints/endpoints.go" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Golang_http_app" />
+        <option value="Go File" />
+      </list>
+    </option>
+  </component>
+  <component name="GOROOT" url="file:///usr/local/go" />
+  <component name="Git.Merge.Settings">
+    <option name="BRANCH" value="dev" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="MIXED" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Makefile" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/pkg/app/user/domain/user.go" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/pkg/app/user/domain/userPassword.go" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/pkg/app/user/domain/userRepository.go" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/pkg/app/user/repository/userRepository/mockUserRepository.go" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/pkg/app/user/repository/userRepository/mySqlUserRepository.go" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/test.sh" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/test/integration/v1/handlers/registerUser/registerUserGinHandlerFunc_test.go" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file:///usr/local/go/src/reflect/deepequal.go" root0="SKIP_INSPECTION" />
+    <setting file="file:///usr/local/go/src/runtime/extern.go" root0="SKIP_INSPECTION" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectId" id="2AMQPfcppBjm9dZtnBMs2thNyZe" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.format.on.save.advertiser.fired&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.vendoring.notification.had.been.shown&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/rcrespo/github.com/rcrespodev/user_manager/test/integration/v1/handlers&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.grazie&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;
+    ]
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/test/integration/v1/handlers" />
+      <recent name="$PROJECT_DIR$/test/unit/app/auth-jwt/application/commands/tokenValidation" />
+      <recent name="$PROJECT_DIR$/test" />
+      <recent name="$PROJECT_DIR$/test/integration/v1/handlers/registerUser" />
+      <recent name="$PROJECT_DIR$/test/unit/user/domain" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/test/unit/app/auth-jwt/application/commands/userLogged" />
+      <recent name="$PROJECT_DIR$/pkg/app/auth-jwt" />
+      <recent name="$PROJECT_DIR$/pkg/app/auth/jwt" />
+      <recent name="$PROJECT_DIR$/pkg/app/user/repository/userRepository" />
+      <recent name="$PROJECT_DIR$/test/unit/app" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="go build github.com/rcrespodev/user_manager/cmd/web" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="user_manager" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="github.com/rcrespodev/user_manager/cmd/web" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/cmd/web/main.go" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestNewUser in github.com/rcrespodev/user_manager/test/unit/user/domain" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="user_manager" />
+      <working_directory value="$PROJECT_DIR$/test/unit/user/domain" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="github.com/rcrespodev/user_manager/test/unit/user/domain" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestNewUser\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestRegisterUserGinHandlerFunc in github.com/rcrespodev/user_manager/test/integration/v1/handlers/registerUser" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="user_manager" />
+      <working_directory value="$PROJECT_DIR$/test/integration/v1/handlers/registerUser" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="github.com/rcrespodev/user_manager/test/integration/v1/handlers/registerUser" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestRegisterUserGinHandlerFunc\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestRegisterUserGinHandlerFunc/user_email_already_exists in github.com/rcrespodev/user_manager/test/integration/v1/handlers/registerUser" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="user_manager" />
+      <working_directory value="$PROJECT_DIR$/test/integration/v1/handlers/registerUser" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="github.com/rcrespodev/user_manager/test/integration/v1/handlers/registerUser" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestRegisterUserGinHandlerFunc\E$/^\Quser_email_already_exists\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestUserRegistration in github.com/rcrespodev/user_manager/test/unit/user/application/register" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="user_manager" />
+      <working_directory value="$PROJECT_DIR$/test/unit/user/application/register" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="github.com/rcrespodev/user_manager/test/unit/user/application/register" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestUserRegistration\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="SwaggerCodegen">
+      <option name="activeConfigurationType" value="FILE" />
+      <option name="configurationPath" value="" />
+      <option name="customJreEnabled" value="false" />
+      <option name="customTemplatesPath" value="" />
+      <option name="enableDebugLogging" value="false" />
+      <option name="generateToPath" value="$PROJECT_DIR$/gen" />
+      <option name="generationParameters">
+        <list />
+      </option>
+      <option name="generatorPath" value="https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/5.0.0/openapi-generator-cli-5.0.0.jar" />
+      <option name="jdkPath" value="Default" />
+      <option name="language" value="java" />
+      <option name="specificationPath" value="$PROJECT_DIR$/swagger.yaml" />
+      <method v="2" />
+    </configuration>
+    <configuration name="swagger.yaml" type="SwaggerCodegen">
+      <option name="activeConfigurationType" value="FILE" />
+      <option name="configurationPath" value="" />
+      <option name="customJreEnabled" value="false" />
+      <option name="customTemplatesPath" value="" />
+      <option name="enableDebugLogging" value="false" />
+      <option name="generateToPath" value="$PROJECT_DIR$/gen" />
+      <option name="generationParameters">
+        <list />
+      </option>
+      <option name="generatorPath" value="https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/5.0.0/openapi-generator-cli-5.0.0.jar" />
+      <option name="jdkPath" value="Default" />
+      <option name="language" value="java" />
+      <option name="specificationPath" value="$PROJECT_DIR$/swagger.yaml" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Test.TestUserRegistration in github.com/rcrespodev/user_manager/test/unit/user/application/register" />
+        <item itemvalue="Go Test.TestRegisterUserGinHandlerFunc in github.com/rcrespodev/user_manager/test/integration/v1/handlers/registerUser" />
+        <item itemvalue="Go Test.TestRegisterUserGinHandlerFunc/user_email_already_exists in github.com/rcrespodev/user_manager/test/integration/v1/handlers/registerUser" />
+        <item itemvalue="Go Test.TestNewUser in github.com/rcrespodev/user_manager/test/unit/user/domain" />
+        <item itemvalue="Go Build.go build github.com/rcrespodev/user_manager/cmd/web" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="79ec640a-17bf-4245-87c1-8202ea6de316" name="Changes" comment="" />
+      <created>1654816951867</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1654816951867</updated>
+      <workItem from="1654816953442" duration="4581000" />
+      <workItem from="1654987556254" duration="1845000" />
+      <workItem from="1655120020932" duration="5755000" />
+      <workItem from="1655161816245" duration="4841000" />
+      <workItem from="1655254349825" duration="4808000" />
+      <workItem from="1655302673683" duration="21690000" />
+      <workItem from="1655492062590" duration="3541000" />
+      <workItem from="1655499515214" duration="2904000" />
+      <workItem from="1655597545841" duration="6379000" />
+      <workItem from="1655776363498" duration="9069000" />
+      <workItem from="1655845632002" duration="17524000" />
+      <workItem from="1655933169686" duration="7282000" />
+      <workItem from="1655942267425" duration="677000" />
+      <workItem from="1655942957438" duration="683000" />
+      <workItem from="1655979025738" duration="42000" />
+      <workItem from="1655979080200" duration="16167000" />
+      <workItem from="1656065398899" duration="11859000" />
+      <workItem from="1656113622297" duration="1730000" />
+      <workItem from="1656115529832" duration="1362000" />
+      <workItem from="1656198993963" duration="1204000" />
+      <workItem from="1656327764035" duration="25468000" />
+      <workItem from="1656413232606" duration="10124000" />
+      <workItem from="1656457131497" duration="6226000" />
+      <workItem from="1656499757168" duration="11133000" />
+      <workItem from="1656592970860" duration="8632000" />
+      <workItem from="1656673567244" duration="15791000" />
+      <workItem from="1656931662593" duration="7343000" />
+      <workItem from="1656941659233" duration="6739000" />
+      <workItem from="1657018653032" duration="14932000" />
+      <workItem from="1657116600882" duration="5823000" />
+      <workItem from="1657193047559" duration="12841000" />
+      <workItem from="1657235788804" duration="1499000" />
+      <workItem from="1657282961058" duration="5496000" />
+      <workItem from="1657311496016" duration="1996000" />
+      <workItem from="1657314206151" duration="1335000" />
+      <workItem from="1657324859285" duration="1355000" />
+      <workItem from="1657503699234" duration="4028000" />
+      <workItem from="1657547659763" duration="20149000" />
+      <workItem from="1657577723964" duration="2620000" />
+      <workItem from="1657621560820" duration="17872000" />
+      <workItem from="1657657078687" duration="5975000" />
+      <workItem from="1657710696779" duration="5923000" />
+      <workItem from="1657742831673" duration="8759000" />
+      <workItem from="1657799441366" duration="934000" />
+      <workItem from="1657832498190" duration="6611000" />
+      <workItem from="1657896433744" duration="13552000" />
+      <workItem from="1658009220012" duration="732000" />
+      <workItem from="1658009972122" duration="1174000" />
+      <workItem from="1658161444113" duration="6822000" />
+      <workItem from="1658229828561" duration="11656000" />
+      <workItem from="1658273701055" duration="9352000" />
+      <workItem from="1658289425277" duration="406000" />
+      <workItem from="1658350979855" duration="6092000" />
+      <workItem from="1658409455955" duration="9584000" />
+      <workItem from="1658496441159" duration="13784000" />
+      <workItem from="1658760489029" duration="5711000" />
+      <workItem from="1658840059522" duration="26119000" />
+      <workItem from="1658960789829" duration="3370000" />
+      <workItem from="1659089920341" duration="24181000" />
+      <workItem from="1659356727604" duration="23136000" />
+      <workItem from="1659435264593" duration="420000" />
+      <workItem from="1659447843446" duration="22451000" />
+      <workItem from="1659529365497" duration="18773000" />
+      <workItem from="1659617849703" duration="2106000" />
+    </task>
+    <task id="LOCAL-00038" summary="Refactor: pkg registerUser.&#10;Test wit requiere pkg looks much better">
+      <created>1657905669872</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1657905669872</updated>
+    </task>
+    <task id="LOCAL-00039" summary="Refactor: pkg registerUser.&#10;Delete comments and minors refactors">
+      <created>1657906301000</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1657906301000</updated>
+    </task>
+    <task id="LOCAL-00040" summary="Fix: pkg kernel and server.&#10;Config there are instantiated before instantiate repositories">
+      <created>1657909418908</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1657909418909</updated>
+    </task>
+    <task id="LOCAL-00041" summary="Refactor: deploy - docker.&#10;Delete comments">
+      <created>1657909684317</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1657909684317</updated>
+    </task>
+    <task id="LOCAL-00042" summary="Feature: Add Api documentation.">
+      <created>1658166311802</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1658166311802</updated>
+    </task>
+    <task id="LOCAL-00043" summary="Documentation.">
+      <created>1658172613154</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1658172613154</updated>
+    </task>
+    <task id="LOCAL-00044" summary="Documentation.">
+      <created>1658172664782</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1658172664782</updated>
+    </task>
+    <task id="LOCAL-00045" summary="Feature: Mysql User Repo.&#10;Add autoincrement field to primary key. This change allow to the cliente to use the same uuid in several requests.">
+      <created>1658233835096</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1658233835096</updated>
+    </task>
+    <task id="LOCAL-00046" summary="Refactor: User Registration.&#10;Final changes.">
+      <created>1658239187891</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1658239187891</updated>
+    </task>
+    <task id="LOCAL-00047" summary="Feature: Readme !!">
+      <created>1658278219550</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1658278219550</updated>
+    </task>
+    <task id="LOCAL-00048" summary="Refactor: Variables rename">
+      <created>1658282333894</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1658282333894</updated>
+    </task>
+    <task id="LOCAL-00049" summary="Feature: Execute test with bash.">
+      <created>1658282358655</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1658282358655</updated>
+    </task>
+    <task id="LOCAL-00050" summary="Back">
+      <created>1658289350797</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1658289350799</updated>
+    </task>
+    <task id="LOCAL-00051" summary="Feature: New pkg Login.">
+      <created>1658351801338</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1658351801339</updated>
+    </task>
+    <task id="LOCAL-00052" summary="Refactor: pkg RegisterUser.&#10;Query param Password isn´t necessary.">
+      <created>1658354530583</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1658354530583</updated>
+    </task>
+    <task id="LOCAL-00053" summary="Feature: pkg Login.&#10;Build unit testing for User-logger services.&#10;All testing passing.">
+      <created>1658418599518</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1658418599518</updated>
+    </task>
+    <task id="LOCAL-00054" summary="Feature: pkg Finder.&#10;User finder search one user from array of query args. For example, the Client can pass two query's: One for search by email and other for search by email.&#10;User Finder return only one instance of userSchema.">
+      <created>1658505864597</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1658505864598</updated>
+    </task>
+    <task id="LOCAL-00055" summary="Refactor: Change pkg names">
+      <created>1658505964406</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1658505964406</updated>
+    </task>
+    <task id="LOCAL-00056" summary="Refactor: User logger.&#10;Replace search functions with userFinder">
+      <created>1658506741943</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1658506741944</updated>
+    </task>
+    <task id="LOCAL-00057" summary="Refactor: User Registration.&#10;Use UserFinder type for search users in db.">
+      <created>1658510604499</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1658510604499</updated>
+    </task>
+    <task id="LOCAL-00058" summary="Feature: Build simple Login user services. All test passing.&#10;The next step is implement JWT.">
+      <created>1658842118373</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1658842118373</updated>
+    </task>
+    <task id="LOCAL-00059" summary="Feature: Implement jwt with custom claims.&#10;claims:&#10;- uuid (e.g user_uuid)&#10;- time (time.Now().Unix)">
+      <created>1658864503957</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1658864503957</updated>
+    </task>
+    <task id="LOCAL-00060" summary="Refactor: pkg users:&#10;Move tests to new directory">
+      <created>1658864534329</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1658864534329</updated>
+    </task>
+    <task id="LOCAL-00061" summary="Refactor: pkg users:&#10;Add jwt generation in register user http handler.&#10;The solution set key &quot;Token&quot; in the header response.">
+      <created>1658879423596</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1658879423596</updated>
+    </task>
+    <task id="LOCAL-00062" summary="Refactor: pkg users:&#10;The required tests send a jwt in header Authorization.">
+      <created>1658884218782</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1658884218783</updated>
+    </task>
+    <task id="LOCAL-00063" summary="Refactor: api-endpoints.&#10;Rename fields. &quot;Endpoint&quot; is most semantic than &quot;Routes&quot;.">
+      <created>1658885027170</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1658885027171</updated>
+    </task>
+    <task id="LOCAL-00064" summary="Refactor: integration test.&#10;Delete unused .envs">
+      <created>1658885347677</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1658885347677</updated>
+    </task>
+    <task id="LOCAL-00065" summary="Refactor: Endpoints.&#10;Replace string with endpoints constants.">
+      <created>1658886036287</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1658886036289</updated>
+    </task>
+    <task id="LOCAL-00066" summary="Refactor: Endpoints.&#10;Replace string with endpoints constants.">
+      <created>1658887245303</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1658887245304</updated>
+    </task>
+    <task id="LOCAL-00067" summary="Testing: User.&#10;Add sql injection email validation as uses case.">
+      <created>1659101083998</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1659101083999</updated>
+    </task>
+    <task id="LOCAL-00068" summary="Feature: Endpoints.&#10;Endpoint rel path are stored as key in hash map.">
+      <created>1659104814649</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1659104814649</updated>
+    </task>
+    <task id="LOCAL-00069" summary="Feature: Endpoints.&#10;Endpoint rel path are stored as key in hash map.">
+      <created>1659104830801</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1659104830801</updated>
+    </task>
+    <task id="LOCAL-00070" summary="Feature: Login.&#10;Add a extra data layer for persistence user session data.&#10;Important: user session is handling inside application layer.&#10;Authentication is handling inside infrastructure layer.">
+      <created>1659131278568</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1659131278568</updated>
+    </task>
+    <task id="LOCAL-00071" summary="Feature: Http Middleware.&#10;Responsibilities of middleware are:&#10;- check methods and paths.&#10;- perform Auth validations.">
+      <created>1659132061449</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1659132061450</updated>
+    </task>
+    <task id="LOCAL-00072" summary="Refactor: Auth.&#10;Rename Functions.">
+      <created>1659132345239</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1659132345239</updated>
+    </task>
+    <task id="LOCAL-00073" summary="Refactor: Auth.&#10;Rename Functions.">
+      <created>1659132775831</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1659132775831</updated>
+    </task>
+    <task id="LOCAL-00074" summary="Fix: login user pkg.&#10;Delete user session schema and related. I want to store one single status in my app. This state is the validity of jwt. I haven´t store the session user state.">
+      <created>1659357845391</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1659357845392</updated>
+    </task>
+    <task id="LOCAL-00075" summary="Feature: Auth-Jwt pkg.&#10;- UserLogged is a consequence of user/commands/login/userLogged.&#10;This uses case generate a new token and store it in token Repository.&#10; &#10; - TokenValidation only check if token is valid.">
+      <created>1659385338928</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1659385338928</updated>
+    </task>
+    <task id="LOCAL-00076" summary="Feature: Auth-Jwt pkg.&#10;Add new uses cases.&#10;The validator have 2 steps:&#10;1. Token hash and sign validation.&#10;2. Token status validation with jwtRepository">
+      <created>1659387686442</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1659387686443</updated>
+    </task>
+    <task id="LOCAL-00077" summary="Ups!! Add mock repository.">
+      <created>1659447892900</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1659447892905</updated>
+    </task>
+    <task id="LOCAL-00078" summary="Feature: Auth-jwt pkg.&#10;The app don´t store session user data. That´s why the uses case of logged out only have the responsibility of invalid token if user logged out.">
+      <created>1659453702817</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1659453702817</updated>
+    </task>
+    <task id="LOCAL-00079" summary="Feature: Auth-jwt pkg.&#10;Add jwt to integration tests.&#10;The type ginResponse should be executed after every handler http request. This type has the responsibility of create the jwt and return it to user in header[&quot;Token&quot;]">
+      <created>1659466706558</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1659466706559</updated>
+    </task>
+    <task id="LOCAL-00080" summary="Refactor: Testing.&#10;New function to check the existence and status of jwt.">
+      <created>1659467180764</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1659467180764</updated>
+    </task>
+    <task id="LOCAL-00081" summary="Refactor: Testing.&#10;Add jwt-auth to login user endpoint. Refactor integration tests.">
+      <created>1659497781410</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1659497781411</updated>
+    </task>
+    <task id="LOCAL-00082" summary="Refactor: Testing.&#10;Add jwt-auth to register user endpoint. Refactor integration tests.">
+      <created>1659531994888</created>
+      <option name="number" value="00082" />
+      <option name="presentableId" value="LOCAL-00082" />
+      <option name="project" value="LOCAL" />
+      <updated>1659531994888</updated>
+    </task>
+    <task id="LOCAL-00083" summary="All test passing.&#10;Delete commented lines.">
+      <created>1659532331212</created>
+      <option name="number" value="00083" />
+      <option name="presentableId" value="LOCAL-00083" />
+      <option name="project" value="LOCAL" />
+      <updated>1659532331212</updated>
+    </task>
+    <task id="LOCAL-00084" summary="Feature: Pkg Log file.&#10;LogFile type receives internal errors and write YYYY-MM-DD-errors.log file with the errors received.&#10;The method LogInternalError() is called each time ReturnLog type execute method LogError() and command.Error != nil.&#10;The log file path are defined in LOG_FILE_PATH env.">
+      <created>1659542207051</created>
+      <option name="number" value="00084" />
+      <option name="presentableId" value="LOCAL-00084" />
+      <option name="project" value="LOCAL" />
+      <updated>1659542207051</updated>
+    </task>
+    <task id="LOCAL-00085" summary="refactor: returnLog pkg.&#10;When internal error is logged in returnLog, then log the same error in log file.">
+      <created>1659544948123</created>
+      <option name="number" value="00085" />
+      <option name="presentableId" value="LOCAL-00085" />
+      <option name="project" value="LOCAL" />
+      <updated>1659544948123</updated>
+    </task>
+    <task id="LOCAL-00086" summary="login endpoint documentation.">
+      <created>1659620811464</created>
+      <option name="number" value="00086" />
+      <option name="presentableId" value="LOCAL-00086" />
+      <option name="project" value="LOCAL" />
+      <updated>1659620811465</updated>
+    </task>
+    <option name="localTasksCounter" value="87" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="main" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="origin/dev" />
+                </option>
+              </RecentGroup>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="dev" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="Feature: Implement jwt with custom claims.&#10;claims:&#10;- uuid (e.g user_uuid)&#10;- time (time.Now().Unix)" />
+    <MESSAGE value="Refactor: pkg users:&#10;Move tests to new directory" />
+    <MESSAGE value="Refactor: pkg users:&#10;Add jwt generation in register user http handler.&#10;The solution set key &quot;Token&quot; in the header response." />
+    <MESSAGE value="Refactor: pkg users:&#10;The required tests send a jwt in header Authorization." />
+    <MESSAGE value="Refactor: api-endpoints.&#10;Rename fields. &quot;Endpoint&quot; is most semantic than &quot;Routes&quot;." />
+    <MESSAGE value="Refactor: integration test.&#10;Delete unused .envs" />
+    <MESSAGE value="Refactor: Endpoints.&#10;Replace string with endpoints constants." />
+    <MESSAGE value="Testing: User.&#10;Add sql injection email validation as uses case." />
+    <MESSAGE value="Feature: Endpoints.&#10;Endpoint rel path are stored as key in hash map." />
+    <MESSAGE value="Feature: Login.&#10;Add a extra data layer for persistence user session data.&#10;Important: user session is handling inside application layer.&#10;Authentication is handling inside infrastructure layer." />
+    <MESSAGE value="Feature: Http Middleware.&#10;Responsibilities of middleware are:&#10;- check methods and paths.&#10;- perform Auth validations." />
+    <MESSAGE value="Refactor: Auth.&#10;Rename Functions." />
+    <MESSAGE value="Fix: login user pkg.&#10;Delete user session schema and related. I want to store one single status in my app. This state is the validity of jwt. I haven´t store the session user state." />
+    <MESSAGE value="Feature: Auth-Jwt pkg.&#10;- UserLogged is a consequence of user/commands/login/userLogged.&#10;This uses case generate a new token and store it in token Repository.&#10; &#10; - TokenValidation only check if token is valid." />
+    <MESSAGE value="Feature: Auth-Jwt pkg.&#10;Add new uses cases.&#10;The validator have 2 steps:&#10;1. Token hash and sign validation.&#10;2. Token status validation with jwtRepository" />
+    <MESSAGE value="Ups!! Add mock repository." />
+    <MESSAGE value="Feature: Auth-jwt pkg.&#10;The app don´t store session user data. That´s why the uses case of logged out only have the responsibility of invalid token if user logged out." />
+    <MESSAGE value="Feature: Auth-jwt pkg.&#10;Add jwt to integration tests.&#10;The type ginResponse should be executed after every handler http request. This type has the responsibility of create the jwt and return it to user in header[&quot;Token&quot;]" />
+    <MESSAGE value="Refactor: Testing.&#10;New function to check the existence and status of jwt." />
+    <MESSAGE value="Refactor: Testing.&#10;Add jwt-auth to login user endpoint. Refactor integration tests." />
+    <MESSAGE value="Refactor: Testing.&#10;Add jwt-auth to register user endpoint. Refactor integration tests." />
+    <MESSAGE value="All test passing.&#10;Delete commented lines." />
+    <MESSAGE value="Feature: Pkg Log file.&#10;LogFile type receives internal errors and write YYYY-MM-DD-errors.log file with the errors received.&#10;The method LogInternalError() is called each time ReturnLog type execute method LogError() and command.Error != nil.&#10;The log file path are defined in LOG_FILE_PATH env." />
+    <MESSAGE value="refactor: returnLog pkg.&#10;When internal error is logged in returnLog, then log the same error in log file." />
+    <MESSAGE value="login endpoint documentation." />
+    <option name="LAST_COMMIT_MESSAGE" value="login endpoint documentation." />
+  </component>
+  <component name="VgoProject">
+    <settings-migrated>true</settings-migrated>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/pkg/app/user/repository/userRepository/mockUserRepository.go</url>
+          <line>46</line>
+          <option name="timeStamp" value="26" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="GoTestRunConfiguration">
+        <watch expression="*(*&quot;string&quot;)(824635859736)" language="go" />
+      </configuration>
+    </watches-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/user_manager$returnLog_test_go.out" NAME="returnLog_test.go Coverage Results" MODIFIED="1655942530319" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="GoCoverage" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+  </component>
+</project>
