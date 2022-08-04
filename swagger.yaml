@@ -205,13 +205,8 @@ paths:
   /v1/logout:
     description: Login existent user.
     post:
-      parameters:
-        - in: header
-          name: Token
-          description: Signed Jwt
-          schema:
-            type: string
-          required: true
+      security:
+        - jwtAuth: []
       responses:
         200:
           description: Good request.
@@ -247,8 +242,8 @@ components:
   securitySchemes:
     jwtAuth: # arbitrary name for the security scheme
       type: http
-      scheme: jwtAuth
-      bearerFormat: JWT    # optional, arbitrary value for documentation purposes
+      in: header
+      name: Token
   schemas:
     message:
       type: object
