@@ -67,6 +67,11 @@ paths:
               }
       responses:
         200:
+          headers:
+            Token:
+              schema:
+                type: string
+              description: Jwt signed with private key.
           description: Good request.
           content:
             application/json:
@@ -120,6 +125,83 @@ paths:
                 }
         500:
           description: Internal error in Application Server.
+  /v1/login:
+    description: Login existent user.
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                body:
+                  $ref: '#/components/schemas/login_user_command'
+            example:
+              {
+                "alias_or_email": "martin_fowler_14",
+                "password": "Linux648$"
+              }
+      responses:
+        200:
+          headers:
+            Token:
+              schema:
+                type: string
+              description: Jwt signed with private key.
+          description: Good request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    $ref: '#/components/schemas/message'
+              example:
+                {
+                  "message": {
+                    "object_id": "martin_fowler_14",
+                    "message_id": 0,
+                    "message_pkg": "user",
+                    "variables": [
+                      "martin_fowler_14",
+                      "",
+                      "",
+                      ""
+                    ],
+                    "text": "user martin_fowler_14 logged successful",
+                    "time": "2022-08-04T13:44:03.438652425Z",
+                    "client_error_type": 0
+                  }
+                }
+        400:
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    $ref: '#/components/schemas/message'
+              example:
+                {
+                  "message": {
+                    "object_id": "martin_fowler_14",
+                    "message_id": 15,
+                    "message_pkg": "user",
+                    "variables": [
+                      "",
+                      "",
+                      "",
+                      ""
+                    ],
+                    "text": "email, alias or password are not correct. Repeat the access data.",
+                    "time": "2022-08-04T13:45:13.698420352Z",
+                    "client_error_type": 1
+                  }
+                }
+        500:
+          description: Internal error in Application Server.
 
 components:
   schemas:
@@ -158,6 +240,13 @@ components:
         second_name:
           type: string
         email:
+          type: string
+        password:
+          type: string
+    login_user_command:
+      type: object
+      properties:
+        email_or_alias:
           type: string
         password:
           type: string
