@@ -6,9 +6,13 @@ import (
 	"github.com/rcrespodev/user_manager/api"
 	"github.com/rcrespodev/user_manager/api/v1/handlers"
 	"github.com/rcrespodev/user_manager/pkg/app/user/application/commands/login"
+	"github.com/rcrespodev/user_manager/pkg/app/user/application/querys/userFinder"
+	userDomain "github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
+	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/query"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
+	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/valueObjects"
 )
 
 func LoginUserGinHandlerFunc() gin.HandlerFunc {
@@ -27,8 +31,43 @@ func LoginUserGinHandlerFunc() gin.HandlerFunc {
 		cmdBus := kernel.Instance.CommandBus()
 		cmdBus.Exec(*cmd, log)
 
+		if log.Status() == valueObjects.Success {
+			queryArgs := []userDomain.FindUserQuery{
+				{
+					Log: log,
+					Where: []userDomain.WhereArgs{
+						{
+							Field: "alias",
+							Value: loginCommand.AliasOrEmail(),
+						},
+					},
+				},
+				{
+					Log: log,
+					Where: []userDomain.WhereArgs{
+						{
+							Field: "email",
+							Value: loginCommand.AliasOrEmail(),
+						},
+					},
+				},
+			}
+			FindUserQuery := userFinder.NewQuery(queryArgs)
+			q := query.NewQuery(query.FindUser, FindUserQuery)
+			userSchema := kernel.Instance.QueryBus().Exec(q, log)
+			if userSchema == nil {
+				ctx.AbortWithStatus(500)
+				return
+			}
+			user, ok := userSchema.(*userDomain.UserSchema)
+			if !ok {
+				ctx.AbortWithStatus(500)
+				return
+			}
+			ctx.Set("jwt_key", user.Uuid)
+		}
+
 		response = api.NewCommandResponse(log)
-		ctx.Set("jwt_key", cmdUuid.String())
 		handlers.GinResponse(handlers.GinResponseCommand{
 			Ctx:        ctx,
 			Log:        log,

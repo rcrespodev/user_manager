@@ -1,7 +1,8 @@
-package factory
+package commandBusFactory
 
 import (
 	"github.com/rcrespodev/user_manager/pkg/app/auth-jwt/application/commands/userLogged"
+	"github.com/rcrespodev/user_manager/pkg/app/auth-jwt/application/commands/userLoggedOut"
 	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/auth-jwt/domain"
 	"github.com/rcrespodev/user_manager/pkg/app/user/application/commands/login"
 	"github.com/rcrespodev/user_manager/pkg/app/user/application/commands/register"
@@ -25,9 +26,13 @@ func NewCommandBusInstance(busCommand NewCommandBusCommand) *command.Bus {
 	userLoggedCommandHandler := userLogged.NewCommandHandler(
 		userLogged.NewUserLogger(busCommand.Jwt, busCommand.JwtRepository))
 
+	userLoggedOutCommandHandler := userLoggedOut.NewCommandHandler(
+		userLoggedOut.NewUserLoggerOut(busCommand.JwtRepository))
+
 	return command.NewBus(command.HandlersMap{
-		command.RegisterUser: registerUserCommandHandler,
-		command.LoginUser:    loginUserCommandHandler,
-		command.UserLogged:   userLoggedCommandHandler,
+		command.RegisterUser:  registerUserCommandHandler,
+		command.LoginUser:     loginUserCommandHandler,
+		command.UserLogged:    userLoggedCommandHandler,
+		command.UserLoggedOut: userLoggedOutCommandHandler,
 	})
 }

@@ -118,6 +118,12 @@ func GetMessagesSourceData() *MessagesSchema {
 				Text:            "user logged out successful",
 				ClientErrorType: 0,
 			},
+			{
+				Id:              0,
+				Pkg:             "Authorization",
+				Text:            "Unauthorized",
+				ClientErrorType: 2,
+			},
 		},
 	}
 }

@@ -159,11 +159,11 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 			gotRespBody.Message.Time = time.Time{}
 			require.EqualValues(t, tt.want.response, gotRespBody)
 
-			// Token validation
-			handlers.TokenValidationForTesting(t, response.Header)
-
 			switch response.HttpCode {
 			case 200:
+				// Token validation
+				handlers.TokenValidationForTesting(t, response.Header)
+
 				// Database validation
 				retLog := returnLog.NewReturnLog(cmdUuid, kernel.Instance.MessageRepository(), "user")
 

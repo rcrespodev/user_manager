@@ -36,6 +36,7 @@ type DoRequestCommand struct {
 	BodyRequest  []byte
 	RelativePath string
 	Uuid         string
+	Token        string
 }
 
 type Response struct {
@@ -62,9 +63,12 @@ func (t TestServerHttpGin) DoRequest(cmd DoRequestCommand) Response {
 	request.Header.Set("Content-type", "application/json")
 
 	if endpointData.AuthValidation {
-		token, err := kernel.Instance.Jwt().CreateNewToken(cmd.Uuid)
-		if err != nil {
-			log.Fatal(err)
+		token := cmd.Token
+		if token == "" {
+			token, err = kernel.Instance.Jwt().CreateNewToken(cmd.Uuid)
+			if err != nil {
+				log.Fatal(err)
+			}
 		}
 		request.Header.Set("Authorization", token)
 	}

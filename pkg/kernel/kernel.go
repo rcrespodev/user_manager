@@ -8,7 +8,9 @@ import (
 	"github.com/rcrespodev/user_manager/pkg/app/user/repository/userRepository"
 	"github.com/rcrespodev/user_manager/pkg/kernel/config"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
-	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command/factory"
+	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command/commandBusFactory"
+	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/query"
+	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/query/queryBusFactory"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/repository"
 	"github.com/rcrespodev/user_manager/pkg/kernel/log/file"
@@ -18,6 +20,7 @@ var Instance *Kernel
 
 type Kernel struct {
 	commandBus        *command.Bus
+	queryBus          *query.Bus
 	messageRepository message.MessageRepository
 	userRepository    domain.UserRepository
 	config            *config.Config
@@ -48,11 +51,17 @@ func NewPrdKernel(mySqlClient *sql.DB, redisClient *redis.Client) *Kernel {
 	Instance.userRepository = userRepository.NewMySqlUserRepository(mySqlClient)
 
 	// command bus instance
-	Instance.commandBus = factory.NewCommandBusInstance(factory.NewCommandBusCommand{
+	Instance.commandBus = commandBusFactory.NewCommandBusInstance(commandBusFactory.NewCommandBusCommand{
 		UserRepository: Instance.userRepository,
 		Jwt:            Instance.jwt,
 		JwtRepository:  Instance.jwtRepository,
 	})
+
+	// query bus instance
+	Instance.queryBus = queryBusFactory.NewQueryBusInstance(
+		queryBusFactory.NewQueryBusCommand{
+			UserRepository: Instance.userRepository})
+
 	return Instance
 }
 
@@ -78,4 +87,8 @@ func (k *Kernel) Jwt() *jwtDomain.Jwt {
 
 func (k *Kernel) JwtRepository() jwtDomain.JwtRepository {
 	return k.jwtRepository
+}
+
+func (k *Kernel) QueryBus() *query.Bus {
+	return k.queryBus
 }

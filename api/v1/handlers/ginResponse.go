@@ -20,6 +20,14 @@ type GinResponseCommand struct {
 }
 
 func GinResponse(cmd GinResponseCommand) {
+	defer func() {
+		cmd.Ctx.JSON(cmd.StatusCode, cmd.Data)
+	}()
+
+	if cmd.StatusCode != http.StatusOK {
+		return
+	}
+
 	jwtKey := cmd.Ctx.GetString("jwt_key")
 	if jwtKey == "" {
 		cmd.Ctx.AbortWithStatus(http.StatusInternalServerError)
@@ -52,5 +60,4 @@ func GinResponse(cmd GinResponseCommand) {
 		return
 	}
 	cmd.Ctx.Header("Token", token.Token)
-	cmd.Ctx.JSON(cmd.StatusCode, cmd.Data)
 }
