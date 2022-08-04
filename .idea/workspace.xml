@@ -109,7 +109,7 @@
       <recent name="$PROJECT_DIR$/test/unit/app" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Go Build.go build github.com/rcrespodev/user_manager/cmd/web">
     <configuration name="go build github.com/rcrespodev/user_manager/cmd/web" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="user_manager" />
       <working_directory value="$PROJECT_DIR$" />
