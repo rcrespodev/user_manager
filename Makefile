@@ -17,5 +17,12 @@ stop_services:
 stop_test_services:
 	docker stop test_app_mysql test_app_redis
 
-run_test:
-	export GO111MODULE=on && go test ./...
+run_tests:
+	sudo chmod u+x ./test.sh && ./test.sh
+
+go_test:
+	export GO111MODULE=on && go test -v ./...
+
+cert:
+	openssl genrsa -out cert/id_rsa 4096
+	openssl rsa -in cert/id_rsa -pubout -out cert/id_rsa.pub

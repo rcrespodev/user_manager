@@ -23,6 +23,18 @@ type Config struct {
 		Host     string `envconfig:"default=mysql"`
 		Port     string `envconfig:"default=3306"`
 	}
+	Jwt struct {
+		Key struct {
+			Private string `envconfig:"default=/app/cert/id_rsa"`
+			Public  string `envconfig:"default=/app/cert/id_rsa.pub"`
+		}
+		ExpirationTime string `envconfig:"default=15"`
+	}
+	Log struct {
+		File struct {
+			Path string `envconfig:"default=/app/logs"`
+		}
+	}
 }
 
 func Setup() *Config {

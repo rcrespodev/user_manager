@@ -19,7 +19,7 @@ type HttpCodeReturn uint16
 var clientErrorHashMap = map[message.ClientErrorType]HttpCodeReturn{
 	message.ClientErrorBadRequest:   HttpCodeBadRequest,
 	message.ClientErrorUnauthorized: HttpCodeUnauthorized,
-	message.ClientErrorFordibben:    HttpCodeForbidden,
+	message.ClientErrorForbidden:    HttpCodeForbidden,
 	message.ClientErrorNotFound:     HttpCodeNotFound,
 }
 

@@ -1,9 +1,12 @@
 package customError
 
 import (
+	"github.com/rcrespodev/user_manager/pkg/kernel/config"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
+	logFile "github.com/rcrespodev/user_manager/pkg/kernel/log/file"
 	"log"
 	"runtime"
+	"time"
 )
 
 type CustomError struct {
@@ -35,6 +38,18 @@ func NewInternalError(error error, caller int) *CustomError {
 
 	// see app logs
 	log.Printf("error:%v, file:%v, line:%v", customerErr.internalError.error, customerErr.internalError.file, customerErr.internalError.line)
+
+	// log into file with log srv.
+	if config.Conf != nil {
+		logFileSrv := logFile.NewLogFile(config.Conf.Log.File.Path)
+		logFileSrv.LogInternalError(logFile.LogInternalErrorCommand{
+			Error: customerErr.internalError.error,
+			File:  customerErr.internalError.file,
+			Line:  string(rune(customerErr.internalError.line)),
+			Time:  time.Now(),
+		})
+	}
+
 	return customerErr
 }
 

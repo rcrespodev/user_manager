@@ -9,8 +9,12 @@ import (
 const (
 	ClientErrorBadRequest ClientErrorType = 1 + iota
 	ClientErrorUnauthorized
-	ClientErrorFordibben
+	ClientErrorForbidden
 	ClientErrorNotFound
+)
+
+const (
+	AuthorizationPkg = "Authorization"
 )
 
 type Message struct {

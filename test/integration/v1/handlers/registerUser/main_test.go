@@ -11,16 +11,25 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	if err := godotenv.Load(".env"); err != nil {
-		log.Fatalf("%v", err)
+	if err := godotenv.Load("./../.env"); err != nil {
+		log.Fatal(err)
 	}
 
-	mySqlClient := integration.NewDockerTestMySql()
-	redisClient := integration.NewDockerTestRedis()
+	mySqlPool := integration.NewDockerTestMySql()
+	redisPool := integration.NewDockerTestRedis()
 
-	kernel.NewPrdKernel(mySqlClient, redisClient)
+	kernel.NewPrdKernel(mySqlPool.MySqlClient, redisPool.RedisClient)
 
 	code := m.Run()
 
-	os.Exit(code)
+	defer func() {
+		if err := mySqlPool.DockerPool.Purge(mySqlPool.DockerResource); err != nil {
+			os.Exit(3)
+		}
+
+		if err := redisPool.DockerPool.Purge(redisPool.DockerResource); err != nil {
+			os.Exit(3)
+		}
+		os.Exit(code)
+	}()
 }

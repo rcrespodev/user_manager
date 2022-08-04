@@ -6,17 +6,12 @@ import (
 
 type UserRepository interface {
 	SaveUser(user *User, log *returnLog.ReturnLog)
-	FindUser(Command FindUserCommand) *User
-	//FindUserById(command FindByIdCommand, user chan *User)
-	//FindUserByEmail(command FindByEmailCommand, user chan *User)
-	//FindUserByAlias(command FindByAliasCommand, user chan *User)
+	FindUser(Query FindUserQuery) *UserSchema
 }
 
-type FindUserCommand struct {
-	Password string
-	Log      *returnLog.ReturnLog
-	Where    []WhereArgs
-	//Wg       *sync.WaitGroup
+type FindUserQuery struct {
+	Log   *returnLog.ReturnLog
+	Where []WhereArgs
 }
 
 type WhereArgs struct {
@@ -24,17 +19,11 @@ type WhereArgs struct {
 	Value string
 }
 
-//type FindByIdCommand struct {
-//	Uuid            uuid.UUID
-//	FindUserCommand FindUserCommand
-//}
-//
-//type FindByEmailCommand struct {
-//	Email           *UserEmail
-//	FindUserCommand FindUserCommand
-//}
-//
-//type FindByAliasCommand struct {
-//	Alias           *UserAlias
-//	FindUserCommand FindUserCommand
-//}
+type UserSchema struct {
+	Uuid           string
+	Alias          string
+	Name           string
+	SecondName     string
+	Email          string
+	HashedPassword []byte
+}

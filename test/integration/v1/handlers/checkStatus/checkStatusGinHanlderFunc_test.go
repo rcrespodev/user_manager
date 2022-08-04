@@ -2,17 +2,22 @@ package checkStatus
 
 import (
 	"encoding/json"
+	"github.com/joho/godotenv"
 	"github.com/rcrespodev/user_manager/api"
+	"github.com/rcrespodev/user_manager/api/v1/endpoints"
 	"github.com/rcrespodev/user_manager/api/v1/handlers/checkStatus"
-	"github.com/rcrespodev/user_manager/api/v1/routes"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/test/integration"
+	"log"
 	"net/http"
 	"reflect"
 	"testing"
 )
 
 func TestCheckStatusGinHandlerFunc(t *testing.T) {
+	if err := godotenv.Load("./../.env"); err != nil {
+		log.Fatal(err)
+	}
 	type args struct {
 		path string
 	}
@@ -39,27 +44,22 @@ func TestCheckStatusGinHandlerFunc(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			//response := integration.NewHttpRequest(integration.NewHttpRequestCommand{
-			//	Method: http.MethodGet,
-			//	//Host:   "app",
-			//	Host:        "0.0.0.0",
-			//	Port:        "8080",
-			//	Path:        "/check-status",
-			//	Body:        nil,
-			//	ContentType: "",
-			//})
-			testServer := integration.NewTestServerHttpGin(&routes.Routes{
-				Routes: []routes.Route{
-					{
-						HttpMethod:   http.MethodGet,
-						RelativePath: "/check-status",
-						Handler:      checkStatus.StatusGinHandlerFunc(),
-					},
+			testServer := integration.NewTestServerHttpGin(endpoints.Endpoints{
+				endpoints.EndpointCheckStatus: endpoints.Endpoint{
+					HttpMethod: http.MethodGet,
+					Handler:    checkStatus.StatusGinHandlerFunc(),
 				},
+				//Endpoints: []endpoints.Endpoint{
+				//	{
+				//		HttpMethod:   http.MethodGet,
+				//		RelativePath: endpoints.EndpointCheckStatus,
+				//		Handler:      checkStatus.StatusGinHandlerFunc(),
+				//	},
+
 			})
 			response := testServer.DoRequest(integration.DoRequestCommand{
 				BodyRequest:  nil,
-				RelativePath: "/check-status",
+				RelativePath: endpoints.EndpointCheckStatus,
 			})
 			var queryResponse api.QueryResponse
 			err := json.Unmarshal(response.Body, &queryResponse)

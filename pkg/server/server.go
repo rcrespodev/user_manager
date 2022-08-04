@@ -3,7 +3,8 @@ package server
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	apiRoutes "github.com/rcrespodev/user_manager/api/v1/routes"
+	apiEndpoints "github.com/rcrespodev/user_manager/api/v1/endpoints"
+	"github.com/rcrespodev/user_manager/api/v1/handlers/ginMiddleware"
 	kernel "github.com/rcrespodev/user_manager/pkg/kernel"
 	"log"
 )
@@ -25,13 +26,15 @@ func newServer(host, port string) *server {
 		engine:      gin.New(),
 		kernel:      kernel.NewPrdKernel(nil, nil),
 	}
+	Server.engine.Use(ginMiddleware.MiddlewareHandlerFunc())
 	return Server
 }
 
 func (s *server) run() error {
-	routes := apiRoutes.NewRoutes()
-	for _, route := range routes.Routes {
-		s.engine.Handle(route.HttpMethod, route.RelativePath, route.Handler)
+	endPoints := apiEndpoints.NewEndpoints()
+
+	for path, endpointData := range endPoints {
+		s.engine.Handle(endpointData.HttpMethod, path, endpointData.Handler)
 	}
 
 	log.Printf("Server running on %v", s.httpAddress)

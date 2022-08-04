@@ -3,47 +3,40 @@ package registerUser
 import (
 	"encoding/json"
 	"github.com/google/uuid"
-	"github.com/joho/godotenv"
 	"github.com/rcrespodev/user_manager/api"
+	"github.com/rcrespodev/user_manager/api/v1/endpoints"
 	"github.com/rcrespodev/user_manager/api/v1/handlers/registerUser"
-	"github.com/rcrespodev/user_manager/api/v1/routes"
-	"github.com/rcrespodev/user_manager/pkg/app/user/application/register"
+	"github.com/rcrespodev/user_manager/pkg/app/user/application/commands/register"
 	"github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel"
 	returnLog "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/test/integration"
+	"github.com/rcrespodev/user_manager/test/integration/v1/handlers"
 	"github.com/stretchr/testify/require"
+	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/http"
 	"testing"
 	"time"
 )
 
-const (
-	registerUserRelPath = "/register_user"
-)
-
 var userRepositoryInstance domain.UserRepository
 
 func TestRegisterUserGinHandlerFunc(t *testing.T) {
-	if err := godotenv.Load(".env"); err != nil {
-		log.Fatal(err)
-	}
-
 	userRepositoryInstance = kernel.Instance.UserRepository()
 
 	tableUsersSetup()
 
-	mockGinSrv := integration.NewTestServerHttpGin(&routes.Routes{Routes: []routes.Route{
-		{
-			HttpMethod:   http.MethodPost,
-			RelativePath: registerUserRelPath,
-			Handler:      registerUser.RegisterUserGinHandlerFunc(),
+	mockGinSrv := integration.NewTestServerHttpGin(endpoints.Endpoints{
+		endpoints.EndpointRegisterUser: endpoints.Endpoint{
+			HttpMethod: http.MethodPost,
+			Handler:    registerUser.RegisterUserGinHandlerFunc(),
 		},
-	}})
+	})
 
 	type args struct {
+		uuid       string
 		alias      string
 		name       string
 		secondName string
@@ -62,10 +55,11 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 		{
 			name: "good request",
 			args: args{
+				uuid:       "123e4567-e89b-12d3-a456-426614174000",
 				alias:      "martin_fowler",
 				name:       "martin",
 				secondName: "fowler",
-				email:      "foo@test.com",
+				email:      "user_registred@test.com",
 				password:   "Linux648$",
 			},
 			want: want{
@@ -89,7 +83,7 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 				alias:      "user_exists_alias",
 				name:       "martin",
 				secondName: "fowler",
-				email:      "foo@test.com.ar",
+				email:      "test@test.com.ar",
 				password:   "Linux648$",
 			},
 			want: want{
@@ -151,24 +145,30 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 
 			response := mockGinSrv.DoRequest(integration.DoRequestCommand{
 				BodyRequest:  bytesCmd,
-				RelativePath: registerUserRelPath,
+				RelativePath: endpoints.EndpointRegisterUser,
 			})
 
+			// Header check
+			require.EqualValues(t, tt.want.httpStatusCode, response.HttpCode)
+
+			// Body check
 			var gotRespBody *api.CommandResponse
 			if err := json.Unmarshal(response.Body, &gotRespBody); err != nil {
-				log.Panicln(err)
+				log.Fatal(err)
 			}
 			gotRespBody.Message.Time = time.Time{}
-
-			require.EqualValues(t, tt.want.httpStatusCode, response.HttpCode)
 			require.EqualValues(t, tt.want.response, gotRespBody)
 
-			if response.HttpCode == 200 {
+			// Token validation
+			handlers.TokenValidationForTesting(t, response.Header)
+
+			switch response.HttpCode {
+			case 200:
+				// Database validation
 				retLog := returnLog.NewReturnLog(cmdUuid, kernel.Instance.MessageRepository(), "user")
 
-				actualUser := userRepositoryInstance.FindUser(domain.FindUserCommand{
-					Password: tt.args.password,
-					Log:      retLog,
+				actualUser := userRepositoryInstance.FindUser(domain.FindUserQuery{
+					Log: retLog,
 					Where: []domain.WhereArgs{
 						{
 							Field: "uuid",
@@ -189,12 +189,14 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 					panic(retLog.Error())
 				}
 
-				require.EqualValues(t, expectedUser.Uuid(), actualUser.Uuid())
-				require.EqualValues(t, expectedUser.Alias(), actualUser.Alias())
-				require.EqualValues(t, expectedUser.Name(), actualUser.Name())
-				require.EqualValues(t, expectedUser.SecondName(), actualUser.SecondName())
-				require.EqualValues(t, expectedUser.Email(), actualUser.Email())
-				require.EqualValues(t, expectedUser.Password().String(), actualUser.Password().String())
+				require.EqualValues(t, expectedUser.Uuid().String(), actualUser.Uuid)
+				require.EqualValues(t, expectedUser.Alias().Alias(), actualUser.Alias)
+				require.EqualValues(t, expectedUser.Name().Name(), actualUser.Name)
+				require.EqualValues(t, expectedUser.SecondName().Name(), actualUser.SecondName)
+				require.EqualValues(t, expectedUser.Email().Address(), actualUser.Email)
+				// password are stored in hash format in DB.
+				err = bcrypt.CompareHashAndPassword(actualUser.HashedPassword, []byte(expectedUser.Password().String()))
+				require.NoError(t, err)
 			}
 		})
 	}

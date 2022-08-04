@@ -17,9 +17,27 @@ func GetMessagesSourceData() *MessagesSchema {
 	return &MessagesSchema{
 		Messages: []MessageSchema{
 			{
+				Id:              0,
+				Pkg:             "user",
+				Text:            "user %v logged successful",
+				ClientErrorType: 0,
+			},
+			{
 				Id:              1,
 				Pkg:             "user",
 				Text:            "user %v created successful",
+				ClientErrorType: 0,
+			},
+			{
+				Id:              2,
+				Pkg:             "user",
+				Text:            "user %v updated successful",
+				ClientErrorType: 0,
+			},
+			{
+				Id:              3,
+				Pkg:             "user",
+				Text:            "user %v deleted successful",
 				ClientErrorType: 0,
 			},
 			{
@@ -87,6 +105,18 @@ func GetMessagesSourceData() *MessagesSchema {
 				Pkg:             "user",
 				Text:            "user with component: %v and value: %v already exists",
 				ClientErrorType: 1,
+			},
+			{
+				Id:              15,
+				Pkg:             "user",
+				Text:            "email, alias or password are not correct. Repeat the access data.",
+				ClientErrorType: 1,
+			},
+			{
+				Id:              16,
+				Pkg:             "user",
+				Text:            "user logged out successful",
+				ClientErrorType: 0,
 			},
 		},
 	}
