@@ -236,6 +236,30 @@ paths:
                 }
         401:
           description: Token are invalid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    $ref: '#/components/schemas/message'
+              example:
+                {
+                  "message": {
+                    "object_id": "123e4567-e89b-12d3-a456-426614174001",
+                    "message_id": 0,
+                    "message_pkg": "Authorization",
+                    "variables": [
+                      "",
+                      "",
+                      "",
+                      ""
+                    ],
+                    "text": "Unauthorized",
+                    "time": "2022-08-04T13:45:13.698420352Z",
+                    "client_error_type": 2
+                  }
+                }
         500:
           description: Internal error in Application Server.
 components:
