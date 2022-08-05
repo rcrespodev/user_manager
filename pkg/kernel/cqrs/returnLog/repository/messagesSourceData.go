@@ -124,6 +124,12 @@ func GetMessagesSourceData() *MessagesSchema {
 				Text:            "Unauthorized",
 				ClientErrorType: 2,
 			},
+			{
+				Id:              1,
+				Pkg:             "Authorization",
+				Text:            "user is not logged",
+				ClientErrorType: 2,
+			},
 		},
 	}
 }

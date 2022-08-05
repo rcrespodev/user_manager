@@ -30,6 +30,16 @@ func (u *UserLoggerOut) Exec(command *Command, log *returnLog.ReturnLog, done ch
 			},
 		})
 	default:
+		if !targetJwt.IsValid {
+			log.LogError(returnLog.NewErrorCommand{
+				NewMessageCommand: &message.NewMessageCommand{
+					ObjectId:   command.UserUuid(),
+					MessageId:  1,
+					MessagePkg: message.AuthorizationPkg,
+				},
+			})
+			return
+		}
 		u.jwtRepository.Update(jwtDomain.UpdateCommand{Command: &jwtDomain.JwtSchema{
 			Uuid:    command.UserUuid(),
 			IsValid: false,

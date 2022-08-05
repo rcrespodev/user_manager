@@ -7,6 +7,7 @@ import (
 	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/auth-jwt/domain"
 	returnLog "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/repository/redis"
+	"time"
 )
 
 type RedisJwtRepository struct {
@@ -25,7 +26,8 @@ func (r *RedisJwtRepository) Update(command jwtDomain.UpdateCommand, log *return
 		return
 	}
 
-	err = r.redisRepository.RedisCliente().Set(r.redisRepository.Ctx(), key, value, command.Command.Duration).Err()
+	duration := time.Minute * command.Command.Duration
+	err = r.redisRepository.RedisCliente().Set(r.redisRepository.Ctx(), key, value, duration).Err()
 	if err != nil {
 		log.LogError(returnLog.NewErrorCommand{Error: err})
 		return

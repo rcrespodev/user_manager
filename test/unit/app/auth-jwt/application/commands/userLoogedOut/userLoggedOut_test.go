@@ -28,6 +28,12 @@ var mockMessageRepository = repository.NewMockMessageRepository([]repository.Moc
 		Text:            "Unauthorized",
 		ClientErrorType: message.ClientErrorUnauthorized,
 	},
+	{
+		Id:              1,
+		Pkg:             message.AuthorizationPkg,
+		Text:            "user is not logged",
+		ClientErrorType: message.ClientErrorUnauthorized,
+	},
 })
 
 var mockJwtRepository = jwtRepository.NewMockJwtRepository(jwtRepository.MockData{
@@ -85,22 +91,22 @@ func TestUserLoggedOut(t *testing.T) {
 			},
 		},
 		{
-			name: "logged out successful - token is already invalid",
+			name: "user is already logged out successful - token is already invalid",
 			args: args{
 				uuid: "123e4567-e89b-12d3-a456-426614174001",
 			},
 			want: want{
-				status:         valueObjects.Success,
-				httpCodeReturn: 200,
+				status:         valueObjects.Error,
+				httpCodeReturn: 401,
 				error:          nil,
-				errorMessage:   nil,
-				successMessage: &message.MessageData{
+				errorMessage: &message.MessageData{
 					ObjectId:        "123e4567-e89b-12d3-a456-426614174001",
-					MessageId:       16,
-					MessagePkg:      "user",
-					Text:            "user logged out successful",
-					ClientErrorType: 0,
+					MessageId:       1,
+					MessagePkg:      "Authorization",
+					Text:            "user is not logged",
+					ClientErrorType: 2,
 				},
+				successMessage: nil,
 				jwtSchema: &jwtDomain.JwtSchema{
 					Uuid:    "123e4567-e89b-12d3-a456-426614174001",
 					IsValid: false,
