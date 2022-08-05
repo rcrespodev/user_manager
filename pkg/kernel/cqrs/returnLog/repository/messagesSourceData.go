@@ -119,6 +119,12 @@ func GetMessagesSourceData() *MessagesSchema {
 				ClientErrorType: 0,
 			},
 			{
+				Id:              17,
+				Pkg:             "user",
+				Text:            "none of the input values correspond to a registered user",
+				ClientErrorType: 1,
+			},
+			{
 				Id:              0,
 				Pkg:             "Authorization",
 				Text:            "Unauthorized",

@@ -25,5 +25,6 @@ func (q QueryHandler) Query(query *query.Query, log *returnLog.ReturnLog, data c
 		return
 	}
 	q.query = findUserQuery
-	data <- q.userFinder.Exec(findUserQuery.QueryArgs())
+
+	data <- q.userFinder.Exec(findUserQuery.QueryArgs(), log)
 }

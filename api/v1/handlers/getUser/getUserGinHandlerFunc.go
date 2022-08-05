@@ -38,12 +38,12 @@ func GetUserGinHandlerFunc() gin.HandlerFunc {
 		q := query.NewQuery(query.FindUser, findUserQuery)
 		data := kernel.Instance.QueryBus().Exec(q, retLog)
 
-		if data != nil {
-			userSchema, ok := data.(*domain.UserSchema)
-			if !ok {
-				ctx.AbortWithStatus(http.StatusInternalServerError)
-				return
-			}
+		userSchema, ok := data.(*domain.UserSchema)
+		if !ok {
+			ctx.AbortWithStatus(http.StatusInternalServerError)
+			return
+		}
+		if userSchema != nil {
 			userSchema.HashedPassword = []byte{}
 			data = userSchema
 			ctx.Set("jwt_key", userSchema.Uuid)

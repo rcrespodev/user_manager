@@ -287,7 +287,7 @@ func TestUserFinder(t *testing.T) {
 	for _, tt := range test {
 		t.Run(tt.name, func(t *testing.T) {
 			finder := userFinder.NewUserFinder(mockRepository)
-			userSchema := finder.Exec(tt.args.query)
+			userSchema := finder.Exec(tt.args.query, domain2.NewReturnLog(uuid.New(), messageRepository, ""))
 			if userSchema != nil {
 				userSchema.HashedPassword = nil
 			}

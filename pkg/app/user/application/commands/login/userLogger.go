@@ -76,7 +76,7 @@ func (u *UserLogger) Exec(cmd *LoginUserCommand, log *returnLog.ReturnLog) {
 				},
 			},
 		},
-	})
+	}, u.log)
 
 	if u.userSchema != nil {
 		u.user = domain.LoginUser(u.password, u.userSchema, u.log)

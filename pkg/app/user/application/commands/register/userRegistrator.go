@@ -68,7 +68,7 @@ func (u *UserRegistration) Exec(command RegisterUserCommand, log *returnLog.Retu
 				},
 			},
 		},
-	})
+	}, log)
 
 	if sourceUser != nil {
 		var variables message.Variables
