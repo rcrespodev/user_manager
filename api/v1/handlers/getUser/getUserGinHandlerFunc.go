@@ -17,6 +17,7 @@ func GetUserGinHandlerFunc() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		cmdUuid := uuid.New()
 		retLog := returnLog.NewReturnLog(cmdUuid, kernel.Instance.MessageRepository(), "user")
+		retLog.SetObjectId(ctx.GetString("uuid"))
 
 		var queryArgs []domain.WhereArgs
 		for _, allowedArg := range getAllowedArgs() {

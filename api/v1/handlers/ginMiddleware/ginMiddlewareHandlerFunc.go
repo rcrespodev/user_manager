@@ -3,6 +3,7 @@ package ginMiddleware
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/rcrespodev/user_manager/api/v1/endpoints"
+	"github.com/rcrespodev/user_manager/pkg/kernel"
 	"net/http"
 )
 
@@ -29,12 +30,13 @@ func MiddlewareHandlerFunc() gin.HandlerFunc {
 		}
 
 		// JWT validation
-		//tokenString := ctx.GetHeader("Authorization")
-		////if err := jwtDomain.IsValidJwt(tokenString, kernel.Instance.Jwt()); err != nil {
-		//	ctx.JSON(401, nil)
-		//	ctx.AbortWithStatus(http.StatusUnauthorized)
-		//	return
-		//}
-		//ctx.Next()
+		tokenString := ctx.GetHeader("Authorization")
+		claims, err := kernel.Instance.Jwt().ValidateToken(tokenString)
+		if err != nil {
+			ctx.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+		ctx.Set("uuid", claims["key"])
+		ctx.Next()
 	}
 }

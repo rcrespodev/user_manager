@@ -80,7 +80,7 @@ func TestGetUserGinHandlerFunc(t *testing.T) {
 			want: want{
 				response: &api.QueryResponse{
 					Message: message.MessageData{
-						ObjectId:        "",
+						ObjectId:        "123e4567-e89b-12d3-a456-426614174000",
 						MessageId:       17,
 						MessagePkg:      "user",
 						Text:            "none of the input values correspond to a registered user",
