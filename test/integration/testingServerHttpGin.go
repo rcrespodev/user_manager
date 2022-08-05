@@ -37,6 +37,7 @@ type DoRequestCommand struct {
 	RelativePath string
 	Uuid         string
 	Token        string
+	QueryString  string
 }
 
 type Response struct {
@@ -53,6 +54,10 @@ func (t TestServerHttpGin) DoRequest(cmd DoRequestCommand) Response {
 	if ok {
 		method = endpointData.HttpMethod
 		path = cmd.RelativePath
+	}
+
+	if cmd.QueryString != "" {
+		path = fmt.Sprintf("%s%s", cmd.RelativePath, cmd.QueryString)
 	}
 
 	request, err := http.NewRequest(method, fmt.Sprintf("http://0.0.0.0:8080%v", path), bytes.NewReader(cmd.BodyRequest))

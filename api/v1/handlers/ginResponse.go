@@ -24,7 +24,7 @@ func GinResponse(cmd GinResponseCommand) {
 		cmd.Ctx.JSON(cmd.StatusCode, cmd.Data)
 	}()
 
-	if cmd.StatusCode != http.StatusOK {
+	if cmd.StatusCode != http.StatusOK && cmd.StatusCode != 0 {
 		return
 	}
 

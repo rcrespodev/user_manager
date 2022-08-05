@@ -8,7 +8,7 @@ import (
 
 func MiddlewareHandlerFunc() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		requestPath := ctx.Request.URL.Path
+		requestPath := endpoints.ParseEndpoint(ctx.Request.URL.Path)
 
 		// check path existence and method allowed
 		appEndpoints := endpoints.NewEndpoints()
