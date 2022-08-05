@@ -29,6 +29,136 @@ func TestUserFinder(t *testing.T) {
 		want want
 	}{
 		{
+			name: "find by uuid",
+			args: args{
+				query: []domain.FindUserQuery{
+					{
+						Log: domain2.NewReturnLog(uuid.New(), messageRepository, ""),
+						Where: []domain.WhereArgs{
+							{
+								Field: "uuid",
+								Value: "123e4567-e89b-12d3-a456-426614174000",
+							},
+						},
+					},
+				},
+			},
+			want: want{
+				userSchema: &domain.UserSchema{
+					Uuid:           "123e4567-e89b-12d3-a456-426614174000",
+					Alias:          "user_exists",
+					Name:           "Martin",
+					SecondName:     "Fowler",
+					Email:          "email_exists@test.com",
+					HashedPassword: nil,
+				},
+			},
+		},
+		{
+			name: "find by email",
+			args: args{
+				query: []domain.FindUserQuery{
+					{
+						Log: domain2.NewReturnLog(uuid.New(), messageRepository, ""),
+						Where: []domain.WhereArgs{
+							{
+								Field: "email",
+								Value: "email_exists@test.com",
+							},
+						},
+					},
+				},
+			},
+			want: want{
+				userSchema: &domain.UserSchema{
+					Uuid:           "123e4567-e89b-12d3-a456-426614174000",
+					Alias:          "user_exists",
+					Name:           "Martin",
+					SecondName:     "Fowler",
+					Email:          "email_exists@test.com",
+					HashedPassword: nil,
+				},
+			},
+		},
+		{
+			name: "find by alias",
+			args: args{
+				query: []domain.FindUserQuery{
+					{
+						Log: domain2.NewReturnLog(uuid.New(), messageRepository, ""),
+						Where: []domain.WhereArgs{
+							{
+								Field: "alias",
+								Value: "user_exists",
+							},
+						},
+					},
+				},
+			},
+			want: want{
+				userSchema: &domain.UserSchema{
+					Uuid:           "123e4567-e89b-12d3-a456-426614174000",
+					Alias:          "user_exists",
+					Name:           "Martin",
+					SecondName:     "Fowler",
+					Email:          "email_exists@test.com",
+					HashedPassword: nil,
+				},
+			},
+		},
+		{
+			name: "find by name",
+			args: args{
+				query: []domain.FindUserQuery{
+					{
+						Log: domain2.NewReturnLog(uuid.New(), messageRepository, ""),
+						Where: []domain.WhereArgs{
+							{
+								Field: "name",
+								Value: "Martin",
+							},
+						},
+					},
+				},
+			},
+			want: want{
+				userSchema: &domain.UserSchema{
+					Uuid:           "123e4567-e89b-12d3-a456-426614174000",
+					Alias:          "user_exists",
+					Name:           "Martin",
+					SecondName:     "Fowler",
+					Email:          "email_exists@test.com",
+					HashedPassword: nil,
+				},
+			},
+		},
+		{
+			name: "find by second name",
+			args: args{
+				query: []domain.FindUserQuery{
+					{
+						Log: domain2.NewReturnLog(uuid.New(), messageRepository, ""),
+						Where: []domain.WhereArgs{
+							{
+								Field: "second_name",
+								Value: "Fowler",
+							},
+						},
+					},
+				},
+			},
+			want: want{
+				userSchema: &domain.UserSchema{
+					Uuid:           "123e4567-e89b-12d3-a456-426614174000",
+					Alias:          "user_exists",
+					Name:           "Martin",
+					SecondName:     "Fowler",
+					Email:          "email_exists@test.com",
+					HashedPassword: nil,
+				},
+			},
+		},
+		{
 			name: "one query match",
 			args: args{
 				query: []domain.FindUserQuery{
