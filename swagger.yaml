@@ -206,7 +206,7 @@ paths:
     description: Login existent user.
     post:
       security:
-        - jwtAuth: []
+        - jwtAuth: [ ]
       responses:
         200:
           description: Good request.
@@ -262,6 +262,106 @@ paths:
                 }
         500:
           description: Internal error in Application Server.
+  /v1/user:
+    description: get user schema.
+    get:
+      security:
+        - jwtAuth: [ ]
+      responses:
+        200:
+          description: Good request - user found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    $ref: '#/components/schemas/message'
+                  data:
+                    $ref: '#/components/schemas/query_data'
+              example:
+                {
+                  "message": {
+                    "object_id": "",
+                    "message_id": 0,
+                    "message_pkg": "",
+                    "variables": [
+                      "",
+                      "",
+                      "",
+                      ""
+                    ],
+                    "text": "",
+                    "time": "0001-01-01T00:00:00Z",
+                    "client_error_type": 0
+                  },
+                  "data": {
+                    "Uuid": "123e4567-e89b-12d3-a456-426614174004",
+                    "Alias": "martin_fowler_14",
+                    "Name": "Martin",
+                    "SecondName": "Fowler",
+                    "Email": "foo14@gmail.com.ar",
+                    "HashedPassword": ""
+                  }
+                }
+        400:
+          description: not data found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    $ref: '#/components/schemas/message'
+                  data:
+                    $ref: '#/components/schemas/query_data'
+              example:
+                {
+                  "message": {
+                    "object_id": "123e4567-e89b-12d3-a456-426614174004",
+                    "message_id": 17,
+                    "message_pkg": "user",
+                    "variables": [
+                      "",
+                      "",
+                      "",
+                      ""
+                    ],
+                    "text": "none of the input values correspond to a registered user",
+                    "time": "2022-08-06T14:05:20.667190157Z",
+                    "client_error_type": 1
+                  },
+                  "data": null
+                }
+        401:
+          description: unauthorized. The token uuid must be equal to target user uuid. Otherwise, app return unauthorized. You don´t display data of others users.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    $ref: '#/components/schemas/message'
+                  data:
+                    $ref: '#/components/schemas/query_data'
+              example:
+                {
+                  "message": {
+                    "object_id": "123e4567-e89b-12d3-a456-426614174004",
+                    "message_id": 0,
+                    "message_pkg": "Authorization",
+                    "variables": [
+                      "",
+                      "",
+                      "",
+                      ""
+                    ],
+                    "text": "Unauthorized",
+                    "time": "2022-08-06T14:05:20.667190157Z",
+                    "client_error_type": 2
+                  },
+                  "data": null
+                }
 components:
   securitySchemes:
     jwtAuth: # arbitrary name for the security scheme
@@ -291,6 +391,10 @@ components:
         client_error_type:
           type: integer
           format: unit8
+    query_data:
+      type: object
+      additionalProperties:
+        type: string
     register_user_command:
       type: object
       properties:

@@ -36,6 +36,7 @@ func NewQueryResponse(log *returnLog.ReturnLog, data interface{}) *QueryResponse
 	}
 	switch log.Status() {
 	case valueObjects.Error:
+		response.Data = nil
 		if log.Error().InternalError() != nil {
 			response.Message = message.MessageData{}
 		} else {

@@ -10,14 +10,16 @@ import (
 	"github.com/rcrespodev/user_manager/pkg/kernel"
 	query "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/query"
 	returnLog "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
+	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"net/http"
 )
 
 func GetUserGinHandlerFunc() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		cmdUuid := uuid.New()
+		tokenUuid := ctx.GetString("token_uuid")
 		retLog := returnLog.NewReturnLog(cmdUuid, kernel.Instance.MessageRepository(), "user")
-		retLog.SetObjectId(ctx.GetString("uuid"))
+		retLog.SetObjectId(tokenUuid)
 
 		var queryArgs []domain.WhereArgs
 		for _, allowedArg := range getAllowedArgs() {
@@ -47,6 +49,7 @@ func GetUserGinHandlerFunc() gin.HandlerFunc {
 		if userSchema != nil {
 			userSchema.HashedPassword = []byte{}
 			data = userSchema
+			compareTokenUuidAndUserUuid(tokenUuid, userSchema.Uuid, retLog)
 			ctx.Set("jwt_key", userSchema.Uuid)
 		}
 
@@ -64,5 +67,18 @@ func GetUserGinHandlerFunc() gin.HandlerFunc {
 func getAllowedArgs() []string {
 	return []string{
 		"uuid", "alias", "email", "name", "second_name",
+	}
+}
+
+func compareTokenUuidAndUserUuid(tokenUuid, userUuid string, log *returnLog.ReturnLog) {
+	if tokenUuid != userUuid {
+		log.SetObjectId(tokenUuid)
+		log.LogError(returnLog.NewErrorCommand{
+			NewMessageCommand: &message.NewMessageCommand{
+				MessageId:  0,
+				MessagePkg: "Authorization",
+			},
+			Overwritten: true,
+		})
 	}
 }

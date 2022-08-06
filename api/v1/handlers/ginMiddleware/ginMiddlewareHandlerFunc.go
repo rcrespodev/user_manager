@@ -36,7 +36,7 @@ func MiddlewareHandlerFunc() gin.HandlerFunc {
 			ctx.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
-		ctx.Set("uuid", claims["key"])
+		ctx.Set("token_uuid", claims["key"])
 		ctx.Next()
 	}
 }

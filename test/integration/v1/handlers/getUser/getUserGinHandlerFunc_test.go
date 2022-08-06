@@ -68,6 +68,27 @@ func TestGetUserGinHandlerFunc(t *testing.T) {
 			},
 		},
 		{
+			name: "correct request - single querystring match",
+			args: args{
+				token:    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NTk3MjY0NDcsImtleSI6IjEyM2U0NTY3LWU4OWItMTJkMy1hNDU2LTQyNjYxNDE3NDAwMCJ9.qKsVOntsUC-PUSMQ7aiHsHDg0KrYBxZj19RgLAFqVOsVGq9Cuq0bYxFVZwfBkfiC5E0YZZ7qv1SCBKzkznl1DigQN-5XZlXDIau44bX5gRoY53oTWif342qU1q9-ZiSuDUuIG3TigfY8Uhf-gt3am_Re4pxnJCSrH4XdLDviS8U5XesmwI46ctsFkAJlDAiygpVHsfJy3iqwjWNrY2qrbUG3LZxe9QlfTKLeOapbPBSqktCQxlF6QaTKoAmrHlbbrAKNSaBXu9733E02m9-at6lz-klc8fomXTg2cIoskt2Cp1xHJ-kydqXfgoH0Zar90igifVT9fomh2Hmmp_hvPKSiAT2GtImMV2qjqY4AGBUWJ7qoFkYkvGOVEZS0OGPrPeVz62DbbLHHj4Mth26BLuH_sDKvGqK6d2OKeqhtvcdAPkAx5Gj7VtaeYUB8yhkJ01IzB2bmlVnIs6EtS8FQZMudNu-QmVt6_FYbi5-nmkCWOieWvstmV_gOjx-apv6Ie0ZRlKp6qycngSiuArXejmBwtCqvX7-vBJcgTNAa0hX1UEUkXhKDfLmXMcVJWMD79VOPHSM9WlO6czJe_sLMYxsb5LwiwJJw2e1e67DcBKw14AAUXIzzrIIyeNSU8LGuFU4_Rkuz6H7Ka3M--XlSIOz_LvooTrW8W7-rD5EgEr4",
+				userUuid: "123e4567-e89b-12d3-a456-426614174000",
+			},
+			want: want{
+				response: &api.QueryResponse{
+					Message: message.MessageData{},
+					Data: map[string]interface{}{
+						"Uuid":           "123e4567-e89b-12d3-a456-426614174000",
+						"Alias":          "alias_exists",
+						"Name":           "Name_exists",
+						"SecondName":     "Second_name_exists",
+						"Email":          "email_exists@gmail.com",
+						"HashedPassword": "",
+					},
+				},
+				httpStatusCode: 200,
+			},
+		},
+		{
 			name: "bad request - userEmail querystring not match",
 			args: args{
 				token:          "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NTk3MjY0NDcsImtleSI6IjEyM2U0NTY3LWU4OWItMTJkMy1hNDU2LTQyNjYxNDE3NDAwMCJ9.qKsVOntsUC-PUSMQ7aiHsHDg0KrYBxZj19RgLAFqVOsVGq9Cuq0bYxFVZwfBkfiC5E0YZZ7qv1SCBKzkznl1DigQN-5XZlXDIau44bX5gRoY53oTWif342qU1q9-ZiSuDUuIG3TigfY8Uhf-gt3am_Re4pxnJCSrH4XdLDviS8U5XesmwI46ctsFkAJlDAiygpVHsfJy3iqwjWNrY2qrbUG3LZxe9QlfTKLeOapbPBSqktCQxlF6QaTKoAmrHlbbrAKNSaBXu9733E02m9-at6lz-klc8fomXTg2cIoskt2Cp1xHJ-kydqXfgoH0Zar90igifVT9fomh2Hmmp_hvPKSiAT2GtImMV2qjqY4AGBUWJ7qoFkYkvGOVEZS0OGPrPeVz62DbbLHHj4Mth26BLuH_sDKvGqK6d2OKeqhtvcdAPkAx5Gj7VtaeYUB8yhkJ01IzB2bmlVnIs6EtS8FQZMudNu-QmVt6_FYbi5-nmkCWOieWvstmV_gOjx-apv6Ie0ZRlKp6qycngSiuArXejmBwtCqvX7-vBJcgTNAa0hX1UEUkXhKDfLmXMcVJWMD79VOPHSM9WlO6czJe_sLMYxsb5LwiwJJw2e1e67DcBKw14AAUXIzzrIIyeNSU8LGuFU4_Rkuz6H7Ka3M--XlSIOz_LvooTrW8W7-rD5EgEr4",
@@ -89,6 +110,26 @@ func TestGetUserGinHandlerFunc(t *testing.T) {
 					Data: nil,
 				},
 				httpStatusCode: 400,
+			},
+		},
+		{
+			name: "bad request - querystring match but token dont belong to target user",
+			args: args{
+				token:    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NTk3MjY0NDcsImtleSI6IjEyM2U0NTY3LWU4OWItMTJkMy1hNDU2LTQyNjYxNDE3NDAwMCJ9.qKsVOntsUC-PUSMQ7aiHsHDg0KrYBxZj19RgLAFqVOsVGq9Cuq0bYxFVZwfBkfiC5E0YZZ7qv1SCBKzkznl1DigQN-5XZlXDIau44bX5gRoY53oTWif342qU1q9-ZiSuDUuIG3TigfY8Uhf-gt3am_Re4pxnJCSrH4XdLDviS8U5XesmwI46ctsFkAJlDAiygpVHsfJy3iqwjWNrY2qrbUG3LZxe9QlfTKLeOapbPBSqktCQxlF6QaTKoAmrHlbbrAKNSaBXu9733E02m9-at6lz-klc8fomXTg2cIoskt2Cp1xHJ-kydqXfgoH0Zar90igifVT9fomh2Hmmp_hvPKSiAT2GtImMV2qjqY4AGBUWJ7qoFkYkvGOVEZS0OGPrPeVz62DbbLHHj4Mth26BLuH_sDKvGqK6d2OKeqhtvcdAPkAx5Gj7VtaeYUB8yhkJ01IzB2bmlVnIs6EtS8FQZMudNu-QmVt6_FYbi5-nmkCWOieWvstmV_gOjx-apv6Ie0ZRlKp6qycngSiuArXejmBwtCqvX7-vBJcgTNAa0hX1UEUkXhKDfLmXMcVJWMD79VOPHSM9WlO6czJe_sLMYxsb5LwiwJJw2e1e67DcBKw14AAUXIzzrIIyeNSU8LGuFU4_Rkuz6H7Ka3M--XlSIOz_LvooTrW8W7-rD5EgEr4",
+				userUuid: "123e4567-e89b-12d3-a456-426614174001",
+			},
+			want: want{
+				response: &api.QueryResponse{
+					Message: message.MessageData{
+						ObjectId:        "123e4567-e89b-12d3-a456-426614174000",
+						MessageId:       0,
+						MessagePkg:      "Authorization",
+						Text:            "Unauthorized",
+						ClientErrorType: 2,
+					},
+					Data: nil,
+				},
+				httpStatusCode: 401,
 			},
 		},
 	}
