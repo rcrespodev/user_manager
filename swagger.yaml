@@ -267,6 +267,39 @@ paths:
     get:
       security:
         - jwtAuth: [ ]
+      parameters:
+        - in: query
+          name: uuid
+          schema:
+            type: string
+            format: uuid
+          required: false
+          description: uuid of target user.
+        - in: query
+          name: alias
+          schema:
+            type: string
+          required: false
+          description: alias of target user.
+        - in: query
+          name: name
+          schema:
+            type: string
+          required: false
+          description: name of target user.
+        - in: query
+          name: second_name
+          schema:
+            type: string
+          required: false
+          description: second name of target user.
+        - in: query
+          name: email
+          schema:
+            type: string
+            format: email
+          required: false
+          description: email of target user.
       responses:
         200:
           description: Good request - user found.
@@ -367,6 +400,8 @@ components:
     jwtAuth: # arbitrary name for the security scheme
       type: http
       in: header
+      scheme: bearer
+      bearerFormat: JWT
       name: Token
   schemas:
     message:
