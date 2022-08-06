@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"testing"
+	"time"
 )
 
 func TestMain(m *testing.M) {
@@ -25,10 +26,12 @@ func TestMain(m *testing.M) {
 		if err := mySqlPool.DockerPool.Purge(mySqlPool.DockerResource); err != nil {
 			os.Exit(3)
 		}
+		log.Printf("container %s removed", mySqlPool.DockerResource.Container.Name)
 
 		if err := redisPool.DockerPool.Purge(redisPool.DockerResource); err != nil {
 			os.Exit(3)
 		}
+		time.Sleep(time.Second * 5)
 		os.Exit(code)
 	}()
 }
