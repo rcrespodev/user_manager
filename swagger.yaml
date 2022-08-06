@@ -207,6 +207,13 @@ paths:
     post:
       security:
         - jwtAuth: [ ]
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+            format: jwt
+            required: true
       responses:
         200:
           description: Good request.
@@ -268,6 +275,12 @@ paths:
       security:
         - jwtAuth: [ ]
       parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+            format: jwt
+            required: true
         - in: query
           name: uuid
           schema:
