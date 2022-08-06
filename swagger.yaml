@@ -459,6 +459,10 @@ components:
           type: string
         password:
           type: string
+          format: password
+          pattern: '^[\dA-Za-z$°!@|¬#=%&/()¿?¡~*}{,;:·+><$'
+          minLength: 8
+          maxLength: 16
     login_user_command:
       type: object
       properties:
@@ -466,3 +470,7 @@ components:
           type: string
         password:
           type: string
+          format: password
+          pattern: '^[\dA-Za-z$°!@|¬#=%&/()¿?¡~*}{,;:·+><$'
+          minLength: 8
+          maxLength: 16
