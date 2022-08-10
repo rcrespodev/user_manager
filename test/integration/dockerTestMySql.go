@@ -8,8 +8,6 @@ import (
 	"github.com/ory/dockertest/v3/docker"
 	"log"
 	"os"
-	"runtime"
-	"strings"
 )
 
 type MySqlPoolConnection struct {
@@ -30,16 +28,8 @@ func NewDockerTestMySql() *MySqlPoolConnection {
 		}
 	}
 
-	_, file, _, ok := runtime.Caller(2)
-	if !ok {
-		log.Fatalf("No caller information")
-	}
-	fileDir := strings.Split(file, "/")
-	fileDirLen := len(fileDir)
-	name := fmt.Sprintf("test_app_mysql-%s", fileDir[fileDirLen-2])
-
 	mySqlOptions := dockertest.RunOptions{
-		Name:       name,
+		Name:       "test_app_mysql",
 		Repository: "mysql",
 		Tag:        "5.7",
 		Env: []string{
@@ -52,11 +42,6 @@ func NewDockerTestMySql() *MySqlPoolConnection {
 				{HostIP: "0.0.0.0", HostPort: "3306"},
 			},
 		},
-	}
-
-	err = Pool.RemoveContainerByName("test_app_mysql")
-	if err != nil {
-		log.Fatal(err)
 	}
 
 	if mySqlResource == nil {
