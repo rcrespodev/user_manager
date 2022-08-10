@@ -102,3 +102,8 @@ func (m *MySqlUserRepository) ClearAll() (int64, error) {
 
 	return res.RowsAffected()
 }
+
+func (m *MySqlUserRepository) DeleteUser(user *domain.User, log *returnLog.ReturnLog) {
+	//TODO implement me
+	panic("implement me")
+}

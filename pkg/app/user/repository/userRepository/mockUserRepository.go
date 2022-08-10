@@ -77,6 +77,11 @@ func (m *MockUserRepository) FindUser(query domain.FindUserQuery) *domain.UserSc
 	return userSchema
 }
 
+func (m *MockUserRepository) DeleteUser(user *domain.User, log *returnLog.ReturnLog) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (m *MockUserRepository) findUserById(uuid string) *domain.UserSchema {
 	for _, userSchema := range m.userMockData.users {
 		if uuid == userSchema.Uuid {
