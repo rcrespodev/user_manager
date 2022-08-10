@@ -46,10 +46,10 @@ func NewDockerTestMySql() *MySqlPoolConnection {
 
 	if mySqlResource == nil {
 		mySqlResource, err = Pool.RunWithOptions(&mySqlOptions, func(config *docker.HostConfig) {
-			config.AutoRemove = true
+			//config.AutoRemove = true
 			config.RestartPolicy = docker.RestartPolicy{
-				Name: "no",
-				//MaximumRetryCount: 10,
+				Name:              "on-failure",
+				MaximumRetryCount: 10,
 			}
 		})
 		if err != nil {

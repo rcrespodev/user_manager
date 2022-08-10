@@ -1,18 +1,16 @@
-package getUser
+package handlers
 
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/google/uuid"
 	"github.com/rcrespodev/user_manager/api"
 	"github.com/rcrespodev/user_manager/api/v1/endpoints"
 	"github.com/rcrespodev/user_manager/api/v1/handlers/getUser"
 	"github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel"
-	domain2 "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/test/integration"
-	"github.com/rcrespodev/user_manager/test/integration/v1/handlers"
+	"github.com/rcrespodev/user_manager/test/integration/v1/handlers/ginHandlers/utils"
 	"github.com/stretchr/testify/require"
 	"log"
 	"net/http"
@@ -35,7 +33,7 @@ type want struct {
 
 func TestGetUserGinHandlerFunc(t *testing.T) {
 	userRepository := kernel.Instance.UserRepository()
-	setUpUserRepository(userRepository)
+	require.NoError(t, getUserSetup(userRepository))
 
 	tests := []struct {
 		name string
@@ -165,14 +163,14 @@ func TestGetUserGinHandlerFunc(t *testing.T) {
 
 			// Jwt Check
 			if response.HttpCode == 200 {
-				handlers.TokenValidationForTesting(t, response.Header)
+				utils.TokenValidationForTesting(t, response.Header)
 			}
 		})
 	}
 }
 
-func setUpUserRepository(repository domain.UserRepository) {
-	users := []domain.NewUserCommand{
+func getUserSetup(repository domain.UserRepository) error {
+	users := []*domain.NewUserCommand{
 		{
 			Uuid:       "123e4567-e89b-12d3-a456-426614174000",
 			Alias:      "alias_exists",
@@ -192,22 +190,7 @@ func setUpUserRepository(repository domain.UserRepository) {
 			IgnorePass: false,
 		},
 	}
-	for _, userCommand := range users {
-		userUuid, err := uuid.Parse(userCommand.Uuid)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		retLog := domain2.NewReturnLog(userUuid, kernel.Instance.MessageRepository(), "user")
-		user := domain.NewUser(userCommand, retLog)
-		if retLog.Error() != nil {
-			log.Fatal("error in user entity creation")
-		}
-		repository.SaveUser(user, retLog)
-		if retLog.Error() != nil {
-			log.Fatal("error in user save")
-		}
-	}
+	return utils.TableUsersSetup(users, userRepositoryInstance)
 }
 
 func buildQueryString(args args) string {

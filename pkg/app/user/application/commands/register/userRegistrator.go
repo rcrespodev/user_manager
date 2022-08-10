@@ -33,25 +33,11 @@ func (u *UserRegistration) Exec(command RegisterUserCommand, log *returnLog.Retu
 		return
 	}
 
-	//wg := &sync.WaitGroup{}
-	//done := make(chan bool)
-	//
-	//wg.Add(1)
-	//go u.finUserByAlias(wg, log)
-	//wg.Add(1)
-	//go u.finUserByEmail(wg, log)
-	//
-	//go func() {
-	//	wg.Wait()
-	//	done <- true
-	//}()
-	//
-	//<-done
-
 	userFinder := userFinderPkg.NewUserFinder(u.userRepository)
+	newLog := *log
 	sourceUser := userFinder.Exec([]domain.FindUserQuery{
 		{
-			Log: log,
+			Log: &newLog,
 			Where: []domain.WhereArgs{
 				{
 					Field: "alias",
@@ -60,7 +46,7 @@ func (u *UserRegistration) Exec(command RegisterUserCommand, log *returnLog.Retu
 			},
 		},
 		{
-			Log: log,
+			Log: &newLog,
 			Where: []domain.WhereArgs{
 				{
 					Field: "email",
@@ -68,7 +54,7 @@ func (u *UserRegistration) Exec(command RegisterUserCommand, log *returnLog.Retu
 				},
 			},
 		},
-	}, log)
+	}, &newLog)
 
 	if sourceUser != nil {
 		var variables message.Variables

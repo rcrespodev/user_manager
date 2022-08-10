@@ -1,18 +1,16 @@
-package loginUser
+package handlers
 
 import (
 	"encoding/json"
-	"github.com/google/uuid"
 	"github.com/rcrespodev/user_manager/api"
 	"github.com/rcrespodev/user_manager/api/v1/endpoints"
 	"github.com/rcrespodev/user_manager/api/v1/handlers/loginUser"
 	"github.com/rcrespodev/user_manager/pkg/app/user/application/commands/login"
 	"github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel"
-	returnLog "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/test/integration"
-	"github.com/rcrespodev/user_manager/test/integration/v1/handlers"
+	"github.com/rcrespodev/user_manager/test/integration/v1/handlers/ginHandlers/utils"
 	"github.com/stretchr/testify/require"
 	"log"
 	"net/http"
@@ -24,12 +22,9 @@ const (
 	relPath = endpoints.EndpointLogin
 )
 
-var userRepositoryInstance domain.UserRepository
-
 func TestLoginUserGinHandlerFunc(t *testing.T) {
-	userRepositoryInstance = kernel.Instance.UserRepository()
-
-	tableUsersSetup()
+	userRepository := kernel.Instance.UserRepository()
+	require.NoError(t, loginUserSetup(userRepository))
 
 	mockGinSrv := integration.NewTestServerHttpGin(endpoints.Endpoints{
 		relPath: endpoints.Endpoint{
@@ -144,15 +139,13 @@ func TestLoginUserGinHandlerFunc(t *testing.T) {
 
 			// Jwt Check
 			if response.HttpCode == 200 {
-				handlers.TokenValidationForTesting(t, response.Header)
+				utils.TokenValidationForTesting(t, response.Header)
 			}
 		})
 	}
 }
 
-func tableUsersSetup() {
-	const defaultPkf = "user"
-
+func loginUserSetup(repository domain.UserRepository) error {
 	newUsersCommands := []*domain.NewUserCommand{
 		{
 			Uuid:       "123e4567-e89b-12d3-a456-426614174000",
@@ -163,18 +156,5 @@ func tableUsersSetup() {
 			Password:   "Linux648$",
 		},
 	}
-	for _, command := range newUsersCommands {
-		cmdUuid, err := uuid.Parse(command.Uuid)
-		if err != nil {
-			log.Fatalln(err)
-		}
-
-		retLog := returnLog.NewReturnLog(cmdUuid, kernel.Instance.MessageRepository(), defaultPkf)
-		user := domain.NewUser(*command, retLog)
-		userRepositoryInstance.SaveUser(user, retLog)
-		if retLog.Error() != nil {
-			log.Fatalf("%v", retLog.Error())
-		}
-	}
-
+	return utils.TableUsersSetup(newUsersCommands, repository)
 }

@@ -1,4 +1,4 @@
-package logOutUser
+package handlers
 
 import (
 	"encoding/json"

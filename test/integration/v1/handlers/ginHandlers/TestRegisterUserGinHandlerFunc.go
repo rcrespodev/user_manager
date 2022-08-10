@@ -1,4 +1,4 @@
-package registerUser
+package handlers
 
 import (
 	"encoding/json"
@@ -12,7 +12,7 @@ import (
 	returnLog "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/test/integration"
-	"github.com/rcrespodev/user_manager/test/integration/v1/handlers"
+	"github.com/rcrespodev/user_manager/test/integration/v1/handlers/ginHandlers/utils"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/bcrypt"
 	"log"
@@ -25,8 +25,7 @@ var userRepositoryInstance domain.UserRepository
 
 func TestRegisterUserGinHandlerFunc(t *testing.T) {
 	userRepositoryInstance = kernel.Instance.UserRepository()
-
-	tableUsersSetup()
+	require.NoError(t, registerUserSetup())
 
 	mockGinSrv := integration.NewTestServerHttpGin(endpoints.Endpoints{
 		endpoints.EndpointRegisterUser: endpoints.Endpoint{
@@ -162,7 +161,7 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 			switch response.HttpCode {
 			case 200:
 				// Token validation
-				handlers.TokenValidationForTesting(t, response.Header)
+				utils.TokenValidationForTesting(t, response.Header)
 
 				// Database validation
 				retLog := returnLog.NewReturnLog(cmdUuid, kernel.Instance.MessageRepository(), "user")
@@ -202,9 +201,7 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 	}
 }
 
-func tableUsersSetup() {
-	const defaultPkf = "user"
-
+func registerUserSetup() error {
 	newUsersCommands := []*domain.NewUserCommand{
 		{
 			Uuid:       uuid.NewString(),
@@ -223,18 +220,5 @@ func tableUsersSetup() {
 			Password:   "Linux648$",
 		},
 	}
-	for _, command := range newUsersCommands {
-		cmdUuid, err := uuid.Parse(command.Uuid)
-		if err != nil {
-			log.Fatalln(err)
-		}
-
-		retLog := returnLog.NewReturnLog(cmdUuid, kernel.Instance.MessageRepository(), defaultPkf)
-		user := domain.NewUser(*command, retLog)
-		userRepositoryInstance.SaveUser(user, retLog)
-		if retLog.Error() != nil {
-			log.Fatalf("%v", retLog.Error())
-		}
-	}
-
+	return utils.TableUsersSetup(newUsersCommands, userRepositoryInstance)
 }

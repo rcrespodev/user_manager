@@ -1,4 +1,4 @@
-package handlers
+package utils
 
 import (
 	"github.com/rcrespodev/user_manager/pkg/kernel"

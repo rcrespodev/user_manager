@@ -84,3 +84,21 @@ func (m *MySqlUserRepository) newTrx() error {
 	m.trx = trx
 	return nil
 }
+
+func (m *MySqlUserRepository) ClearAll() (int64, error) {
+	err := m.newTrx()
+	if err != nil {
+		return 0, err
+	}
+
+	res, err := m.trx.Exec("DELETE FROM users WHERE uuid <> '';")
+	if err != nil {
+		return 0, err
+	}
+	err = m.trx.Commit()
+	if err != nil {
+		return 0, err
+	}
+
+	return res.RowsAffected()
+}
