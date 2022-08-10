@@ -2,7 +2,8 @@ package handlers_test
 
 import (
 	"github.com/joho/godotenv"
-	userRepository2 "github.com/rcrespodev/user_manager/pkg/app/user/repository/userRepository"
+	jwtRepository "github.com/rcrespodev/user_manager/pkg/app/auth-jwt/repository"
+	userRepository "github.com/rcrespodev/user_manager/pkg/app/user/repository/userRepository"
 	"github.com/rcrespodev/user_manager/pkg/kernel"
 	"github.com/rcrespodev/user_manager/test/integration"
 	handlers "github.com/rcrespodev/user_manager/test/integration/v1/handlers/ginHandlers"
@@ -43,37 +44,35 @@ func TestCheckHealthStatus(t *testing.T) {
 }
 
 func TestRegisterUser(t *testing.T) {
-	mySqlRepository, ok := kernel.Instance.UserRepository().(*userRepository2.MySqlUserRepository)
-	if ok {
-		_, err := mySqlRepository.ClearAll()
-		require.NoError(t, err)
-	}
+	clearRepositories(t)
 	handlers.TestRegisterUserGinHandlerFunc(t)
 }
 
 func TestLoginUser(t *testing.T) {
-	mySqlRepository, ok := kernel.Instance.UserRepository().(*userRepository2.MySqlUserRepository)
-	if ok {
-		_, err := mySqlRepository.ClearAll()
-		require.NoError(t, err)
-	}
+	clearRepositories(t)
 	handlers.TestLoginUserGinHandlerFunc(t)
 }
 
+func TestLogOutUser(t *testing.T) {
+	clearRepositories(t)
+	handlers.TestLogOutUserGinHandlerFunc(t)
+}
+
 func TestGetUser(t *testing.T) {
-	mySqlRepository, ok := kernel.Instance.UserRepository().(*userRepository2.MySqlUserRepository)
-	if ok {
-		_, err := mySqlRepository.ClearAll()
-		require.NoError(t, err)
-	}
+	clearRepositories(t)
 	handlers.TestGetUserGinHandlerFunc(t)
 }
 
-func TestLogOutUser(t *testing.T) {
-	mySqlRepository, ok := kernel.Instance.UserRepository().(*userRepository2.MySqlUserRepository)
+func clearRepositories(t *testing.T) {
+	mySqlUserRepository, ok := kernel.Instance.UserRepository().(*userRepository.MySqlUserRepository)
 	if ok {
-		_, err := mySqlRepository.ClearAll()
+		_, err := mySqlUserRepository.ClearAll()
 		require.NoError(t, err)
 	}
-	handlers.TestLogOutUserGinHandlerFunc(t)
+
+	jwtRedisRepository, ok := kernel.Instance.JwtRepository().(*jwtRepository.RedisJwtRepository)
+	if ok {
+		jwtRedisRepository.ClearAll()
+	}
+
 }

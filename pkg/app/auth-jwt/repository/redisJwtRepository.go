@@ -7,6 +7,7 @@ import (
 	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/auth-jwt/domain"
 	returnLog "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/repository/redis"
+	"log"
 	"time"
 )
 
@@ -49,6 +50,13 @@ func (r *RedisJwtRepository) FindByUuid(query jwtDomain.FindByUuidQuery) *jwtDom
 	}
 
 	return jwtSchema
+}
+
+func (r *RedisJwtRepository) ClearAll() {
+	err := r.redisRepository.RedisClient().Del(r.redisRepository.Ctx(), "jwt%").Err()
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func (r *RedisJwtRepository) buildKey(uuid string) string {
