@@ -69,9 +69,12 @@ func NewUser(cmd NewUserCommand, log *returnLog.ReturnLog) *User {
 		return nil
 	}
 
-	userPassword := NewUserPassword(cmd.Password, log)
-	if log.Error() != nil {
-		return nil
+	var userPassword *UserPassword
+	if !cmd.IgnorePass {
+		userPassword = NewUserPassword(cmd.Password, log)
+		if log.Error() != nil {
+			return nil
+		}
 	}
 
 	return &User{
@@ -115,6 +118,9 @@ func checkMandatory(command NewUserCommand, log *returnLog.ReturnLog) {
 		fieldName := valueOf.Type().Field(i).Name
 		fieldValue := valueOf.Field(i).Interface()
 		if fieldName == mandatory[i] && fieldValue == "" {
+			if fieldName == "Password" && command.IgnorePass {
+				continue
+			}
 			log.LogError(returnLog.NewErrorCommand{
 				Error: nil,
 				NewMessageCommand: &message.NewMessageCommand{

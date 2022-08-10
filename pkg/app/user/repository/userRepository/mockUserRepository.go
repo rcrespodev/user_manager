@@ -3,6 +3,7 @@ package userRepository
 import (
 	"github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	returnLog "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
+	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 )
 
 type MockUserRepository struct {
@@ -62,6 +63,15 @@ func (m *MockUserRepository) FindUser(query domain.FindUserQuery) *domain.UserSc
 		if userSchema != nil {
 			break
 		}
+	}
+
+	if userSchema == nil {
+		query.Log.LogError(returnLog.NewErrorCommand{
+			NewMessageCommand: &message.NewMessageCommand{
+				MessageId:  17,
+				MessagePkg: "user",
+			},
+		})
 	}
 
 	return userSchema

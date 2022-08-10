@@ -8,6 +8,7 @@ import (
 	"github.com/rcrespodev/user_manager/api"
 	"github.com/rcrespodev/user_manager/api/v1/endpoints"
 	"github.com/rcrespodev/user_manager/pkg/app/user/application/commands/register"
+	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -24,29 +25,36 @@ func main() {
 func registerUser() {
 	relPath := endpoints.EndpointRegisterUser
 	fmt.Printf("register new user...\n")
-	fmt.Printf("\trequest to: %s\n", relPath)
+	fmt.Printf("\t- request to: %s\n", relPath)
 
-	random := 27.2
-	//random := rand.Float32()
 	cmd := register.ClientArgs{
 		Uuid:       uuid.New().String(),
-		Alias:      fmt.Sprintf("foo_alias_%.0f", random),
-		Name:       fmt.Sprintf("foo_name%.0f", random),
-		SecondName: fmt.Sprintf("foo_second%.0f", random),
-		Email:      fmt.Sprintf("foo_email_%.0f@gmail.com", random),
+		Alias:      "demo_alias",
+		Name:       "demo_name",
+		SecondName: "demo_second_name",
+		Email:      "demo_email@gmail.com",
 		Password:   "Linux64bits$",
 	}
 	bytesCmd, err := json.Marshal(cmd)
 	if err != nil {
 		log.Panic(err)
 	}
+
+	fmt.Printf("\t- request command:\n")
+	fmt.Printf("\t\t- Uuid: %v\n", cmd.Uuid)
+	fmt.Printf("\t\t- Alias: %v\n", cmd.Alias)
+	fmt.Printf("\t\t- Name: %v\n", cmd.Name)
+	fmt.Printf("\t\t- SecondName: %v\n", cmd.SecondName)
+	fmt.Printf("\t\t- Email: %v\n", cmd.Email)
+	fmt.Printf("\t\t- Password: %v\n", cmd.Password)
+
 	doRequest(http.MethodPost, relPath, bytesCmd)
 }
 
 func checkHealth() {
 	relPath := endpoints.EndpointCheckStatus
 	fmt.Printf("cheking App Status...\n")
-	fmt.Printf("\trequest to: %s\n", relPath)
+	fmt.Printf("\t- request to: %s\n", relPath)
 	doRequest(http.MethodGet, relPath, nil)
 }
 
@@ -81,12 +89,25 @@ func doRequest(method, relPath string, body []byte) {
 		if err := json.Unmarshal(respBody, &gotRespBody); err != nil {
 			log.Panicln(err)
 		}
-		fmt.Printf("\t- body:\n\t\tmessage: %+v\n", gotRespBody.Message)
+		fmt.Printf("\t- response body:\n")
+		printMessage(gotRespBody.Message)
 	case http.MethodGet:
 		var gotRespBody *api.QueryResponse
 		if err := json.Unmarshal(respBody, &gotRespBody); err != nil {
 			log.Panicln(err)
 		}
-		fmt.Printf("\t- body:\n\t\tmessage: %+v\n\t\tdata: %+v\n", gotRespBody.Message, gotRespBody.Data)
+		fmt.Printf("\t- response body:\n")
+		printMessage(gotRespBody.Message)
 	}
+}
+
+func printMessage(message message.MessageData) {
+	fmt.Printf("\t\tmessage:\n")
+	fmt.Printf("\t\t- ObjectId: %v\n", message.ObjectId)
+	fmt.Printf("\t\t- MessageId: %v\n", message.MessageId)
+	fmt.Printf("\t\t- MessagePkg: %v\n", message.MessagePkg)
+	fmt.Printf("\t\t- Variables: %v\n", message.Variables)
+	fmt.Printf("\t\t- Text: %v\n", message.Text)
+	fmt.Printf("\t\t- Time: %v\n", message.Time)
+	fmt.Printf("\t\t- ClientError: %v\n", message.ClientErrorType)
 }

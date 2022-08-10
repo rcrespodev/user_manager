@@ -1,6 +1,8 @@
 package command
 
-import "github.com/google/uuid"
+import (
+	"github.com/google/uuid"
+)
 
 type Command struct {
 	commandId Id // examples of commandId: register_new_user, update_user
