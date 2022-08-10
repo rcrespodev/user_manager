@@ -28,7 +28,7 @@ func NewRedisMessageRepository(redisClient *redisClient.Client) *RedisMessageRep
 			log.Fatal(err)
 		}
 
-		err = r.redisRepository.RedisCliente().Set(ctx, key, messageBytes, 0).Err()
+		err = r.redisRepository.RedisClient().Set(ctx, key, messageBytes, 0).Err()
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -40,7 +40,7 @@ func (r RedisMessageRepository) GetMessageData(id message.MessageId, messagePkg 
 	var messageSchema MessageSchema
 	key := r.buildKey(id, messagePkg)
 	ctx := r.redisRepository.Ctx()
-	result, err := r.redisRepository.RedisCliente().Get(ctx, key).Result()
+	result, err := r.redisRepository.RedisClient().Get(ctx, key).Result()
 	err = json.Unmarshal([]byte(result), &messageSchema)
 	if err != nil {
 		return "", 0

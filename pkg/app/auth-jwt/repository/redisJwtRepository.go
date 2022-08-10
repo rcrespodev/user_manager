@@ -27,7 +27,7 @@ func (r *RedisJwtRepository) Update(command jwtDomain.UpdateCommand, log *return
 	}
 
 	duration := time.Minute * command.Command.Duration
-	err = r.redisRepository.RedisCliente().Set(r.redisRepository.Ctx(), key, value, duration).Err()
+	err = r.redisRepository.RedisClient().Set(r.redisRepository.Ctx(), key, value, duration).Err()
 	if err != nil {
 		log.LogError(returnLog.NewErrorCommand{Error: err})
 		return
@@ -38,7 +38,7 @@ func (r *RedisJwtRepository) FindByUuid(query jwtDomain.FindByUuidQuery) *jwtDom
 
 	var jwtSchema *jwtDomain.JwtSchema
 	key := r.buildKey(query.Uuid)
-	result, err := r.redisRepository.RedisCliente().Get(r.redisRepository.Ctx(), key).Result()
+	result, err := r.redisRepository.RedisClient().Get(r.redisRepository.Ctx(), key).Result()
 	if err != nil {
 		return nil
 	}
