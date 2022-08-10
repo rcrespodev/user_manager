@@ -77,7 +77,3 @@ func TestLogOutUser(t *testing.T) {
 	}
 	handlers.TestLogOutUserGinHandlerFunc(t)
 }
-
-func TestPepito(t *testing.T) {
-	handlers.NonTest(t)
-}
