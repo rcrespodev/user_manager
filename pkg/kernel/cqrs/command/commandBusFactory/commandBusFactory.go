@@ -4,6 +4,7 @@ import (
 	"github.com/rcrespodev/user_manager/pkg/app/auth-jwt/application/commands/userLogged"
 	"github.com/rcrespodev/user_manager/pkg/app/auth-jwt/application/commands/userLoggedOut"
 	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/auth-jwt/domain"
+	delete "github.com/rcrespodev/user_manager/pkg/app/user/application/commands/delete"
 	"github.com/rcrespodev/user_manager/pkg/app/user/application/commands/login"
 	"github.com/rcrespodev/user_manager/pkg/app/user/application/commands/register"
 	"github.com/rcrespodev/user_manager/pkg/app/user/domain"
@@ -29,10 +30,14 @@ func NewCommandBusInstance(busCommand NewCommandBusCommand) *command.Bus {
 	userLoggedOutCommandHandler := userLoggedOut.NewCommandHandler(
 		userLoggedOut.NewUserLoggerOut(busCommand.JwtRepository))
 
+	deleteUserCommandHandler := delete.NewDeleteUserCommandHandler(
+		delete.NewUserDeleter(busCommand.UserRepository))
+
 	return command.NewBus(command.HandlersMap{
 		command.RegisterUser:  registerUserCommandHandler,
 		command.LoginUser:     loginUserCommandHandler,
 		command.UserLogged:    userLoggedCommandHandler,
 		command.UserLoggedOut: userLoggedOutCommandHandler,
+		command.DeleteUser:    deleteUserCommandHandler,
 	})
 }

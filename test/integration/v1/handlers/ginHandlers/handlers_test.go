@@ -63,6 +63,11 @@ func TestGetUser(t *testing.T) {
 	handlers.TestGetUserGinHandlerFunc(t)
 }
 
+func TestDeleteUser(t *testing.T) {
+	clearRepositories(t)
+	handlers.TestDeleteUserGinHandlerFunc(t)
+}
+
 func clearRepositories(t *testing.T) {
 	mySqlUserRepository, ok := kernel.Instance.UserRepository().(*userRepository.MySqlUserRepository)
 	if ok {

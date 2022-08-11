@@ -104,6 +104,26 @@ func (m *MySqlUserRepository) ClearAll() (int64, error) {
 }
 
 func (m *MySqlUserRepository) DeleteUser(user *domain.User, log *returnLog.ReturnLog) {
-	//TODO implement me
-	panic("implement me")
+	err := m.newTrx()
+	if err != nil {
+		log.LogError(returnLog.NewErrorCommand{
+			Error: err,
+		})
+		return
+	}
+
+	_, err = m.trx.Exec("DELETE FROM users WHERE uuid = ?;", user.Uuid().String())
+	if err != nil {
+		log.LogError(returnLog.NewErrorCommand{
+			Error: err,
+		})
+		return
+	}
+	err = m.trx.Commit()
+	if err != nil {
+		log.LogError(returnLog.NewErrorCommand{
+			Error: err,
+		})
+		return
+	}
 }

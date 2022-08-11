@@ -3,6 +3,7 @@ package endpoints
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/rcrespodev/user_manager/api/v1/handlers/checkStatus"
+	"github.com/rcrespodev/user_manager/api/v1/handlers/deleteUser"
 	"github.com/rcrespodev/user_manager/api/v1/handlers/getUser"
 	"github.com/rcrespodev/user_manager/api/v1/handlers/logOutUser"
 	"github.com/rcrespodev/user_manager/api/v1/handlers/loginUser"
@@ -16,6 +17,7 @@ const (
 	EndpointLogin        = "/v1/login"
 	EndpointLogOut       = "/v1/logout"
 	EndpointGetUser      = "/v1/user"
+	EndpointDeleteUser   = "/v1/delete_user"
 )
 
 type Endpoints map[string]Endpoint
@@ -46,6 +48,11 @@ func NewEndpoints() Endpoints {
 		EndpointLogOut: Endpoint{
 			HttpMethod:     http.MethodPost,
 			Handler:        logOutUser.LogOutUserGinHandlerFunc(),
+			AuthValidation: true,
+		},
+		EndpointDeleteUser: Endpoint{
+			HttpMethod:     http.MethodPost,
+			Handler:        deleteUser.DeleteUserGinHandlerFunc(),
 			AuthValidation: true,
 		},
 		EndpointGetUser: Endpoint{

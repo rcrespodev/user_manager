@@ -79,7 +79,6 @@ func (m *MockUserRepository) FindUser(query domain.FindUserQuery) *domain.UserSc
 
 func (m *MockUserRepository) DeleteUser(user *domain.User, log *returnLog.ReturnLog) {
 	//TODO implement me
-	panic("implement me")
 }
 
 func (m *MockUserRepository) findUserById(uuid string) *domain.UserSchema {

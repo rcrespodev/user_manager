@@ -40,7 +40,13 @@ func (u *UserDeleter) Exec(command *DeleteUserCommand, log *returnLog.ReturnLog)
 		IgnorePass: true,
 	}, log)
 
-	if user != nil {
+	if log.Error() != nil {
+		return
+	}
+
+	u.userRepository.DeleteUser(user, log)
+
+	if log.Error() == nil {
 		log.LogSuccess(&message.NewMessageCommand{
 			MessageId: 3,
 			Variables: message.Variables{user.Alias().Alias()},

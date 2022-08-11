@@ -56,10 +56,11 @@ func (u *UserLogger) Exec(cmd *LoginUserCommand, log *returnLog.ReturnLog) {
 		return
 	}
 
+	newLog := *u.log
 	userFinder := userFinderPkg.NewUserFinder(u.userRepository)
 	u.userSchema = userFinder.Exec([]domain.FindUserQuery{
 		{
-			Log: u.log,
+			Log: &newLog,
 			Where: []domain.WhereArgs{
 				{
 					Field: "alias",
@@ -68,7 +69,7 @@ func (u *UserLogger) Exec(cmd *LoginUserCommand, log *returnLog.ReturnLog) {
 			},
 		},
 		{
-			Log: u.log,
+			Log: &newLog,
 			Where: []domain.WhereArgs{
 				{
 					Field: "email",
@@ -76,7 +77,7 @@ func (u *UserLogger) Exec(cmd *LoginUserCommand, log *returnLog.ReturnLog) {
 				},
 			},
 		},
-	}, u.log)
+	}, &newLog)
 
 	if u.userSchema != nil {
 		u.user = domain.LoginUser(u.password, u.userSchema, u.log)
