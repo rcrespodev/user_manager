@@ -9,7 +9,7 @@ import (
 	"github.com/rcrespodev/user_manager/pkg/kernel"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
-	"net/http"
+	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 )
 
 func DeleteUserGinHandlerFunc() gin.HandlerFunc {
@@ -23,16 +23,23 @@ func DeleteUserGinHandlerFunc() gin.HandlerFunc {
 			return
 		}
 
+		cmdUuid := uuid.New()
+		log := domain.NewReturnLog(cmdUuid, kernel.Instance.MessageRepository(), "user")
 		tokenUuid := ctx.GetString("token_uuid")
 		if tokenUuid == "" || tokenUuid != clientArgs.UserUuid {
-			ctx.AbortWithStatus(http.StatusUnauthorized)
+			log.LogError(domain.NewErrorCommand{
+				NewMessageCommand: &message.NewMessageCommand{
+					ObjectId:   clientArgs.UserUuid,
+					MessageId:  0,
+					MessagePkg: "Authorization",
+				},
+			})
+			response = api.NewCommandResponse(log)
+			ctx.JSON(int(log.HttpCode()), response)
 			return
 		}
 
 		// if user is authorized, delete user command
-		cmdUuid := uuid.New()
-
-		log := domain.NewReturnLog(cmdUuid, kernel.Instance.MessageRepository(), "user")
 		deleteUserCommand := delete.NewDeleteUserCommand(clientArgs.UserUuid)
 		cmd := command.NewCommand(command.DeleteUser, cmdUuid, deleteUserCommand)
 		kernel.Instance.CommandBus().Exec(*cmd, log)

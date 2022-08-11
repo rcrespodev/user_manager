@@ -1,6 +1,7 @@
 package delete
 
 import (
+	"github.com/rcrespodev/user_manager/pkg/app/user/application/querys/userFinder"
 	"github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	returnLog "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
@@ -17,15 +18,28 @@ func NewUserDeleter(userRepository domain.UserRepository) *UserDeleter {
 func (u *UserDeleter) Exec(command *DeleteUserCommand, log *returnLog.ReturnLog) {
 	log.SetObjectId(command.UserUuid())
 
-	userSchema := u.userRepository.FindUser(domain.FindUserQuery{
-		Log: log,
-		Where: []domain.WhereArgs{
-			{
-				Field: "uuid",
-				Value: command.UserUuid(),
+	finder := userFinder.NewUserFinder(u.userRepository)
+	userSchema := finder.Exec([]domain.FindUserQuery{
+		{
+			Log: log,
+			Where: []domain.WhereArgs{
+				{
+					Field: "uuid",
+					Value: command.UserUuid(),
+				},
 			},
 		},
-	})
+	}, log)
+
+	//userSchema := u.userRepository.FindUser(domain.FindUserQuery{
+	//	Log: log,
+	//	Where: []domain.WhereArgs{
+	//		{
+	//			Field: "uuid",
+	//			Value: command.UserUuid(),
+	//		},
+	//	},
+	//})
 	if log.Error() != nil {
 		return
 	}

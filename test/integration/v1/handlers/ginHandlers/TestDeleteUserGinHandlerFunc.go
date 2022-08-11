@@ -64,6 +64,44 @@ func TestDeleteUserGinHandlerFunc(t *testing.T) {
 				httpStatusCode: 200,
 			},
 		},
+		{
+			name: "user exists but token uuid not match with user uuid",
+			args: args{
+				userUuid: "123e4567-e89b-12d3-a456-426614174006",
+				token:    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjAyNDU1NzcsImtleSI6IjEyM2U0NTY3LWU4OWItMTJkMy1hNDU2LTQyNjYxNDE3NDAwNSJ9.OSENP2-ug-dUd3GLSvbi9jZ3AYlpTAWp051y7WlYwqC1L__d229OJHYTxmevCJRhCGsEGNQdP98QvOsvIIuX8uchldO4XNzk7ZCH3CQ33Y99GN2aPXtUY7lKM_RMelOvSnukaHQ14FJ9bry3z_SHznLg6YiURq0dX3C_VfUvD8Jy6ARcOhbiFz96nvvnyuwdA1A2ok0FEr7hfDHduEEquW_ZMeEspgQCjJJ4NO_dTmBn3COk6N0B9vn74SDBJ57RpSTuQbyCrPyHDMOjuUHitQShELeQc0WjOgw8eqsJB4fwF6glT5N66Nph6aIrz1FPEwfr_TVYpwTPm94fpmBEzCWQG4OFBHyy3LARmZVifpGaKcdD_gMblpsFlw-LtzfyYZsKmolKe9bkjMpRf1vwIonImvZsqn_-bIHcP4m5Gi5y1SuXai25IJVkRvBgORE-HeYpBlKcqFzc0TNJBXOCDt7mZxIuRE5izYoF8nX-rJCOF-uCyTvdjJMCOcpDFfyF4Y0qZXkpw61Pea66VzwwbgljNKhjgNa9Uk4tZ8gbSj5lb1-IUbbBfxJplmujliyjqIiq2T5AAO2-WU-QzQq07xdoZvaZLYkxfFBrlWC_8L3mA33pCshMwGHSGBMZwL5eB8a4n9CYEZhXHVKDmSCq0xUgN-B4Gdbgc68IXTXcOa0",
+			},
+			want: want{
+				response: &api.CommandResponse{
+					Message: message.MessageData{
+						ObjectId:        "123e4567-e89b-12d3-a456-426614174006",
+						MessageId:       0,
+						MessagePkg:      "Authorization",
+						Text:            "Unauthorized",
+						ClientErrorType: message.ClientErrorUnauthorized,
+					},
+				},
+				httpStatusCode: 401,
+			},
+		},
+		{
+			name: "token uuid and token user match but user not exists in db",
+			args: args{
+				userUuid: "123e4567-e89b-12d3-a456-426614174007",
+				token:    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjAyNTMwODIsImtleSI6IjEyM2U0NTY3LWU4OWItMTJkMy1hNDU2LTQyNjYxNDE3NDAwNyJ9.K62bdLDOerhcFT6bLG3WguDic5XpMEzz8UdpsQojfVbRQyxV754NW9FsohN4nqUK4VKDnjeGYAqxppHT_bUMIm6N5iMzAYGxvrEHv9D2tgjixVNwj0zDoJxq7wDeNrWelJFzorJ3hb5S6dkSbJmTRivzHkCgN7epY_4zf_KQF4pR35wwwAca6vU2UNteSjG4MSeHk8uPrA0lv0XaqokVAJOg0yNlU2NEFTHzsF1P6EMDpLxfFx1xef3xv4WTWHCNQg98S7k91BamfIVaYfRQTqqtbLnPPEth46dNro5KKqbxH2QvmhWVIHPJZ-_7mFQgXumw8cpyqLtFBNlulwQslmxOrpfPjoYkocDeter3Oris7BuX6x1B6Pwu40O_5My9lv12kBlW05FdACmqMjhmMhitXrAJpoPdHWxpHBjHcNy6D8Z07Fcoe9a8spAWTdTXTP5afND_1dk_oSsy8nYJzZy9aRuSvE0BYAwM-7KsjSW8jgEHMfSCrZn-_zifDiyVqq5Tk_HoTmVUmrIf4VpfGlWFvTuTYkbGg9x7xMJI3y0VxzVVEtqVXDQPLQl83rkb_atZ64q-_5mV9RHicllcDtyOtlv1cDgGJ_xiYvhmA1FV9mbNMWMBwrmPJKncsuSLGD9Xf5Ot0puUBk1FcU5xT5DtndDNc0jp6sLV9Tt9Zms",
+			},
+			want: want{
+				response: &api.CommandResponse{
+					Message: message.MessageData{
+						ObjectId:        "123e4567-e89b-12d3-a456-426614174007",
+						MessageId:       17,
+						MessagePkg:      "user",
+						Text:            "none of the input values correspond to a registered user",
+						ClientErrorType: message.ClientErrorBadRequest,
+					},
+				},
+				httpStatusCode: 400,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -124,6 +162,14 @@ func deleteUserSetup(repository domain.UserRepository) error {
 			Name:       "martin",
 			SecondName: "fowler",
 			Email:      "foo@test.com.ar",
+			Password:   "Linux648$",
+		},
+		{
+			Uuid:       "123e4567-e89b-12d3-a456-426614174006",
+			Alias:      "user_exists_alias_2",
+			Name:       "martin",
+			SecondName: "fowler",
+			Email:      "foo_2@test.com.ar",
 			Password:   "Linux648$",
 		},
 	}
