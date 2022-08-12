@@ -99,15 +99,17 @@ func TestLogOutUserGinHandlerFunc(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			mockServer := integration.NewTestServerHttpGin(endpoints.Endpoints{
-				endpoints.EndpointLogOut: {
+				endpoints.BuildEndpointKey(endpoints.EndpointUserLogin, http.MethodDelete): {
 					HttpMethod:     http.MethodPost,
+					RelPath:        endpoints.EndpointUserLogin,
 					Handler:        logOutUser.LogOutUserGinHandlerFunc(),
 					AuthValidation: true,
 				},
 			})
 
 			response := mockServer.DoRequest(integration.DoRequestCommand{
-				RelativePath: endpoints.EndpointLogOut,
+				RelativePath: endpoints.EndpointUserLogin,
+				Method:       http.MethodDelete,
 				Token:        tt.args.token,
 			})
 

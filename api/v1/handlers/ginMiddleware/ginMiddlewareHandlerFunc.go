@@ -13,7 +13,7 @@ func MiddlewareHandlerFunc() gin.HandlerFunc {
 
 		// check path existence and method allowed
 		appEndpoints := endpoints.NewEndpoints()
-		endPoint, ok := appEndpoints[requestPath]
+		endPoint, ok := appEndpoints[endpoints.BuildEndpointKey(requestPath, ctx.Request.Method)]
 		if !ok {
 			ctx.JSON(http.StatusNotFound, nil)
 			return

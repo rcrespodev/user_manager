@@ -18,17 +18,14 @@ import (
 	"time"
 )
 
-const (
-	relPath = endpoints.EndpointLogin
-)
-
 func TestLoginUserGinHandlerFunc(t *testing.T) {
 	userRepository := kernel.Instance.UserRepository()
 	require.NoError(t, loginUserSetup(userRepository))
 
 	mockGinSrv := integration.NewTestServerHttpGin(endpoints.Endpoints{
-		relPath: endpoints.Endpoint{
+		endpoints.BuildEndpointKey(endpoints.EndpointUserLogin, http.MethodPost): endpoints.Endpoint{
 			HttpMethod: http.MethodPost,
+			RelPath:    endpoints.EndpointUserLogin,
 			Handler:    loginUser.LoginUserGinHandlerFunc(),
 		},
 	})
@@ -122,7 +119,8 @@ func TestLoginUserGinHandlerFunc(t *testing.T) {
 
 			response := mockGinSrv.DoRequest(integration.DoRequestCommand{
 				BodyRequest:  bytesCmd,
-				RelativePath: relPath,
+				Method:       http.MethodPost,
+				RelativePath: endpoints.EndpointUserLogin,
 			})
 
 			// Header check

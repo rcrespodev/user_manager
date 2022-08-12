@@ -1,6 +1,7 @@
 package endpoints
 
 import (
+	"fmt"
 	"strings"
 )
 
@@ -11,4 +12,8 @@ func ParseEndpoint(fullPath string) string {
 	}
 
 	return splitPath[0]
+}
+
+func BuildEndpointKey(relPath, method string) string {
+	return fmt.Sprintf("%s-%s", method, relPath)
 }

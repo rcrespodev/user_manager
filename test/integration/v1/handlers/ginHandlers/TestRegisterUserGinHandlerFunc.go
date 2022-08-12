@@ -28,8 +28,9 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 	require.NoError(t, registerUserSetup())
 
 	mockGinSrv := integration.NewTestServerHttpGin(endpoints.Endpoints{
-		endpoints.EndpointRegisterUser: endpoints.Endpoint{
+		endpoints.BuildEndpointKey(endpoints.EndpointUser, http.MethodPost): endpoints.Endpoint{
 			HttpMethod: http.MethodPost,
+			RelPath:    endpoints.EndpointUser,
 			Handler:    registerUser.RegisterUserGinHandlerFunc(),
 		},
 	})
@@ -144,7 +145,8 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 
 			response := mockGinSrv.DoRequest(integration.DoRequestCommand{
 				BodyRequest:  bytesCmd,
-				RelativePath: endpoints.EndpointRegisterUser,
+				Method:       http.MethodPost,
+				RelativePath: endpoints.EndpointUser,
 			})
 
 			// Header check

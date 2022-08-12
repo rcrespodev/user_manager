@@ -25,8 +25,9 @@ func TestDeleteUserGinHandlerFunc(t *testing.T) {
 	require.NoError(t, deleteUserSetup(userRepositoryInstance))
 
 	mockGinSrv := integration.NewTestServerHttpGin(endpoints.Endpoints{
-		endpoints.EndpointDeleteUser: {
-			HttpMethod:     http.MethodPost,
+		endpoints.BuildEndpointKey(endpoints.EndpointUser, http.MethodDelete): {
+			HttpMethod:     http.MethodDelete,
+			RelPath:        endpoints.EndpointUser,
 			Handler:        deleteUser.DeleteUserGinHandlerFunc(),
 			AuthValidation: true,
 		},
@@ -115,7 +116,8 @@ func TestDeleteUserGinHandlerFunc(t *testing.T) {
 
 			response := mockGinSrv.DoRequest(integration.DoRequestCommand{
 				BodyRequest:  bytesCmd,
-				RelativePath: endpoints.EndpointDeleteUser,
+				Method:       http.MethodDelete,
+				RelativePath: endpoints.EndpointUser,
 				Token:        tt.args.token,
 			})
 

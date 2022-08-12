@@ -134,8 +134,9 @@ func TestGetUserGinHandlerFunc(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			mockServer := integration.NewTestServerHttpGin(endpoints.Endpoints{
-				endpoints.EndpointGetUser: endpoints.Endpoint{
+				endpoints.BuildEndpointKey(endpoints.EndpointUser, http.MethodGet): endpoints.Endpoint{
 					HttpMethod:     http.MethodGet,
+					RelPath:        endpoints.EndpointUser,
 					Handler:        getUser.GetUserGinHandlerFunc(),
 					AuthValidation: true,
 				},
@@ -143,7 +144,8 @@ func TestGetUserGinHandlerFunc(t *testing.T) {
 
 			response := mockServer.DoRequest(integration.DoRequestCommand{
 				BodyRequest:  nil,
-				RelativePath: endpoints.EndpointGetUser,
+				Method:       http.MethodGet,
+				RelativePath: endpoints.EndpointUser,
 				Uuid:         tt.args.userUuid,
 				Token:        tt.args.token,
 				QueryString:  buildQueryString(tt.args),

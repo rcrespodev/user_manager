@@ -22,8 +22,8 @@ func NewTestServerHttpGin(endPointsMap endpoints.Endpoints) *TestServerHttpGin {
 	engine := gin.Default()
 	engine.Use(ginMiddleware.MiddlewareHandlerFunc()) //Prd middleware
 
-	for path, endpointData := range endPointsMap {
-		engine.Handle(endpointData.HttpMethod, path, endpointData.Handler)
+	for _, endpointData := range endPointsMap {
+		engine.Handle(endpointData.HttpMethod, endpointData.RelPath, endpointData.Handler)
 	}
 
 	return &TestServerHttpGin{
@@ -35,6 +35,7 @@ func NewTestServerHttpGin(endPointsMap endpoints.Endpoints) *TestServerHttpGin {
 type DoRequestCommand struct {
 	BodyRequest  []byte
 	RelativePath string
+	Method       string
 	Uuid         string
 	Token        string
 	QueryString  string
@@ -50,10 +51,10 @@ func (t TestServerHttpGin) DoRequest(cmd DoRequestCommand) Response {
 	var method string
 	var path string
 
-	endpointData, ok := t.endpoints[cmd.RelativePath]
+	endpointData, ok := t.endpoints[endpoints.BuildEndpointKey(cmd.RelativePath, cmd.Method)]
 	if ok {
 		method = endpointData.HttpMethod
-		path = cmd.RelativePath
+		path = endpointData.RelPath
 	}
 
 	if cmd.QueryString != "" {
