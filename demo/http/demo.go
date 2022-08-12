@@ -37,17 +37,17 @@ func NewDemo(clientHttp *ClientHttp) *Demo {
 
 func (d *Demo) Exec() {
 	d.checkHealth(1)
-	time.Sleep(time.Second * 2)
+	time.Sleep(time.Second * 1)
 	d.registerNewUser(2)
-	time.Sleep(time.Second * 2)
+	time.Sleep(time.Second * 1)
 	d.loginUser(3)
-	time.Sleep(time.Second * 2)
+	time.Sleep(time.Second * 1)
 	d.getUserInfo(4)
-	time.Sleep(time.Second * 2)
+	time.Sleep(time.Second * 1)
 	d.logOutUser(5)
-	time.Sleep(time.Second * 2)
+	time.Sleep(time.Second * 1)
 	d.loginUser(6)
-	time.Sleep(time.Second * 2)
+	time.Sleep(time.Second * 1)
 	d.deleteUser(7)
 }
 
