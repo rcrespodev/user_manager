@@ -66,7 +66,7 @@ func NewEndpoints() Endpoints {
 			Handler:        loginUser.LoginUserGinHandlerFunc(),
 			AuthValidation: false,
 		},
-		fmt.Sprintf("%s-%s", http.MethodDelete, EndpointUser): Endpoint{
+		fmt.Sprintf("%s-%s", http.MethodDelete, EndpointUserLogin): Endpoint{
 			HttpMethod:     http.MethodDelete,
 			RelPath:        EndpointUserLogin,
 			Handler:        logOutUser.LogOutUserGinHandlerFunc(),

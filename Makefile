@@ -26,3 +26,7 @@ go_test:
 cert:
 	openssl genrsa -out cert/id_rsa 4096
 	openssl rsa -in cert/id_rsa -pubout -out cert/id_rsa.pub
+
+run_demo:
+	CGO_ENABLED=0 GOOS=linux go build -o ./demo/http/bin/main-linux ./demo/http/cmd/main.go
+	./demo/http/bin/main-linux
