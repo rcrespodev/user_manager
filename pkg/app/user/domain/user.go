@@ -9,12 +9,12 @@ import (
 )
 
 type User struct {
-	uuid       uuid.UUID
-	alias      *UserAlias
-	name       *UserName
-	secondName *UserName
-	email      *UserEmail
-	password   *UserPassword
+	aggregateId uuid.UUID
+	alias       *UserAlias
+	name        *UserName
+	secondName  *UserName
+	email       *UserEmail
+	password    *UserPassword
 }
 
 type NewUserCommand struct {
@@ -43,7 +43,7 @@ func NewUser(cmd NewUserCommand, log *returnLog.ReturnLog) *User {
 			Error: nil,
 			NewMessageCommand: &message.NewMessageCommand{
 				MessageId: 004,
-				Variables: message.Variables{cmd.Uuid, "uuid"},
+				Variables: message.Variables{cmd.Uuid, "aggregateId"},
 			},
 		})
 		return nil
@@ -78,17 +78,17 @@ func NewUser(cmd NewUserCommand, log *returnLog.ReturnLog) *User {
 	}
 
 	return &User{
-		uuid:       userUuid,
-		alias:      userAlias,
-		name:       userName,
-		secondName: userSecondName,
-		email:      userEmail,
-		password:   userPassword,
+		aggregateId: userUuid,
+		alias:       userAlias,
+		name:        userName,
+		secondName:  userSecondName,
+		email:       userEmail,
+		password:    userPassword,
 	}
 }
 
 func (u User) Uuid() uuid.UUID {
-	return u.uuid
+	return u.aggregateId
 }
 
 func (u User) Alias() *UserAlias {
