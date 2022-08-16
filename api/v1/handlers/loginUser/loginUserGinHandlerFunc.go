@@ -9,7 +9,6 @@ import (
 	"github.com/rcrespodev/user_manager/pkg/app/user/application/querys/userFinder"
 	userDomain "github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel"
-	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/query"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/valueObjects"
 )
@@ -51,8 +50,7 @@ func LoginUserGinHandlerFunc() gin.HandlerFunc {
 				},
 			}
 			FindUserQuery := userFinder.NewQuery(queryArgs)
-			q := query.NewQuery(query.FindUser, FindUserQuery)
-			userSchema := kernel.Instance.QueryBus().Exec(q, log)
+			userSchema := kernel.Instance.QueryBus().Exec(FindUserQuery, log)
 			if userSchema == nil {
 				ctx.AbortWithStatus(500)
 				return

@@ -15,9 +15,9 @@ func NewBus(handlersMap HandlersMap) *Bus {
 	return &Bus{handlersMap: handlersMap}
 }
 
-func (b Bus) Exec(q *Query, returnLog *domain.ReturnLog) (data interface{}) {
+func (b Bus) Exec(q QueryInterface, returnLog *domain.ReturnLog) (data interface{}) {
 	dataCh := make(chan interface{})
-	queryId := q.QueryId()
+	queryId := q.BaseQuery().QueryId()
 	handler, ok := b.handlersMap[queryId]
 	if !ok {
 		returnLog.LogError(domain.NewErrorCommand{

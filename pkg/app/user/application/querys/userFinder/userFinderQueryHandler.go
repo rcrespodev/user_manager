@@ -15,8 +15,8 @@ func NewQueryHandler(userFinder *UserFinder) *QueryHandler {
 	return &QueryHandler{userFinder: userFinder}
 }
 
-func (q QueryHandler) Query(query *query.Query, log *returnLog.ReturnLog, data chan interface{}) {
-	findUserQuery, ok := query.Args().(*Query)
+func (q QueryHandler) Query(query query.QueryInterface, log *returnLog.ReturnLog, data chan interface{}) {
+	findUserQuery, ok := query.(*Query)
 	if !ok {
 		log.LogError(returnLog.NewErrorCommand{
 			Error: fmt.Errorf("invalid type assertion"),

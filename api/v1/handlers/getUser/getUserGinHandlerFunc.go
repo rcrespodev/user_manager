@@ -8,7 +8,6 @@ import (
 	"github.com/rcrespodev/user_manager/pkg/app/user/application/querys/userFinder"
 	"github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel"
-	query "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/query"
 	returnLog "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"net/http"
@@ -38,8 +37,7 @@ func GetUserGinHandlerFunc() gin.HandlerFunc {
 				Where: queryArgs,
 			},
 		})
-		q := query.NewQuery(query.FindUser, findUserQuery)
-		data := kernel.Instance.QueryBus().Exec(q, retLog)
+		data := kernel.Instance.QueryBus().Exec(findUserQuery, retLog)
 
 		userSchema, ok := data.(*domain.UserSchema)
 		if !ok {

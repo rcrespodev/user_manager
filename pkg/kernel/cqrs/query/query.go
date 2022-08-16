@@ -5,12 +5,6 @@ type Query struct {
 	args    interface{}
 }
 
-type Id int8
-
-const (
-	FindUser Id = 0 + iota
-)
-
 func NewQuery(queryId Id, args interface{}) *Query {
 	return &Query{queryId: queryId, args: args}
 }
