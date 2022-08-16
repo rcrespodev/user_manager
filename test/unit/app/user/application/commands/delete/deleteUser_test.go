@@ -5,7 +5,6 @@ import (
 	deleteApp "github.com/rcrespodev/user_manager/pkg/app/user/application/commands/delete"
 	userDomain "github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	"github.com/rcrespodev/user_manager/pkg/app/user/repository/userRepository"
-	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/valueObjects"
@@ -89,13 +88,12 @@ func TestDeleteUser(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			deleteUserCommand := deleteApp.NewDeleteUserCommand(tt.args.userUuid)
-			cmd := command.NewCommand(command.DeleteUser, uuid.New(), deleteUserCommand)
-			retLog := domain.NewReturnLog(cmd.Uuid(), messageRepository, "user")
+			retLog := domain.NewReturnLog(uuid.New(), messageRepository, "user")
 			userDeleter := deleteApp.NewUserDeleter(mockUserRepository)
 			cmdHandler := deleteApp.NewDeleteUserCommandHandler(userDeleter)
 
 			done := make(chan bool)
-			go cmdHandler.Handle(*cmd, retLog, done)
+			go cmdHandler.Handle(deleteUserCommand, retLog, done)
 			<-done
 			tt.want.TestResponse(t, retLog)
 		})

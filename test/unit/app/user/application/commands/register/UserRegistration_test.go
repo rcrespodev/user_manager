@@ -5,7 +5,6 @@ import (
 	register2 "github.com/rcrespodev/user_manager/pkg/app/user/application/commands/register"
 	userDomain "github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	"github.com/rcrespodev/user_manager/pkg/app/user/repository/userRepository"
-	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/valueObjects"
@@ -143,11 +142,10 @@ func TestUserRegistration(t *testing.T) {
 				Password:   tt.args.password,
 			})
 
-			cmd := command.NewCommand(command.RegisterUser, cmdUuid, registerUserCommand)
 			userRegistration := register2.NewUserRegistration(mockRepository)
 			handler := register2.NewRegisterUserCommandHandler(userRegistration)
-			retLog := domain.NewReturnLog(cmd.Uuid(), messageRepository, "user")
-			go handler.Handle(*cmd, retLog, done)
+			retLog := domain.NewReturnLog(cmdUuid, messageRepository, "user")
+			go handler.Handle(registerUserCommand, retLog, done)
 
 			<-done
 

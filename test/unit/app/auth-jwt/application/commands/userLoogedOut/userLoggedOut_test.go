@@ -5,7 +5,6 @@ import (
 	"github.com/rcrespodev/user_manager/pkg/app/auth-jwt/application/commands/userLoggedOut"
 	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/auth-jwt/domain"
 	jwtRepository "github.com/rcrespodev/user_manager/pkg/app/auth-jwt/repository"
-	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/valueObjects"
@@ -140,12 +139,11 @@ func TestUserLoggedOut(t *testing.T) {
 			retLog := domain.NewReturnLog(uuidCmd, mockMessageRepository, "user")
 
 			userLoggedOutCmd := userLoggedOut.NewCommand(tt.args.uuid)
-			cmd := command.NewCommand(command.UserLoggedOut, uuidCmd, userLoggedOutCmd)
 			userLoggerOut := userLoggedOut.NewUserLoggerOut(mockJwtRepository)
 			cmdHandler := userLoggedOut.NewCommandHandler(userLoggerOut)
 
 			done := make(chan bool)
-			go cmdHandler.Handle(*cmd, retLog, done)
+			go cmdHandler.Handle(userLoggedOutCmd, retLog, done)
 			<-done
 
 			// ReturnLog check

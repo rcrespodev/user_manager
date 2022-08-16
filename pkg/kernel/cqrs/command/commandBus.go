@@ -17,7 +17,7 @@ func NewBus(handlersMap HandlersMap) *Bus {
 
 func (b Bus) Exec(c Command, returnLog *domain.ReturnLog) {
 	done := make(chan bool)
-	commandId := c.CommandId()
+	commandId := c.BaseCommand().CommandId()
 	handler, ok := b.handlersMap[commandId]
 	if !ok {
 		returnLog.LogError(domain.NewErrorCommand{

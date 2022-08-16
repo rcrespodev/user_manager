@@ -16,7 +16,7 @@ func NewCommandHandler(userLogger *UserLogger) *CommandHandler {
 }
 
 func (c CommandHandler) Handle(command command.Command, log *returnLog.ReturnLog, done chan bool) {
-	cmd, ok := command.Args().(*Command)
+	cmd, ok := command.(*Command)
 	if !ok {
 		log.LogError(returnLog.NewErrorCommand{
 			Error: fmt.Errorf("invalid type assertion"),

@@ -1,12 +1,15 @@
 package register
 
+import "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
+
 type RegisterUserCommand struct {
-	uuid       string
-	alias      string
-	name       string
-	secondName string
-	email      string
-	password   string
+	uuid        string
+	alias       string
+	name        string
+	secondName  string
+	email       string
+	password    string
+	baseCommand *command.BaseCommand
 }
 
 type ClientArgs struct {
@@ -20,11 +23,16 @@ type ClientArgs struct {
 
 func NewRegisterUserCommand(args ClientArgs) *RegisterUserCommand {
 	return &RegisterUserCommand{
-		uuid:       args.Uuid,
-		alias:      args.Alias,
-		name:       args.Name,
-		secondName: args.SecondName,
-		email:      args.Email,
-		password:   args.Password,
+		uuid:        args.Uuid,
+		alias:       args.Alias,
+		name:        args.Name,
+		secondName:  args.SecondName,
+		email:       args.Email,
+		password:    args.Password,
+		baseCommand: command.NewBaseCommand(args.Uuid, command.RegisterUser),
 	}
+}
+
+func (r RegisterUserCommand) BaseCommand() *command.BaseCommand {
+	return r.baseCommand
 }

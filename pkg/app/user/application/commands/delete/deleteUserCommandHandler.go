@@ -16,7 +16,7 @@ func NewDeleteUserCommandHandler(userDeleter *UserDeleter) *DeleteUserCommandHan
 }
 
 func (d DeleteUserCommandHandler) Handle(command command.Command, log *returnLog.ReturnLog, done chan bool) {
-	cmd, ok := command.Args().(*DeleteUserCommand)
+	cmd, ok := command.(*DeleteUserCommand)
 	if !ok {
 		log.LogError(returnLog.NewErrorCommand{
 			Error: fmt.Errorf("invalid type assertion"),

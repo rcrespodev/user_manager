@@ -5,7 +5,6 @@ import (
 	login "github.com/rcrespodev/user_manager/pkg/app/user/application/commands/login"
 	userDomain "github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	"github.com/rcrespodev/user_manager/pkg/app/user/repository/userRepository"
-	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/valueObjects"
@@ -216,13 +215,12 @@ func TestUserLogin(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			//mockUserSessionRepository := userSessionRepository.NewMockUserSessionRepository(userSessionRepository.MockData{})
 			userLoginCmd := login.NewLoginUserCommand(tt.args)
-			cmd := command.NewCommand(command.LoginUser, uuid.New(), userLoginCmd)
-			retLog := domain.NewReturnLog(cmd.Uuid(), messageRepository, "user")
+			retLog := domain.NewReturnLog(uuid.New(), messageRepository, "user")
 			userLogger := login.NewUserLogger(mockUserRepository)
 			cmdHandler := login.NewLoginUserCommandHandler(userLogger)
 
 			done := make(chan bool)
-			go cmdHandler.Handle(*cmd, retLog, done)
+			go cmdHandler.Handle(userLoginCmd, retLog, done)
 			<-done
 
 			// ReturnLog check

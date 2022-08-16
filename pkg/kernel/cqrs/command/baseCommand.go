@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-type CommandInterface interface {
+type Command interface {
 	BaseCommand() *BaseCommand
 }
 

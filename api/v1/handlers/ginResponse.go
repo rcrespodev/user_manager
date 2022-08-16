@@ -7,7 +7,6 @@ import (
 	"github.com/rcrespodev/user_manager/pkg/app/auth-jwt/application/commands/userLogged"
 	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/auth-jwt/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel"
-	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"net/http"
 )
@@ -41,9 +40,8 @@ func GinResponse(cmd GinResponseCommand) {
 	}
 
 	userLoggedCommand := userLogged.NewCommand(jwtKeyUuid)
-	c := command.NewCommand(command.UserLogged, jwtKeyUuid, userLoggedCommand)
 	userLoggedLog := domain.NewReturnLog(jwtKeyUuid, kernel.Instance.MessageRepository(), "authorization")
-	kernel.Instance.CommandBus().Exec(*c, userLoggedLog)
+	kernel.Instance.CommandBus().Exec(userLoggedCommand, userLoggedLog)
 	if userLoggedLog.Error() != nil {
 		response := api.NewCommandResponse(userLoggedLog)
 		cmd.Ctx.JSON(int(userLoggedLog.HttpCode()), response)

@@ -6,7 +6,6 @@ import (
 	"github.com/rcrespodev/user_manager/api"
 	"github.com/rcrespodev/user_manager/pkg/app/auth-jwt/application/commands/userLoggedOut"
 	"github.com/rcrespodev/user_manager/pkg/kernel"
-	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"net/http"
 )
@@ -33,9 +32,8 @@ func LogOutUserGinHandlerFunc() gin.HandlerFunc {
 		}
 
 		userLoggedOutCmd := userLoggedOut.NewCommand(tokenUuidStr)
-		cmd := command.NewCommand(command.UserLoggedOut, tokenUuid, userLoggedOutCmd)
 		retLog := domain.NewReturnLog(tokenUuid, kernel.Instance.MessageRepository(), "authorization")
-		kernel.Instance.CommandBus().Exec(*cmd, retLog)
+		kernel.Instance.CommandBus().Exec(userLoggedOutCmd, retLog)
 		response := api.NewCommandResponse(retLog)
 		ctx.JSON(int(retLog.HttpCode()), response)
 	}

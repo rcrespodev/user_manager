@@ -9,7 +9,6 @@ import (
 	"github.com/rcrespodev/user_manager/pkg/app/user/application/querys/userFinder"
 	userDomain "github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel"
-	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/query"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/valueObjects"
@@ -27,9 +26,8 @@ func LoginUserGinHandlerFunc() gin.HandlerFunc {
 		cmdUuid := uuid.New()
 		log := domain.NewReturnLog(cmdUuid, kernel.Instance.MessageRepository(), "user")
 		loginCommand := login.NewLoginUserCommand(clientArgs)
-		cmd := command.NewCommand(command.LoginUser, cmdUuid, loginCommand)
 		cmdBus := kernel.Instance.CommandBus()
-		cmdBus.Exec(*cmd, log)
+		cmdBus.Exec(loginCommand, log)
 
 		if log.Status() == valueObjects.Success {
 			queryArgs := []userDomain.FindUserQuery{

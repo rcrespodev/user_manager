@@ -7,7 +7,6 @@ import (
 	"github.com/rcrespodev/user_manager/api/v1/handlers"
 	"github.com/rcrespodev/user_manager/pkg/app/user/application/commands/register"
 	"github.com/rcrespodev/user_manager/pkg/kernel"
-	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"time"
@@ -41,10 +40,8 @@ func RegisterUserGinHandlerFunc() gin.HandlerFunc {
 		log := domain.NewReturnLog(cmdUuid, kernel.Instance.MessageRepository(), "user")
 
 		registerUserCommand := register.NewRegisterUserCommand(clientArgs)
-		cmd := command.NewCommand(command.RegisterUser, cmdUuid, registerUserCommand)
-
 		cmdBus := kernel.Instance.CommandBus()
-		cmdBus.Exec(*cmd, log)
+		cmdBus.Exec(registerUserCommand, log)
 
 		response = api.NewCommandResponse(log)
 		ctx.Set("jwt_key", cmdUuid.String())

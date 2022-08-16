@@ -7,7 +7,6 @@ import (
 	"github.com/rcrespodev/user_manager/api/v1/handlers"
 	delete "github.com/rcrespodev/user_manager/pkg/app/user/application/commands/delete"
 	"github.com/rcrespodev/user_manager/pkg/kernel"
-	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 )
@@ -41,8 +40,7 @@ func DeleteUserGinHandlerFunc() gin.HandlerFunc {
 
 		// if user is authorized, delete user command
 		deleteUserCommand := delete.NewDeleteUserCommand(clientArgs.UserUuid)
-		cmd := command.NewCommand(command.DeleteUser, cmdUuid, deleteUserCommand)
-		kernel.Instance.CommandBus().Exec(*cmd, log)
+		kernel.Instance.CommandBus().Exec(deleteUserCommand, log)
 
 		ctx.Set("jwt_key", deleteUserCommand.UserUuid())
 		response = api.NewCommandResponse(log)
