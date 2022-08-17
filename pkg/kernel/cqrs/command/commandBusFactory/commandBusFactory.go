@@ -1,9 +1,9 @@
 package commandBusFactory
 
 import (
-	"github.com/rcrespodev/user_manager/pkg/app/auth-jwt/application/commands/userLogged"
-	"github.com/rcrespodev/user_manager/pkg/app/auth-jwt/application/commands/userLoggedOut"
-	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/auth-jwt/domain"
+	"github.com/rcrespodev/user_manager/pkg/app/authJwt/application/commands/userLogged"
+	"github.com/rcrespodev/user_manager/pkg/app/authJwt/application/commands/userLoggedOut"
+	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/authJwt/domain"
 	delete "github.com/rcrespodev/user_manager/pkg/app/user/application/commands/delete"
 	"github.com/rcrespodev/user_manager/pkg/app/user/application/commands/login"
 	"github.com/rcrespodev/user_manager/pkg/app/user/application/commands/register"

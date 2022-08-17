@@ -24,12 +24,18 @@ const (
 	UserRegistered Id = iota + 1
 )
 
-func NewBaseEvent(aggregateId command.AggregateId, eventId Id, commandUuid uuid.UUID) *BaseEvent {
+type NewBaseEventCommand struct {
+	AggregateId command.AggregateId
+	EventId     Id
+	CommandUuid uuid.UUID
+}
+
+func NewBaseEvent(cmd NewBaseEventCommand) *BaseEvent {
 	return &BaseEvent{
 		eventUuid:   uuid.New(),
-		commandUuid: commandUuid,
-		aggregateId: aggregateId,
-		eventId:     eventId,
+		commandUuid: cmd.CommandUuid,
+		aggregateId: cmd.AggregateId,
+		eventId:     cmd.EventId,
 		occurredOn:  time.Now(),
 	}
 }

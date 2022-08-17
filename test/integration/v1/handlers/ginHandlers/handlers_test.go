@@ -2,7 +2,7 @@ package handlers_test
 
 import (
 	"github.com/joho/godotenv"
-	jwtRepository "github.com/rcrespodev/user_manager/pkg/app/auth-jwt/repository"
+	jwtRepository "github.com/rcrespodev/user_manager/pkg/app/authJwt/repository"
 	userRepository "github.com/rcrespodev/user_manager/pkg/app/user/repository/userRepository"
 	"github.com/rcrespodev/user_manager/pkg/kernel"
 	"github.com/rcrespodev/user_manager/test/integration"

@@ -26,9 +26,14 @@ const (
 	TokenValidation
 	UserLogged
 	UserLoggedOut
+	SendEmailUserRegistered
 )
 
 type AggregateId string
+
+func (a AggregateId) String() string {
+	return string(a)
+}
 
 func NewBaseCommand(aggregateId string, commandId Id) *BaseCommand {
 	return &BaseCommand{

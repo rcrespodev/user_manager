@@ -3,7 +3,7 @@ package kernel
 import (
 	"database/sql"
 	"github.com/go-redis/redis/v8"
-	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/auth-jwt/domain"
+	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/authJwt/domain"
 	"github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	"github.com/rcrespodev/user_manager/pkg/app/user/repository/userRepository"
 	"github.com/rcrespodev/user_manager/pkg/kernel/config"

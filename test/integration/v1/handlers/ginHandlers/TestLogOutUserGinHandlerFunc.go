@@ -6,7 +6,7 @@ import (
 	"github.com/rcrespodev/user_manager/api"
 	"github.com/rcrespodev/user_manager/api/v1/endpoints"
 	"github.com/rcrespodev/user_manager/api/v1/handlers/logOutUser"
-	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/auth-jwt/domain"
+	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/authJwt/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"

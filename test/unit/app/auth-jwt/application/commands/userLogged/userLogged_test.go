@@ -2,9 +2,9 @@ package userLogged
 
 import (
 	"github.com/google/uuid"
-	"github.com/rcrespodev/user_manager/pkg/app/auth-jwt/application/commands/userLogged"
-	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/auth-jwt/domain"
-	jwtRepository "github.com/rcrespodev/user_manager/pkg/app/auth-jwt/repository"
+	"github.com/rcrespodev/user_manager/pkg/app/authJwt/application/commands/userLogged"
+	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/authJwt/domain"
+	jwtRepository "github.com/rcrespodev/user_manager/pkg/app/authJwt/repository"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/valueObjects"

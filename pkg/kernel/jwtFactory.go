@@ -2,8 +2,8 @@ package kernel
 
 import (
 	"github.com/go-redis/redis/v8"
-	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/auth-jwt/domain"
-	jwtRepository "github.com/rcrespodev/user_manager/pkg/app/auth-jwt/repository"
+	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/authJwt/domain"
+	jwtRepository "github.com/rcrespodev/user_manager/pkg/app/authJwt/repository"
 	"github.com/rcrespodev/user_manager/pkg/kernel/config"
 	"log"
 	"os"
