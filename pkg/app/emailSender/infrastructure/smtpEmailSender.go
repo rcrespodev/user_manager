@@ -23,8 +23,10 @@ type EmailAuthConf struct {
 
 func NewSmtpEmailSender(conf EmailAuthConf) *SmtpEmailSender {
 	return &SmtpEmailSender{
-		emailAuth: smtp.PlainAuth("", conf.From, conf.Password, conf.Host),
 		userName:  conf.From,
+		host:      conf.Host,
+		port:      conf.Port,
+		emailAuth: smtp.PlainAuth("", conf.From, conf.Password, conf.Host),
 	}
 }
 

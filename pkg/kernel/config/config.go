@@ -38,8 +38,8 @@ type Config struct {
 	Smtp struct {
 		Host     string `envconfig:"default=smtp.gmail.com"`
 		Port     string `envconfig:"default=587"`
-		Username string `envconfig:"default=/app/logs"`
-		Password string `envconfig:"default=/app/logs"`
+		Username string `envconfig:"default=user.manager.email.info@gmail.com"`
+		Password string `envconfig:"default=kkgaoclbngmnzuhb"`
 		Welcome  struct {
 			Template string `envconfig:"default=/app/pkg/app/emailSender/domain/welcomeTemplate.txt"`
 		}

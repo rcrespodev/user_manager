@@ -45,7 +45,15 @@ func (s SendEmailOnUserRegistered) Exec(command *SendEmailOnUserRegisteredComman
 		},
 	})
 
-	if userSchema == nil || log.Error() != nil {
+	if userSchema == nil {
+		if log.Error() == nil {
+			log.LogError(returnLog.NewErrorCommand{
+				NewMessageCommand: &message.NewMessageCommand{
+					MessageId:  17,
+					MessagePkg: "user",
+				},
+			})
+		}
 		return
 	}
 

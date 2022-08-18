@@ -136,6 +136,12 @@ func GetMessagesSourceData() *MessagesSchema {
 				Text:            "user is not logged",
 				ClientErrorType: 2,
 			},
+			{
+				Id:              0,
+				Pkg:             "email_sender",
+				Text:            "welcome email send successful to user email %v",
+				ClientErrorType: 0,
+			},
 		},
 	}
 }

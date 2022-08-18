@@ -140,3 +140,15 @@ func (k *Kernel) QueryBus() *query.Bus {
 func (k *Kernel) RabbitClient() *rabbitMq.Client {
 	return k.rabbitClient
 }
+
+func (k *Kernel) EventBus() event.Bus {
+	return k.eventBus
+}
+
+func (k *Kernel) EmailSender() emailSenderDomain.EmailSender {
+	return k.emailSender
+}
+
+func (k *Kernel) SentEmailRepository() emailSenderDomain.SentEmailRepository {
+	return k.sentEmailRepository
+}

@@ -34,6 +34,11 @@ func NewMySqlRepository(mySqlClient *sql.DB) *MySqlRepository {
 		log.Fatal(err)
 	}
 
+	_, err = mySqlRepository.mySqlClient.Exec(schemas.SentEmail)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	return mySqlRepository
 }
 

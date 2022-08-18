@@ -5,6 +5,7 @@ import (
 	emailSenderDomain "github.com/rcrespodev/user_manager/pkg/app/emailSender/domain"
 	returnLog "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/repository/mySql"
+	"time"
 )
 
 type MySqlSentEmailRepository struct {
@@ -55,7 +56,9 @@ func (m *MySqlSentEmailRepository) Get(userUuid string) []*emailSenderDomain.Sen
 	var schemas []*emailSenderDomain.SentEmailSchema
 	const (
 		getSentEmail = `
-			SELECT (user_uuid, sent, sent_on, error) FROM sent_email WHERE user_uuid = ?;
+			SELECT s.user_uuid, s.sent, s.sent_on, s.error
+			FROM sent_email as s
+			WHERE user_uuid = ?;
 		`
 	)
 
@@ -64,14 +67,41 @@ func (m *MySqlSentEmailRepository) Get(userUuid string) []*emailSenderDomain.Sen
 		return nil
 	}
 	rows, err := trx.Query(getSentEmail, userUuid)
-	if err == sql.ErrNoRows || rows.Err() != nil {
+	if err == sql.ErrNoRows {
+		return nil
+	}
+
+	if rows == nil {
+		return nil
+	}
+
+	if rows.Err() != nil {
 		return nil
 	}
 
 	for rows.Next() {
-		var schema *emailSenderDomain.SentEmailSchema
-		if err = rows.Scan(&schema); err != nil {
+		var (
+			//schema *emailSenderDomain.SentEmailSchema
+			uuid   string
+			sent   bool
+			sentOn string
+			e      string
+		)
+
+		//var schema *emailSenderDomain.SentEmailSchema
+		if err = rows.Scan(&uuid, &sent, &sentOn, &e); err != nil {
 			continue
+		}
+
+		sentOnTime, err := time.Parse("2006-01-02 15:04:05", sentOn)
+		if err != nil {
+			continue
+		}
+		schema := &emailSenderDomain.SentEmailSchema{
+			UserUuid: uuid,
+			Sent:     sent,
+			SentOn:   sentOnTime,
+			Error:    e,
 		}
 
 		schemas = append(schemas, schema)

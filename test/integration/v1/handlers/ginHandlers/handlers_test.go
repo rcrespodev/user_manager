@@ -74,6 +74,11 @@ func TestDeleteUser(t *testing.T) {
 	handlers.TestDeleteUserGinHandlerFunc(t)
 }
 
+func TestSentEmailOnRegisteredUser(t *testing.T) {
+	clearRepositories(t)
+	handlers.TestSendEmailOnUserRegistered(t)
+}
+
 func clearRepositories(t *testing.T) {
 	mySqlUserRepository, ok := kernel.Instance.UserRepository().(*userRepository.MySqlUserRepository)
 	if ok {
