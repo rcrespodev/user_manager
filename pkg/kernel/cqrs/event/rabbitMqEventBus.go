@@ -27,8 +27,9 @@ type Schema struct {
 
 func NewRabbitMqEventBus(client *rabbitMq.Client) *RabbitMqEventBus {
 	return &RabbitMqEventBus{
-		handlersMap: nil,
-		client:      client,
+		handlersMap:     map[Id][]Handler{},
+		client:          client,
+		publishedEvents: map[string]Event{},
 	}
 }
 
@@ -52,7 +53,7 @@ func (r *RabbitMqEventBus) Publish(events []Event) {
 		eventId := event.BaseEvent().eventId
 		_, ok := r.handlersMap[eventId]
 		if !ok {
-			r.handlersMap[eventId] = nil
+			//r.handlersMap[eventId] = nil
 			err := r.client.DeclareQueue(string(eventId))
 			if err != nil {
 				log.Fatal(err)

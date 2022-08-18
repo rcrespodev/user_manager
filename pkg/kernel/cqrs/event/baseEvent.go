@@ -18,10 +18,10 @@ type BaseEvent struct {
 	occurredOn  time.Time
 }
 
-type Id uint8
+type Id string
 
 const (
-	UserRegistered Id = iota + 1
+	UserRegistered Id = "user_registered"
 )
 
 type NewBaseEventCommand struct {

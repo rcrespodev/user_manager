@@ -24,6 +24,7 @@ func NewRabbitMqClient(connection *amqp.Connection) *Client {
 	return &Client{
 		client: connection,
 		chanel: ch,
+		queues: map[string]amqp.Queue{},
 	}
 }
 
@@ -36,7 +37,7 @@ func (c *Client) DeclareQueue(queueName string) error {
 		false,
 		nil,
 	)
-	if err != nil {
+	if err == nil {
 		c.queues[queueName] = queue
 	}
 	return err
@@ -83,4 +84,8 @@ func (c *Client) ConsumeQueue(queueName string) (<-chan amqp.Delivery, error) {
 		false,
 		false,
 		nil)
+}
+
+func (c *Client) Chanel() *amqp.Channel {
+	return c.chanel
 }

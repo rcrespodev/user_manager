@@ -11,6 +11,7 @@ import (
 	"github.com/rcrespodev/user_manager/pkg/app/user/application/commands/register"
 	"github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
+	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/event"
 )
 
 type NewCommandBusCommand struct {
@@ -26,11 +27,12 @@ type NewCommandBusCommand struct {
 		SentEmailRepository emailSenderDomain.SentEmailRepository
 		WelcomeTemplatePath string
 	}
+	EventBus event.Bus
 }
 
 func NewCommandBusInstance(cmd NewCommandBusCommand) *command.Bus {
 	registerUserCommandHandler := register.NewRegisterUserCommandHandler(
-		register.NewUserRegistration(cmd.User.UserRepository))
+		cmd.EventBus, register.NewUserRegistration(cmd.User.UserRepository))
 
 	loginUserCommandHandler := login.NewLoginUserCommandHandler(
 		login.NewUserLogger(cmd.User.UserRepository))

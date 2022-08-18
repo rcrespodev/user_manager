@@ -9,6 +9,7 @@ import (
 	"github.com/rcrespodev/user_manager/pkg/app/user/application/commands/register"
 	"github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel"
+	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/event"
 	returnLog "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/test/integration"
@@ -198,6 +199,18 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 				// password are stored in hash format in DB.
 				err = bcrypt.CompareHashAndPassword(actualUser.HashedPassword, []byte(expectedUser.Password().String()))
 				require.NoError(t, err)
+
+				// event validation
+				messages, err := kernel.Instance.RabbitClient().Chanel().Consume(string(event.UserRegistered), "", false, false, false, false, nil)
+				require.NoError(t, err)
+				for delivery := range messages {
+					var schema event.Schema
+					err := json.Unmarshal(delivery.Body, &schema)
+					require.NoError(t, err)
+					require.NoError(t, delivery.Ack(false))
+					require.EqualValues(t, cmdUuid.String(), schema.AggregateId)
+					break
+				}
 			}
 		})
 	}

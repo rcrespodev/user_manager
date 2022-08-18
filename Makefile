@@ -15,7 +15,7 @@ stop_services:
 	sudo service redis stop | sudo service mysql stop
 
 stop_test_services:
-	docker stop test_app_mysql test_app_redis
+	docker stop test_app_mysql test_app_redis test_app_rabbitmq
 
 run_tests:
 	sudo chmod u+x ./test.sh && ./test.sh
