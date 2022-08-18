@@ -5,6 +5,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/rcrespodev/user_manager/pkg/app/emailSender/application/commands"
 	"github.com/rcrespodev/user_manager/pkg/app/emailSender/infrastructure"
+	repository2 "github.com/rcrespodev/user_manager/pkg/app/emailSender/repository"
 	userDomain "github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	userRepository2 "github.com/rcrespodev/user_manager/pkg/app/user/repository/userRepository"
 	retLogDomain "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
@@ -34,7 +35,7 @@ var messageRepository = repository.NewMockMessageRepository([]repository.MockDat
 
 var userRepository = userRepository2.NewMockUserRepository()
 var emailSender = infrastructure.MockEmailSender{}
-var mockSentEmailRepository = infrastructure.NewMockSentEmailRepository(nil)
+var mockSentEmailRepository = repository2.NewMockSentEmailRepository(nil)
 
 func TestSendEmailOnUserRegistered(t *testing.T) {
 	setUserMockData(userRepository)

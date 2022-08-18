@@ -1,4 +1,4 @@
-package infrastructure
+package repository
 
 import (
 	emailSenderDomain "github.com/rcrespodev/user_manager/pkg/app/emailSender/domain"

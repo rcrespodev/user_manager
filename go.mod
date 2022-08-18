@@ -10,6 +10,7 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/joho/godotenv v1.4.0
 	github.com/ory/dockertest/v3 v3.9.1
+	github.com/rabbitmq/amqp091-go v1.4.0
 	github.com/stretchr/testify v1.7.1
 	github.com/vrischmann/envconfig v1.3.0
 	golang.org/x/crypto v0.0.0-20211215153901-e495a2d5b3d3

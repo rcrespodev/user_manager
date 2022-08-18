@@ -35,6 +35,15 @@ type Config struct {
 			Path string `envconfig:"default=/app/logs"`
 		}
 	}
+	Smtp struct {
+		Host     string `envconfig:"default=smtp.gmail.com"`
+		Port     string `envconfig:"default=587"`
+		Username string `envconfig:"default=/app/logs"`
+		Password string `envconfig:"default=/app/logs"`
+		Welcome  struct {
+			Template string `envconfig:"default=/app/pkg/app/emailSender/domain/welcomeTemplate.txt"`
+		}
+	}
 }
 
 func Setup() *Config {

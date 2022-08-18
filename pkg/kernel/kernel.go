@@ -3,7 +3,11 @@ package kernel
 import (
 	"database/sql"
 	"github.com/go-redis/redis/v8"
+	amqp "github.com/rabbitmq/amqp091-go"
 	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/authJwt/domain"
+	emailSenderDomain "github.com/rcrespodev/user_manager/pkg/app/emailSender/domain"
+	"github.com/rcrespodev/user_manager/pkg/app/emailSender/infrastructure"
+	emailSenderRepository "github.com/rcrespodev/user_manager/pkg/app/emailSender/repository"
 	"github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	"github.com/rcrespodev/user_manager/pkg/app/user/repository/userRepository"
 	"github.com/rcrespodev/user_manager/pkg/kernel/config"
@@ -19,17 +23,19 @@ import (
 var Instance *Kernel
 
 type Kernel struct {
-	commandBus        *command.Bus
-	queryBus          *query.Bus
-	messageRepository message.MessageRepository
-	userRepository    domain.UserRepository
-	config            *config.Config
-	jwt               *jwtDomain.Jwt
-	jwtRepository     jwtDomain.JwtRepository
-	logFile           *file.LogFile
+	commandBus          *command.Bus
+	queryBus            *query.Bus
+	messageRepository   message.MessageRepository
+	userRepository      domain.UserRepository
+	config              *config.Config
+	jwt                 *jwtDomain.Jwt
+	jwtRepository       jwtDomain.JwtRepository
+	emailSender         emailSenderDomain.EmailSender
+	sentEmailRepository emailSenderDomain.SentEmailRepository
+	logFile             *file.LogFile
 }
 
-func NewPrdKernel(mySqlClient *sql.DB, redisClient *redis.Client) *Kernel {
+func NewPrdKernel(mySqlClient *sql.DB, redisClient *redis.Client, rabbitMqClient *amqp.Connection) *Kernel {
 	if Instance != nil {
 		return Instance
 	}
@@ -50,11 +56,36 @@ func NewPrdKernel(mySqlClient *sql.DB, redisClient *redis.Client) *Kernel {
 	Instance.messageRepository = repository.NewRedisMessageRepository(redisClient)
 	Instance.userRepository = userRepository.NewMySqlUserRepository(mySqlClient)
 
+	// email sender dependencies
+	Instance.emailSender = infrastructure.NewSmtpEmailSender(infrastructure.EmailAuthConf{
+		Host:     config.Conf.Smtp.Host,
+		From:     config.Conf.Smtp.Username,
+		Password: config.Conf.Smtp.Password,
+		Port:     config.Conf.Smtp.Port,
+	})
+	Instance.sentEmailRepository = emailSenderRepository.NewMySqlSentEmailRepository(mySqlClient)
+
 	// command bus instance
 	Instance.commandBus = commandBusFactory.NewCommandBusInstance(commandBusFactory.NewCommandBusCommand{
-		UserRepository: Instance.userRepository,
-		Jwt:            Instance.jwt,
-		JwtRepository:  Instance.jwtRepository,
+		User: struct {
+			UserRepository domain.UserRepository
+		}{UserRepository: Instance.userRepository},
+		Jwt: struct {
+			Jwt           *jwtDomain.Jwt
+			JwtRepository jwtDomain.JwtRepository
+		}{
+			Jwt:           Instance.jwt,
+			JwtRepository: Instance.jwtRepository,
+		},
+		EmailSender: struct {
+			EmailSender         emailSenderDomain.EmailSender
+			SentEmailRepository emailSenderDomain.SentEmailRepository
+			WelcomeTemplatePath string
+		}{
+			EmailSender:         Instance.emailSender,
+			SentEmailRepository: Instance.sentEmailRepository,
+			WelcomeTemplatePath: config.Conf.Smtp.Welcome.Template,
+		},
 	})
 
 	// query bus instance

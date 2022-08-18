@@ -1,6 +1,6 @@
 package event
 
 type Bus interface {
-	Subscribe(events []Event)
-	Publish(eventId Id, handler Handler)
+	Subscribe(eventId Id, handler Handler)
+	Publish(events []Event)
 }

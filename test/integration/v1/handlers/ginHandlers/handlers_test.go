@@ -20,8 +20,9 @@ func TestMain(m *testing.M) {
 
 	mySqlPool := integration.NewDockerTestMySql()
 	redisPool := integration.NewDockerTestRedis()
+	rabbitMqPool := integration.NewRabbitPoolConnection()
 
-	kernel.NewPrdKernel(mySqlPool.MySqlClient, redisPool.RedisClient)
+	kernel.NewPrdKernel(mySqlPool.MySqlClient, redisPool.RedisClient, rabbitMqPool.Connection())
 
 	code := m.Run()
 
@@ -35,6 +36,11 @@ func TestMain(m *testing.M) {
 			os.Exit(3)
 		}
 		log.Printf(" === Docker Container %s removed", redisPool.DockerResource.Container.Name)
+
+		if err := rabbitMqPool.Pool().Purge(rabbitMqPool.Resource()); err != nil {
+			os.Exit(3)
+		}
+		log.Printf(" === Docker Container %s removed", rabbitMqPool.Resource().Container.Name)
 		os.Exit(code)
 	}()
 }
