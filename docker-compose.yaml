@@ -15,14 +15,14 @@ services:
       - redis
       - mysql
     restart: on-failure
-    environment:
-      APP_HOST: 0.0.0.0
-      APP_PORT: 8080
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      MYSQL_USER: root
-      MYSQL_PASSWORD: my_secret
-      MYSQL_DATABASE: user_manager
+#    environment:
+#      APP_HOST: 0.0.0.0
+#      APP_PORT: 8080
+#      REDIS_HOST: redis
+#      REDIS_PORT: 6379
+#      MYSQL_USER: root
+#      MYSQL_PASSWORD: my_secret
+#      MYSQL_DATABASE: user_manager
     volumes:
       - ./:/app
     networks:
