@@ -1,4 +1,4 @@
-package register
+package registerUser
 
 import (
 	"fmt"
@@ -8,21 +8,21 @@ import (
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/valueObjects"
 )
 
-type RegisterUserCommandHanlder struct {
-	userRegistration *UserRegistration
-	cmd              *RegisterUserCommand
+type CommandHandler struct {
+	userRegistration *Service
+	cmd              *Command
 	eventBus         event.Bus
 }
 
-func NewRegisterUserCommandHandler(eventBus event.Bus, userRegistration *UserRegistration) *RegisterUserCommandHanlder {
-	return &RegisterUserCommandHanlder{
+func NewRegisterUserCommandHandler(eventBus event.Bus, userRegistration *Service) *CommandHandler {
+	return &CommandHandler{
 		userRegistration: userRegistration,
 		eventBus:         eventBus,
 	}
 }
 
-func (r RegisterUserCommandHanlder) Handle(command command.Command, log *domain.ReturnLog, done chan bool) {
-	cmd, ok := command.(*RegisterUserCommand)
+func (r CommandHandler) Handle(command command.Command, log *domain.ReturnLog, done chan bool) {
+	cmd, ok := command.(*Command)
 	if !ok {
 		log.LogError(domain.NewErrorCommand{
 			Error: fmt.Errorf("invalid type assertion"),

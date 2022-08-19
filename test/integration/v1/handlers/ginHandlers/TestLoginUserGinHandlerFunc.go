@@ -5,7 +5,7 @@ import (
 	"github.com/rcrespodev/user_manager/api"
 	"github.com/rcrespodev/user_manager/api/v1/endpoints"
 	"github.com/rcrespodev/user_manager/api/v1/handlers/loginUser"
-	"github.com/rcrespodev/user_manager/pkg/app/user/application/commands/login"
+	appLoginUser "github.com/rcrespodev/user_manager/pkg/app/user/application/commands/loginUser"
 	"github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
@@ -107,7 +107,7 @@ func TestLoginUserGinHandlerFunc(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			cmd := login.ClientArgs{
+			cmd := appLoginUser.ClientArgs{
 				AliasOrEmail: tt.args.aliasOrEmail,
 				Password:     tt.args.password,
 			}

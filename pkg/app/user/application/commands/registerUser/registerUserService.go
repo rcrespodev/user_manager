@@ -1,4 +1,4 @@
-package register
+package registerUser
 
 import (
 	userFinderPkg "github.com/rcrespodev/user_manager/pkg/app/user/application/querys/userFinder"
@@ -8,18 +8,18 @@ import (
 	"sync"
 )
 
-type UserRegistration struct {
+type Service struct {
 	userRepository domain.UserRepository
 	user           *domain.User
 	userByAlias    *domain.User
 	userByEmail    *domain.User
 }
 
-func NewUserRegistration(repository domain.UserRepository) *UserRegistration {
-	return &UserRegistration{userRepository: repository}
+func NewService(repository domain.UserRepository) *Service {
+	return &Service{userRepository: repository}
 }
 
-func (u *UserRegistration) Exec(command RegisterUserCommand, log *returnLog.ReturnLog) {
+func (u *Service) Exec(command Command, log *returnLog.ReturnLog) {
 	u.user = domain.NewUser(domain.NewUserCommand{
 		Uuid:       command.uuid,
 		Alias:      command.alias,
@@ -105,7 +105,7 @@ func (u *UserRegistration) Exec(command RegisterUserCommand, log *returnLog.Retu
 	return
 }
 
-func (u *UserRegistration) finUserByAlias(wg *sync.WaitGroup, log *returnLog.ReturnLog) {
+func (u *Service) finUserByAlias(wg *sync.WaitGroup, log *returnLog.ReturnLog) {
 	userSchema := u.userRepository.FindUser(domain.FindUserQuery{
 		Log: log,
 		Where: []domain.WhereArgs{
@@ -132,7 +132,7 @@ func (u *UserRegistration) finUserByAlias(wg *sync.WaitGroup, log *returnLog.Ret
 	wg.Done()
 }
 
-func (u *UserRegistration) finUserByEmail(wg *sync.WaitGroup, log *returnLog.ReturnLog) {
+func (u *Service) finUserByEmail(wg *sync.WaitGroup, log *returnLog.ReturnLog) {
 	userSchema := u.userRepository.FindUser(domain.FindUserQuery{
 		Log: log,
 		Where: []domain.WhereArgs{

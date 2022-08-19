@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/rcrespodev/user_manager/pkg/app/emailSender/application/commands"
-	userEvents "github.com/rcrespodev/user_manager/pkg/app/user/application/commands/register"
+	userEvents "github.com/rcrespodev/user_manager/pkg/app/user/application/commands/registerUser"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/event"
 	returnLog "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"

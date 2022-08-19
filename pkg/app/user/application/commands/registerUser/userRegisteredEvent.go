@@ -1,4 +1,4 @@
-package register
+package registerUser
 
 import (
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/event"
@@ -8,7 +8,7 @@ type UserRegistered struct {
 	baseEvent *event.BaseEvent
 }
 
-func NewUserRegistered(command RegisterUserCommand) *UserRegistered {
+func NewUserRegistered(command Command) *UserRegistered {
 	return &UserRegistered{
 		baseEvent: event.NewBaseEvent(event.NewBaseEventCommand{
 			AggregateId: command.BaseCommand().AggregateId(),

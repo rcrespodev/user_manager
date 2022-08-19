@@ -2,7 +2,7 @@ package delete
 
 import (
 	"github.com/google/uuid"
-	deleteApp "github.com/rcrespodev/user_manager/pkg/app/user/application/commands/delete"
+	deleteApp "github.com/rcrespodev/user_manager/pkg/app/user/application/commands/deleteUser"
 	userDomain "github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	"github.com/rcrespodev/user_manager/pkg/app/user/repository/userRepository"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
@@ -89,8 +89,8 @@ func TestDeleteUser(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			deleteUserCommand := deleteApp.NewDeleteUserCommand(tt.args.userUuid)
 			retLog := domain.NewReturnLog(uuid.New(), messageRepository, "user")
-			userDeleter := deleteApp.NewUserDeleter(mockUserRepository)
-			cmdHandler := deleteApp.NewDeleteUserCommandHandler(userDeleter)
+			service := deleteApp.NewService(mockUserRepository)
+			cmdHandler := deleteApp.NewDeleteUserCommandHandler(service)
 
 			done := make(chan bool)
 			go cmdHandler.Handle(deleteUserCommand, retLog, done)

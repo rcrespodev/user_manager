@@ -1,4 +1,4 @@
-package login
+package loginUser
 
 import (
 	userFinderPkg "github.com/rcrespodev/user_manager/pkg/app/user/application/querys/userFinder"
@@ -7,7 +7,7 @@ import (
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 )
 
-type UserLogger struct {
+type Service struct {
 	userRepository domain.UserRepository
 	userSchema     *domain.UserSchema
 	log            *returnLog.ReturnLog
@@ -15,19 +15,18 @@ type UserLogger struct {
 	user           *domain.User
 }
 
-func NewUserLogger(repository domain.UserRepository) *UserLogger {
-	return &UserLogger{
+func NewService(repository domain.UserRepository) *Service {
+	return &Service{
 		userRepository: repository,
 	}
 }
 
-func (u *UserLogger) Exec(cmd *LoginUserCommand, log *returnLog.ReturnLog) {
+func (u *Service) Exec(cmd *Command, log *returnLog.ReturnLog) {
 	var (
 		login = false
 	)
 
 	u.user = nil
-
 	u.log = log
 	u.log.SetObjectId(cmd.aliasOrEmail)
 
@@ -92,14 +91,14 @@ func (u *UserLogger) Exec(cmd *LoginUserCommand, log *returnLog.ReturnLog) {
 	}
 }
 
-func (u *UserLogger) getEmailQueryValue(email *domain.UserEmail) string {
+func (u *Service) getEmailQueryValue(email *domain.UserEmail) string {
 	if email != nil {
 		return email.Address()
 	}
 	return ""
 }
 
-func (u *UserLogger) getAliasQueryValue(alias *domain.UserAlias) string {
+func (u *Service) getAliasQueryValue(alias *domain.UserAlias) string {
 	if alias != nil {
 		return alias.Alias()
 	}

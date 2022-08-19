@@ -5,7 +5,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/rcrespodev/user_manager/api"
 	"github.com/rcrespodev/user_manager/api/v1/handlers"
-	delete "github.com/rcrespodev/user_manager/pkg/app/user/application/commands/delete"
+	delete "github.com/rcrespodev/user_manager/pkg/app/user/application/commands/deleteUser"
 	"github.com/rcrespodev/user_manager/pkg/kernel"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"

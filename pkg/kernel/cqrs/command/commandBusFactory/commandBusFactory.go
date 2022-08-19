@@ -6,9 +6,9 @@ import (
 	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/authJwt/domain"
 	"github.com/rcrespodev/user_manager/pkg/app/emailSender/application/commands"
 	emailSenderDomain "github.com/rcrespodev/user_manager/pkg/app/emailSender/domain"
-	delete "github.com/rcrespodev/user_manager/pkg/app/user/application/commands/delete"
-	"github.com/rcrespodev/user_manager/pkg/app/user/application/commands/login"
-	"github.com/rcrespodev/user_manager/pkg/app/user/application/commands/register"
+	delete "github.com/rcrespodev/user_manager/pkg/app/user/application/commands/deleteUser"
+	"github.com/rcrespodev/user_manager/pkg/app/user/application/commands/loginUser"
+	"github.com/rcrespodev/user_manager/pkg/app/user/application/commands/registerUser"
 	"github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/event"
@@ -31,11 +31,11 @@ type NewCommandBusCommand struct {
 }
 
 func NewCommandBusInstance(cmd NewCommandBusCommand) *command.Bus {
-	registerUserCommandHandler := register.NewRegisterUserCommandHandler(
-		cmd.EventBus, register.NewUserRegistration(cmd.User.UserRepository))
+	registerUserCommandHandler := registerUser.NewRegisterUserCommandHandler(
+		cmd.EventBus, registerUser.NewService(cmd.User.UserRepository))
 
-	loginUserCommandHandler := login.NewLoginUserCommandHandler(
-		login.NewUserLogger(cmd.User.UserRepository))
+	loginUserCommandHandler := loginUser.NewLoginUserCommandHandler(
+		loginUser.NewService(cmd.User.UserRepository))
 
 	userLoggedCommandHandler := userLogged.NewCommandHandler(
 		userLogged.NewUserLogger(cmd.Jwt.Jwt, cmd.Jwt.JwtRepository))
@@ -44,7 +44,7 @@ func NewCommandBusInstance(cmd NewCommandBusCommand) *command.Bus {
 		userLoggedOut.NewUserLoggerOut(cmd.Jwt.JwtRepository))
 
 	deleteUserCommandHandler := delete.NewDeleteUserCommandHandler(
-		delete.NewUserDeleter(cmd.User.UserRepository))
+		delete.NewService(cmd.User.UserRepository))
 
 	sendEmailOnUserRegisteredCmdHandler := commands.NewSendEmailOnUserRegisteredCmdHandler(
 		commands.NewSendEmailOnUserRegistered(commands.SendEmailOnUserRegisteredDependencies{

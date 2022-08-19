@@ -2,7 +2,7 @@ package login
 
 import (
 	"github.com/google/uuid"
-	login "github.com/rcrespodev/user_manager/pkg/app/user/application/commands/login"
+	login "github.com/rcrespodev/user_manager/pkg/app/user/application/commands/loginUser"
 	userDomain "github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	"github.com/rcrespodev/user_manager/pkg/app/user/repository/userRepository"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
@@ -216,8 +216,8 @@ func TestUserLogin(t *testing.T) {
 			//mockUserSessionRepository := userSessionRepository.NewMockUserSessionRepository(userSessionRepository.MockData{})
 			userLoginCmd := login.NewLoginUserCommand(tt.args)
 			retLog := domain.NewReturnLog(uuid.New(), messageRepository, "user")
-			userLogger := login.NewUserLogger(mockUserRepository)
-			cmdHandler := login.NewLoginUserCommandHandler(userLogger)
+			service := login.NewService(mockUserRepository)
+			cmdHandler := login.NewLoginUserCommandHandler(service)
 
 			done := make(chan bool)
 			go cmdHandler.Handle(userLoginCmd, retLog, done)

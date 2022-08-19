@@ -1,8 +1,8 @@
-package register
+package registerUser
 
 import "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
 
-type RegisterUserCommand struct {
+type Command struct {
 	uuid        string
 	alias       string
 	name        string
@@ -21,8 +21,8 @@ type ClientArgs struct {
 	Password   string `json:"password"`
 }
 
-func NewRegisterUserCommand(args ClientArgs) *RegisterUserCommand {
-	return &RegisterUserCommand{
+func NewRegisterUserCommand(args ClientArgs) *Command {
+	return &Command{
 		uuid:        args.Uuid,
 		alias:       args.Alias,
 		name:        args.Name,
@@ -33,6 +33,6 @@ func NewRegisterUserCommand(args ClientArgs) *RegisterUserCommand {
 	}
 }
 
-func (r RegisterUserCommand) BaseCommand() *command.BaseCommand {
+func (r Command) BaseCommand() *command.BaseCommand {
 	return r.baseCommand
 }

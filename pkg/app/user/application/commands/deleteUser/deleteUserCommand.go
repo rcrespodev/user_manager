@@ -1,8 +1,8 @@
-package delete
+package deleteUser
 
 import "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
 
-type DeleteUserCommand struct {
+type Command struct {
 	userUuid    string
 	baseCommand *command.BaseCommand
 }
@@ -11,17 +11,17 @@ type ClientArgs struct {
 	UserUuid string `json:"user_uuid"`
 }
 
-func NewDeleteUserCommand(userUuid string) *DeleteUserCommand {
-	return &DeleteUserCommand{
+func NewDeleteUserCommand(userUuid string) *Command {
+	return &Command{
 		userUuid:    userUuid,
 		baseCommand: command.NewBaseCommand(userUuid, command.DeleteUser),
 	}
 }
 
-func (d DeleteUserCommand) UserUuid() string {
+func (d Command) UserUuid() string {
 	return d.userUuid
 }
 
-func (d DeleteUserCommand) BaseCommand() *command.BaseCommand {
+func (d Command) BaseCommand() *command.BaseCommand {
 	return d.baseCommand
 }

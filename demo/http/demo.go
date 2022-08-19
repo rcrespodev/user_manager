@@ -6,9 +6,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/rcrespodev/user_manager/api"
 	"github.com/rcrespodev/user_manager/api/v1/endpoints"
-	delete "github.com/rcrespodev/user_manager/pkg/app/user/application/commands/delete"
-	"github.com/rcrespodev/user_manager/pkg/app/user/application/commands/login"
-	"github.com/rcrespodev/user_manager/pkg/app/user/application/commands/register"
+	delete "github.com/rcrespodev/user_manager/pkg/app/user/application/commands/deleteUser"
+	"github.com/rcrespodev/user_manager/pkg/app/user/application/commands/loginUser"
+	"github.com/rcrespodev/user_manager/pkg/app/user/application/commands/registerUser"
 	"log"
 	"net/http"
 	"time"
@@ -66,7 +66,7 @@ func (d *Demo) registerNewUser(step int) {
 	d.printer.PrintStep(step)
 
 	d.userUuid = uuid.New().String()
-	cmd := register.ClientArgs{
+	cmd := registerUser.ClientArgs{
 		Uuid:       d.userUuid,
 		Alias:      userAlias,
 		Name:       userName,
@@ -137,7 +137,7 @@ func (d *Demo) logOutUser(step int) {
 func (d *Demo) loginUser(step int) {
 	d.printer.PrintStep(step)
 
-	cmd := login.ClientArgs{
+	cmd := loginUser.ClientArgs{
 		AliasOrEmail: userEmail,
 		Password:     userPassword,
 	}

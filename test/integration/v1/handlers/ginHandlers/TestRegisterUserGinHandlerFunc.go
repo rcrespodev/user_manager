@@ -6,7 +6,7 @@ import (
 	"github.com/rcrespodev/user_manager/api"
 	"github.com/rcrespodev/user_manager/api/v1/endpoints"
 	"github.com/rcrespodev/user_manager/api/v1/handlers/registerUser"
-	"github.com/rcrespodev/user_manager/pkg/app/user/application/commands/register"
+	appRegisterUser "github.com/rcrespodev/user_manager/pkg/app/user/application/commands/registerUser"
 	"github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/event"
@@ -130,7 +130,7 @@ func TestRegisterUserGinHandlerFunc(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			cmdUuid := uuid.New()
-			cmd := register.ClientArgs{
+			cmd := appRegisterUser.ClientArgs{
 				Uuid:       cmdUuid.String(),
 				Alias:      tt.args.alias,
 				Name:       tt.args.name,

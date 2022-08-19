@@ -1,4 +1,4 @@
-package delete
+package deleteUser
 
 import (
 	"github.com/rcrespodev/user_manager/pkg/app/user/application/querys/userFinder"
@@ -7,15 +7,15 @@ import (
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 )
 
-type UserDeleter struct {
+type Service struct {
 	userRepository domain.UserRepository
 }
 
-func NewUserDeleter(userRepository domain.UserRepository) *UserDeleter {
-	return &UserDeleter{userRepository: userRepository}
+func NewService(userRepository domain.UserRepository) *Service {
+	return &Service{userRepository: userRepository}
 }
 
-func (u *UserDeleter) Exec(command *DeleteUserCommand, log *returnLog.ReturnLog) {
+func (u *Service) Exec(command *Command, log *returnLog.ReturnLog) {
 	log.SetObjectId(command.UserUuid())
 
 	finder := userFinder.NewUserFinder(u.userRepository)
