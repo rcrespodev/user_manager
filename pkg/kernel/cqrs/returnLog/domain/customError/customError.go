@@ -42,7 +42,7 @@ func NewInternalError(error error, caller int) *CustomError {
 	// log into file with log srv.
 	if config.Conf != nil {
 		logFileSrv := logFile.NewLogFile(config.Conf.Log.File.Path)
-		logFileSrv.LogInternalError(logFile.LogInternalErrorCommand{
+		go logFileSrv.LogInternalError(logFile.LogInternalErrorCommand{
 			Error: customerErr.internalError.error,
 			File:  customerErr.internalError.file,
 			Line:  string(rune(customerErr.internalError.line)),
