@@ -1,4 +1,4 @@
-package kernel
+package jwt
 
 import (
 	"github.com/go-redis/redis/v8"
@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func jwtFactory(redisClient *redis.Client) (*jwtDomain.Jwt, jwtDomain.JwtRepository) {
+func Factory(redisClient *redis.Client) (*jwtDomain.Jwt, jwtDomain.JwtRepository) {
 	certPublicKey, err := os.ReadFile(config.Conf.Jwt.Key.Public)
 	if err != nil {
 		log.Fatal(err)
