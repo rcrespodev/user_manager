@@ -27,7 +27,7 @@ import (
 var Instance *Kernel
 
 type Kernel struct {
-	commandBus          *command.Bus
+	commandBus          *command.AppBus
 	queryBus            *query.Bus
 	eventBus            event.Bus
 	rabbitClient        *rabbitMq.Client
@@ -119,7 +119,7 @@ func NewPrdKernel(mySqlClient *sql.DB, redisClient *redis.Client, rabbitMqConnec
 	return Instance
 }
 
-func (k *Kernel) CommandBus() *command.Bus {
+func (k *Kernel) CommandBus() *command.AppBus {
 	return k.commandBus
 }
 

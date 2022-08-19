@@ -30,7 +30,7 @@ type NewCommandBusCommand struct {
 	EventBus event.Bus
 }
 
-func NewCommandBusInstance(cmd NewCommandBusCommand) *command.Bus {
+func NewCommandBusInstance(cmd NewCommandBusCommand) *command.AppBus {
 	registerUserCommandHandler := registerUser.NewRegisterUserCommandHandler(
 		cmd.EventBus, registerUser.NewService(cmd.User.UserRepository))
 
@@ -54,7 +54,7 @@ func NewCommandBusInstance(cmd NewCommandBusCommand) *command.Bus {
 			WelcomeTemplatePath: cmd.EmailSender.WelcomeTemplatePath,
 		}))
 
-	return command.NewBus(command.HandlersMap{
+	return command.NewAppBus(command.HandlersMap{
 		command.RegisterUser:            registerUserCommandHandler,
 		command.LoginUser:               loginUserCommandHandler,
 		command.UserLogged:              userLoggedCommandHandler,

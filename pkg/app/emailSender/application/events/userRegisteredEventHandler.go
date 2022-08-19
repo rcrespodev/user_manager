@@ -14,11 +14,11 @@ import (
 type UserRegisteredEventHandler struct {
 	messageRepository         message.MessageRepository
 	sendEmailOnUserRegistered *commands.SendEmailOnUserRegistered
-	commandBus                command.BusInterface
+	commandBus                command.Bus
 }
 
 func NewUserRegisteredEventHandler(sendEmailOnUserRegistered *commands.SendEmailOnUserRegistered,
-	commandBus command.BusInterface, messageRepository message.MessageRepository) *UserRegisteredEventHandler {
+	commandBus command.Bus, messageRepository message.MessageRepository) *UserRegisteredEventHandler {
 	return &UserRegisteredEventHandler{
 		sendEmailOnUserRegistered: sendEmailOnUserRegistered,
 		commandBus:                commandBus,

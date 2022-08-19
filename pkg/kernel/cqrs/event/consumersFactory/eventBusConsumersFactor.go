@@ -12,7 +12,7 @@ import (
 
 type SubscribeConsumersCommand struct {
 	EventBus            event.Bus
-	CommandBus          command.BusInterface
+	CommandBus          command.Bus
 	UserRepository      domain.UserRepository
 	EmailSender         emailSenderDomain.EmailSender
 	SentEmailRepository emailSenderDomain.SentEmailRepository
