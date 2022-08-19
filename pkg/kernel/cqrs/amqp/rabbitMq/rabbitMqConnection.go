@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	amqp "github.com/rabbitmq/amqp091-go"
+	"github.com/rcrespodev/user_manager/pkg/kernel/config"
 	"log"
 	"time"
 )
@@ -17,6 +18,15 @@ type Client struct {
 type queues map[string]amqp.Queue
 
 func NewRabbitMqClient(connection *amqp.Connection) *Client {
+	if connection == nil {
+		var err error
+		envs := config.Conf.Rabbit
+		connection, err = amqp.Dial(fmt.Sprintf("amqp://%s:%s@%s/",
+			envs.User, envs.Password, envs.Host))
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
 	ch, err := connection.Channel()
 	if err != nil {
 		log.Fatal(err)

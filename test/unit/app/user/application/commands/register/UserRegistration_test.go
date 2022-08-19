@@ -5,6 +5,7 @@ import (
 	register2 "github.com/rcrespodev/user_manager/pkg/app/user/application/commands/register"
 	userDomain "github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	"github.com/rcrespodev/user_manager/pkg/app/user/repository/userRepository"
+	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/event"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/valueObjects"
@@ -143,7 +144,7 @@ func TestUserRegistration(t *testing.T) {
 			})
 
 			userRegistration := register2.NewUserRegistration(mockRepository)
-			handler := register2.NewRegisterUserCommandHandler(userRegistration)
+			handler := register2.NewRegisterUserCommandHandler(event.MockEventBus{}, userRegistration)
 			retLog := domain.NewReturnLog(cmdUuid, messageRepository, "user")
 			go handler.Handle(registerUserCommand, retLog, done)
 

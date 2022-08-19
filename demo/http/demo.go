@@ -18,8 +18,9 @@ const (
 	userAlias      = "user_demo_alias"
 	userName       = "user_demo_name"
 	userSecondName = "user_demo_second_name"
-	userEmail      = "user_demo_email@gmail.com"
-	userPassword   = "Linux64bits$"
+	//userEmail      = "user_demo_email@gmail.com"
+	userEmail    = "cresporodrigo42@gmail.com"
+	userPassword = "Linux64bits$"
 )
 
 type Demo struct {

@@ -24,7 +24,7 @@ func newServer(host, port string) *server {
 	Server = &server{
 		httpAddress: fmt.Sprintf("%s:%s", host, port),
 		engine:      gin.New(),
-		kernel:      kernel.NewPrdKernel(nil, nil),
+		kernel:      kernel.NewPrdKernel(nil, nil, nil),
 	}
 	Server.engine.Use(ginMiddleware.MiddlewareHandlerFunc())
 	return Server

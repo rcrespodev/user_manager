@@ -2,7 +2,6 @@ package event
 
 import (
 	"encoding/json"
-	"fmt"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/amqp/rabbitMq"
 	"log"
@@ -36,9 +35,12 @@ func NewRabbitMqEventBus(client *rabbitMq.Client) *RabbitMqEventBus {
 func (r *RabbitMqEventBus) Subscribe(eventId Id, handler Handler) {
 	handlers, ok := r.handlersMap[eventId]
 	if !ok {
-		log.Fatal(fmt.Errorf("queue %v is not declared yet", eventId))
+		r.handlersMap[eventId] = append(handlers, handler)
+		err := r.client.DeclareQueue(string(eventId))
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
-	r.handlersMap[eventId] = append(handlers, handler)
 
 	messages, err := r.client.ConsumeQueue(string(eventId))
 	if err != nil {
@@ -46,6 +48,7 @@ func (r *RabbitMqEventBus) Subscribe(eventId Id, handler Handler) {
 	}
 
 	go r.messagesHandler(messages, eventId)
+	return
 }
 
 func (r *RabbitMqEventBus) Publish(events []Event) {
@@ -53,7 +56,6 @@ func (r *RabbitMqEventBus) Publish(events []Event) {
 		eventId := event.BaseEvent().eventId
 		_, ok := r.handlersMap[eventId]
 		if !ok {
-			//r.handlersMap[eventId] = nil
 			err := r.client.DeclareQueue(string(eventId))
 			if err != nil {
 				log.Fatal(err)
@@ -76,6 +78,7 @@ func (r *RabbitMqEventBus) Publish(events []Event) {
 		}
 		r.publishedEvents[schema.EventUuid] = event
 	}
+	return
 }
 
 func (r *RabbitMqEventBus) messagesHandler(messages <-chan amqp.Delivery, eventId Id) {
@@ -84,24 +87,19 @@ func (r *RabbitMqEventBus) messagesHandler(messages <-chan amqp.Delivery, eventI
 		return
 	}
 
-	var forever chan struct{}
-
-	go func() {
-		for message := range messages {
-			var schema Schema
-			err := json.Unmarshal(message.Body, &schema)
-			if err != nil {
-				log.Fatal(err)
-			}
-			event, ok := r.publishedEvents[message.MessageId]
-			if !ok {
-				continue
-			}
-			for _, handler := range handlers {
-				handler.Handle(event)
-			}
-			err = message.Ack(false)
+	for message := range messages {
+		var schema Schema
+		err := json.Unmarshal(message.Body, &schema)
+		if err != nil {
+			log.Fatal(err)
 		}
-	}()
-	<-forever
+		event, ok := r.publishedEvents[message.MessageId]
+		if !ok {
+			continue
+		}
+		for _, handler := range handlers {
+			handler.Handle(event)
+		}
+		err = message.Ack(false)
+	}
 }

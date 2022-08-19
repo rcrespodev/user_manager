@@ -5,6 +5,8 @@ import (
 	"github.com/go-redis/redis/v8"
 	amqp "github.com/rabbitmq/amqp091-go"
 	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/authJwt/domain"
+	"github.com/rcrespodev/user_manager/pkg/app/emailSender/application/commands"
+	"github.com/rcrespodev/user_manager/pkg/app/emailSender/application/events"
 	emailSenderDomain "github.com/rcrespodev/user_manager/pkg/app/emailSender/domain"
 	"github.com/rcrespodev/user_manager/pkg/app/emailSender/infrastructure"
 	emailSenderRepository "github.com/rcrespodev/user_manager/pkg/app/emailSender/repository"
@@ -105,6 +107,16 @@ func NewPrdKernel(mySqlClient *sql.DB, redisClient *redis.Client, rabbitMqConnec
 	Instance.queryBus = queryBusFactory.NewQueryBusInstance(
 		queryBusFactory.NewQueryBusCommand{
 			UserRepository: Instance.userRepository})
+
+	// move to factory
+	sendEmailOnUserRegistered := commands.NewSendEmailOnUserRegistered(commands.SendEmailOnUserRegisteredDependencies{
+		UserRepository:      Instance.userRepository,
+		EmailSender:         Instance.emailSender,
+		SentEmailRepository: Instance.sentEmailRepository,
+		WelcomeTemplatePath: config.Conf.Smtp.Welcome.Template,
+	})
+	userRegisteredEventHandler := events.NewUserRegisteredEventHandler(sendEmailOnUserRegistered, Instance.commandBus, Instance.messageRepository)
+	go Instance.eventBus.Subscribe(event.UserRegistered, userRegisteredEventHandler)
 
 	return Instance
 }
