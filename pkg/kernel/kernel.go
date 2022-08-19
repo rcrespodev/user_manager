@@ -5,8 +5,6 @@ import (
 	"github.com/go-redis/redis/v8"
 	amqp "github.com/rabbitmq/amqp091-go"
 	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/authJwt/domain"
-	"github.com/rcrespodev/user_manager/pkg/app/emailSender/application/commands"
-	"github.com/rcrespodev/user_manager/pkg/app/emailSender/application/events"
 	emailSenderDomain "github.com/rcrespodev/user_manager/pkg/app/emailSender/domain"
 	"github.com/rcrespodev/user_manager/pkg/app/emailSender/infrastructure"
 	emailSenderRepository "github.com/rcrespodev/user_manager/pkg/app/emailSender/repository"
@@ -17,12 +15,13 @@ import (
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command/commandBusFactory"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/event"
+	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/event/consumersFactory"
+	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/event/eventBusFactory"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/query"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/query/queryBusFactory"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/repository"
 	"github.com/rcrespodev/user_manager/pkg/kernel/log/file"
-	"log"
 )
 
 var Instance *Kernel
@@ -74,10 +73,8 @@ func NewPrdKernel(mySqlClient *sql.DB, redisClient *redis.Client, rabbitMqConnec
 
 	// event bus instance
 	Instance.rabbitClient = rabbitMq.NewRabbitMqClient(rabbitMqConnection)
-	if err := Instance.rabbitClient.DeclareQueue(string(event.UserRegistered)); err != nil {
-		log.Fatal(err)
-	}
-	Instance.eventBus = event.NewRabbitMqEventBus(rabbitMq.NewRabbitMqClient(rabbitMqConnection))
+	Instance.eventBus = eventBusFactory.NewEventBusInstance(eventBusFactory.NewEventBusCommand{
+		RabbitMqConnection: rabbitMqConnection})
 
 	// command bus instance
 	Instance.commandBus = commandBusFactory.NewCommandBusInstance(commandBusFactory.NewCommandBusCommand{
@@ -108,15 +105,16 @@ func NewPrdKernel(mySqlClient *sql.DB, redisClient *redis.Client, rabbitMqConnec
 		queryBusFactory.NewQueryBusCommand{
 			UserRepository: Instance.userRepository})
 
-	// move to factory
-	sendEmailOnUserRegistered := commands.NewSendEmailOnUserRegistered(commands.SendEmailOnUserRegisteredDependencies{
+	// Subscribe consumers to event bus
+	consumersFactory.SubscribeConsumers(consumersFactory.SubscribeConsumersCommand{
+		EventBus:            Instance.eventBus,
+		CommandBus:          Instance.commandBus,
 		UserRepository:      Instance.userRepository,
 		EmailSender:         Instance.emailSender,
 		SentEmailRepository: Instance.sentEmailRepository,
+		MessageRepository:   Instance.messageRepository,
 		WelcomeTemplatePath: config.Conf.Smtp.Welcome.Template,
 	})
-	userRegisteredEventHandler := events.NewUserRegisteredEventHandler(sendEmailOnUserRegistered, Instance.commandBus, Instance.messageRepository)
-	go Instance.eventBus.Subscribe(event.UserRegistered, userRegisteredEventHandler)
 
 	return Instance
 }
