@@ -31,15 +31,6 @@ func (u *Service) Exec(command *Command, log *returnLog.ReturnLog) {
 		},
 	}, log)
 
-	//userSchema := u.userRepository.FindUser(domain.FindUserQuery{
-	//	Log: log,
-	//	Where: []domain.WhereArgs{
-	//		{
-	//			Field: "uuid",
-	//			Value: command.UserUuid(),
-	//		},
-	//	},
-	//})
 	if log.Error() != nil {
 		return
 	}

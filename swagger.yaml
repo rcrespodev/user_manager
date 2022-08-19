@@ -44,9 +44,10 @@ paths:
         500:
           description: Internal error in Http Application server.
 
-  /v1/register_user:
-    description: Register an new user in Application.
+  /v1/user/:
+    description: User represents an registered user inside application.
     post:
+      description: Register an new user in application.
       requestBody:
         required: true
         content:
@@ -72,7 +73,7 @@ paths:
               schema:
                 type: string
               description: Jwt signed with private key.
-          description: Good request.
+          description: Good request. User registered successful.
           content:
             application/json:
               schema:
@@ -125,9 +126,18 @@ paths:
                 }
         500:
           description: Internal error in Application Server.
-  /v1/login:
-    description: Logout user.
-    post:
+    delete:
+      description: Delete an user registered in Application.
+      security:
+        - jwtAuth: [ ]
+      parameters:
+        - in: header
+          name: Authorization
+          description: The claims must contain the target user uuid.
+          schema:
+            type: string
+            format: jwt
+            required: true
       requestBody:
         required: true
         content:
@@ -136,11 +146,10 @@ paths:
               type: object
               properties:
                 body:
-                  $ref: '#/components/schemas/login_user_command'
+                  $ref: '#/components/schemas/delete_user_command'
             example:
               {
-                "alias_or_email": "martin_fowler_14",
-                "password": "Linux648$"
+                "user_uuid": "123e4567-e89b-12d3-a456-426614174002",
               }
       responses:
         200:
@@ -149,7 +158,7 @@ paths:
               schema:
                 type: string
               description: Jwt signed with private key.
-          description: Good request.
+          description: Good request. User deleted successful.
           content:
             application/json:
               schema:
@@ -160,17 +169,17 @@ paths:
               example:
                 {
                   "message": {
-                    "object_id": "martin_fowler_14",
-                    "message_id": 0,
+                    "object_id": "123e4567-e89b-12d3-a456-426614174002",
+                    "message_id": 3,
                     "message_pkg": "user",
                     "variables": [
-                      "martin_fowler_14",
+                      "martin_fowler",
                       "",
                       "",
                       ""
                     ],
-                    "text": "user martin_fowler_14 logged successful",
-                    "time": "2022-08-04T13:44:03.438652425Z",
+                    "text": "user martin_fowler deleted successful",
+                    "time": "2022-07-18T17:19:29.495575724Z",
                     "client_error_type": 0
                   }
                 }
@@ -186,8 +195,8 @@ paths:
               example:
                 {
                   "message": {
-                    "object_id": "martin_fowler_14",
-                    "message_id": 15,
+                    "object_id": "123e4567-e89b-12d3-a456-426614174007",
+                    "message_id": 17,
                     "message_pkg": "user",
                     "variables": [
                       "",
@@ -195,54 +204,13 @@ paths:
                       "",
                       ""
                     ],
-                    "text": "email, alias or password are not correct. Repeat the access data.",
-                    "time": "2022-08-04T13:45:13.698420352Z",
+                    "text": "none of the input values correspond to a registered user",
+                    "time": "2022-07-18T17:22:10.019361256Z",
                     "client_error_type": 1
                   }
                 }
-        500:
-          description: Internal error in Application Server.
-  /v1/logout:
-    description: Login existent user.
-    post:
-      security:
-        - jwtAuth: [ ]
-      parameters:
-        - in: header
-          name: Authorization
-          schema:
-            type: string
-            format: jwt
-            required: true
-      responses:
-        200:
-          description: Good request.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    $ref: '#/components/schemas/message'
-              example:
-                {
-                  "message": {
-                    "object_id": "123e4567-e89b-12d3-a456-426614174004",
-                    "message_id": 16,
-                    "message_pkg": "user",
-                    "variables": [
-                      "",
-                      "",
-                      "",
-                      ""
-                    ],
-                    "text": "user logged out successful",
-                    "time": "2022-08-04T21:44:04.60888411Z",
-                    "client_error_type": 0
-                  }
-                }
         401:
-          description: Token are invalid.
+          description: Bad request. Jwt claims not contain the target user uuid.
           content:
             application/json:
               schema:
@@ -253,7 +221,7 @@ paths:
               example:
                 {
                   "message": {
-                    "object_id": "123e4567-e89b-12d3-a456-426614174001",
+                    "object_id": "123e4567-e89b-12d3-a456-426614174006",
                     "message_id": 0,
                     "message_pkg": "Authorization",
                     "variables": [
@@ -263,20 +231,20 @@ paths:
                       ""
                     ],
                     "text": "Unauthorized",
-                    "time": "2022-08-04T13:45:13.698420352Z",
+                    "time": "2022-07-18T17:22:10.019361256Z",
                     "client_error_type": 2
                   }
                 }
         500:
           description: Internal error in Application Server.
-  /v1/user:
-    description: get user schema.
     get:
+      description: Get the user schema of registered user.
       security:
         - jwtAuth: [ ]
       parameters:
         - in: header
           name: Authorization
+          description: The claims must contain the target user uuid.
           schema:
             type: string
             format: jwt
@@ -380,7 +348,7 @@ paths:
                   "data": null
                 }
         401:
-          description: unauthorized. The token uuid must be equal to target user uuid. Otherwise, app return unauthorized. You don´t display data of others users.
+          description: Unauthorized. The token uuid must be equal to target user uuid. Otherwise, app return unauthorized. You don´t display data of others users.
           content:
             application/json:
               schema:
@@ -408,6 +376,152 @@ paths:
                   },
                   "data": null
                 }
+
+  /v1/user/login/:
+    description: user/login represent the user session directory.
+    post:
+      description: login an registered user in application.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                body:
+                  $ref: '#/components/schemas/login_user_command'
+            example:
+              {
+                "alias_or_email": "martin_fowler_14",
+                "password": "Linux648$"
+              }
+      responses:
+        200:
+          headers:
+            Token:
+              schema:
+                type: string
+              description: Jwt signed with private key.
+          description: Good request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    $ref: '#/components/schemas/message'
+              example:
+                {
+                  "message": {
+                    "object_id": "martin_fowler_14",
+                    "message_id": 0,
+                    "message_pkg": "user",
+                    "variables": [
+                      "martin_fowler_14",
+                      "",
+                      "",
+                      ""
+                    ],
+                    "text": "user martin_fowler_14 logged successful",
+                    "time": "2022-08-04T13:44:03.438652425Z",
+                    "client_error_type": 0
+                  }
+                }
+        400:
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    $ref: '#/components/schemas/message'
+              example:
+                {
+                  "message": {
+                    "object_id": "martin_fowler_14",
+                    "message_id": 15,
+                    "message_pkg": "user",
+                    "variables": [
+                      "",
+                      "",
+                      "",
+                      ""
+                    ],
+                    "text": "email, alias or password are not correct. Repeat the access data.",
+                    "time": "2022-08-04T13:45:13.698420352Z",
+                    "client_error_type": 1
+                  }
+                }
+        500:
+          description: Internal error in Application Server.
+    delete:
+      description: Logout the user session.
+      security:
+        - jwtAuth: [ ]
+      parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+            format: jwt
+            required: true
+      responses:
+        200:
+          description: Good request. Token was invalided.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    $ref: '#/components/schemas/message'
+              example:
+                {
+                  "message": {
+                    "object_id": "123e4567-e89b-12d3-a456-426614174004",
+                    "message_id": 16,
+                    "message_pkg": "user",
+                    "variables": [
+                      "",
+                      "",
+                      "",
+                      ""
+                    ],
+                    "text": "user logged out successful",
+                    "time": "2022-08-04T21:44:04.60888411Z",
+                    "client_error_type": 0
+                  }
+                }
+        401:
+          description: Token are invalid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    $ref: '#/components/schemas/message'
+              example:
+                {
+                  "message": {
+                    "object_id": "123e4567-e89b-12d3-a456-426614174001",
+                    "message_id": 0,
+                    "message_pkg": "Authorization",
+                    "variables": [
+                      "",
+                      "",
+                      "",
+                      ""
+                    ],
+                    "text": "Unauthorized",
+                    "time": "2022-08-04T13:45:13.698420352Z",
+                    "client_error_type": 2
+                  }
+                }
+        500:
+          description: Internal error in Application Server.
+
 components:
   securitySchemes:
     jwtAuth: # arbitrary name for the security scheme
@@ -463,6 +577,11 @@ components:
           pattern: '[\dA-Za-z$°!@|¬#=%&/()¿?¡~*}{,;:·+><'
           minLength: 8
           maxLength: 16
+    delete_user_command:
+      properties:
+        user_uuid:
+          type: string
+          format: uuid
     login_user_command:
       type: object
       properties:

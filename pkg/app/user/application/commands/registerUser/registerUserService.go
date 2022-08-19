@@ -73,26 +73,6 @@ func (u *Service) Exec(command Command, log *returnLog.ReturnLog) {
 		return
 	}
 
-	//if u.userByAlias != nil {
-	//	log.LogError(returnLog.NewErrorCommand{
-	//		NewMessageCommand: &message.NewMessageCommand{
-	//			MessageId: 14,
-	//			Variables: message.Variables{"alias", u.user.Alias().Alias()},
-	//		},
-	//	})
-	//	return
-	//}
-	//
-	//if u.userByEmail != nil {
-	//	log.LogError(returnLog.NewErrorCommand{
-	//		NewMessageCommand: &message.NewMessageCommand{
-	//			MessageId: 14,
-	//			Variables: message.Variables{"email", u.user.Email().Address()},
-	//		},
-	//	})
-	//	return
-	//}
-
 	u.userRepository.SaveUser(u.user, log)
 	if log.Error() != nil {
 		return
