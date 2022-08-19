@@ -16,11 +16,6 @@ const (
 	EndpointCheckStatus = "/v1/check-status"
 	EndpointUser        = "/v1/user/"
 	EndpointUserLogin   = "/v1/user/login/"
-	//EndpointRegisterUser = "/v1/user/register" // /v1/user/ post
-	//EndpointLogin        = "/v1/user/login"    // /v1/user/login/ post
-	//EndpointLogOut       = "/v1/user/logout"   // /v1/user/login/ delete
-	//EndpointGetUser      = "/v1/user"          // /v1/user/ get
-	//EndpointDeleteUser   = "/v1/user/delete"   // /v1/user/ delete
 )
 
 type Endpoints map[string]Endpoint
