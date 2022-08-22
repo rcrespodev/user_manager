@@ -1,0 +1,3 @@
+Time: 9:55:43; Error: test error 1; File: app/pkg/kernel/kernel.go; Line: 50
+Time: 18:30:5; Error: test error 2; File: app/pkg/kernel/utils/stringValidations/specialCharacters.go; Line: 4
+Time: 23:47:0; Error: test error 3; File: app/pkg/server/serve.go; Line: 18

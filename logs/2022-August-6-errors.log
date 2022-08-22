@@ -1,0 +1,6 @@
+Time: 16:29:17; Error: Error 1406: Data too long for column 'email' at row 1; File: /app/pkg/app/user/repository/userRepository/mySqlUserRepository.go; Line: %
+Time: 16:30:24; Error: Error 1406: Data too long for column 'email' at row 1; File: /app/pkg/app/user/repository/userRepository/mySqlUserRepository.go; Line: %
+Time: 16:30:42; Error: Error 1406: Data too long for column 'email' at row 1; File: /app/pkg/app/user/repository/userRepository/mySqlUserRepository.go; Line: %
+Time: 16:30:48; Error: Error 1406: Data too long for column 'email' at row 1; File: /app/pkg/app/user/repository/userRepository/mySqlUserRepository.go; Line: %
+Time: 16:30:56; Error: Error 1406: Data too long for column 'email' at row 1; File: /app/pkg/app/user/repository/userRepository/mySqlUserRepository.go; Line: %
+Time: 16:34:7; Error: Error 1406: Data too long for column 'email' at row 1; File: /app/pkg/app/user/repository/userRepository/mySqlUserRepository.go; Line: %
