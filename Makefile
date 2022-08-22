@@ -20,7 +20,7 @@ stop_test_services:
 run_tests:
 	sudo chmod u+x ./test.sh && ./test.sh
 
-go_test:
+go_tests:
 	export GO111MODULE=on && go test -v ./...
 
 cert:

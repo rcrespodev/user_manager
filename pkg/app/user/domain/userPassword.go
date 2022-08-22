@@ -9,6 +9,9 @@ import (
 	"unicode"
 )
 
+// UserPassword is the value object that represents the authorization of user.
+// Every password must contain a string password and hashed password.
+// Use Hash() to store the hashed password in DB.
 type UserPassword struct {
 	stringPassword string
 	hashPassword   []byte
@@ -63,7 +66,6 @@ func (u *UserPassword) checkLen() {
 		minLen = 8
 	)
 	if len(u.stringPassword) > maxLen {
-		//log.Printf("pass: %v", u.stringPassword)
 		u.log.LogError(returnLog.NewErrorCommand{
 			Error: nil,
 			NewMessageCommand: &message.NewMessageCommand{
@@ -140,10 +142,10 @@ func (u *UserPassword) checkSpecialCharacter() {
 	}
 }
 
-func (u UserPassword) String() string {
+func (u *UserPassword) String() string {
 	return u.stringPassword
 }
 
-func (u UserPassword) Hash() []byte {
+func (u *UserPassword) Hash() []byte {
 	return u.hashPassword
 }
