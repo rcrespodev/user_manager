@@ -118,6 +118,30 @@ func GetMessagesSourceData() *MessagesSchema {
 				Text:            "user logged out successful",
 				ClientErrorType: 0,
 			},
+			{
+				Id:              17,
+				Pkg:             "user",
+				Text:            "none of the input values correspond to a registered user",
+				ClientErrorType: 1,
+			},
+			{
+				Id:              0,
+				Pkg:             "Authorization",
+				Text:            "Unauthorized",
+				ClientErrorType: 2,
+			},
+			{
+				Id:              1,
+				Pkg:             "Authorization",
+				Text:            "user is not logged",
+				ClientErrorType: 2,
+			},
+			{
+				Id:              0,
+				Pkg:             "email_sender",
+				Text:            "welcome email send successful to user email %v",
+				ClientErrorType: 0,
+			},
 		},
 	}
 }

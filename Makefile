@@ -15,14 +15,18 @@ stop_services:
 	sudo service redis stop | sudo service mysql stop
 
 stop_test_services:
-	docker stop test_app_mysql test_app_redis
+	docker stop test_app_mysql test_app_redis test_app_rabbitmq
 
 run_tests:
 	sudo chmod u+x ./test.sh && ./test.sh
 
-go_test:
+go_tests:
 	export GO111MODULE=on && go test -v ./...
 
 cert:
 	openssl genrsa -out cert/id_rsa 4096
 	openssl rsa -in cert/id_rsa -pubout -out cert/id_rsa.pub
+
+run_demo:
+	CGO_ENABLED=0 GOOS=linux go build -o ./demo/http/bin/main-linux ./demo/http/cmd/main.go
+	./demo/http/bin/main-linux

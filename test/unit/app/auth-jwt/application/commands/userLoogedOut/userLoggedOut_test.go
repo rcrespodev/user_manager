@@ -2,10 +2,9 @@ package userLoogedOut
 
 import (
 	"github.com/google/uuid"
-	"github.com/rcrespodev/user_manager/pkg/app/auth-jwt/application/commands/userLoggedOut"
-	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/auth-jwt/domain"
-	jwtRepository "github.com/rcrespodev/user_manager/pkg/app/auth-jwt/repository"
-	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
+	"github.com/rcrespodev/user_manager/pkg/app/authJwt/application/commands/userLoggedOut"
+	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/authJwt/domain"
+	jwtRepository "github.com/rcrespodev/user_manager/pkg/app/authJwt/repository"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/valueObjects"
@@ -26,6 +25,12 @@ var mockMessageRepository = repository.NewMockMessageRepository([]repository.Moc
 		Id:              0,
 		Pkg:             message.AuthorizationPkg,
 		Text:            "Unauthorized",
+		ClientErrorType: message.ClientErrorUnauthorized,
+	},
+	{
+		Id:              1,
+		Pkg:             message.AuthorizationPkg,
+		Text:            "user is not logged",
 		ClientErrorType: message.ClientErrorUnauthorized,
 	},
 })
@@ -85,22 +90,22 @@ func TestUserLoggedOut(t *testing.T) {
 			},
 		},
 		{
-			name: "logged out successful - token is already invalid",
+			name: "user is already logged out successful - token is already invalid",
 			args: args{
 				uuid: "123e4567-e89b-12d3-a456-426614174001",
 			},
 			want: want{
-				status:         valueObjects.Success,
-				httpCodeReturn: 200,
+				status:         valueObjects.Error,
+				httpCodeReturn: 401,
 				error:          nil,
-				errorMessage:   nil,
-				successMessage: &message.MessageData{
+				errorMessage: &message.MessageData{
 					ObjectId:        "123e4567-e89b-12d3-a456-426614174001",
-					MessageId:       16,
-					MessagePkg:      "user",
-					Text:            "user logged out successful",
-					ClientErrorType: 0,
+					MessageId:       1,
+					MessagePkg:      "Authorization",
+					Text:            "user is not logged",
+					ClientErrorType: 2,
 				},
+				successMessage: nil,
 				jwtSchema: &jwtDomain.JwtSchema{
 					Uuid:    "123e4567-e89b-12d3-a456-426614174001",
 					IsValid: false,
@@ -134,12 +139,11 @@ func TestUserLoggedOut(t *testing.T) {
 			retLog := domain.NewReturnLog(uuidCmd, mockMessageRepository, "user")
 
 			userLoggedOutCmd := userLoggedOut.NewCommand(tt.args.uuid)
-			cmd := command.NewCommand(command.UserLoggedOut, uuidCmd, userLoggedOutCmd)
 			userLoggerOut := userLoggedOut.NewUserLoggerOut(mockJwtRepository)
 			cmdHandler := userLoggedOut.NewCommandHandler(userLoggerOut)
 
 			done := make(chan bool)
-			go cmdHandler.Handle(*cmd, retLog, done)
+			go cmdHandler.Handle(userLoggedOutCmd, retLog, done)
 			<-done
 
 			// ReturnLog check

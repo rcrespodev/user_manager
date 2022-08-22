@@ -22,8 +22,8 @@ func NewTestServerHttpGin(endPointsMap endpoints.Endpoints) *TestServerHttpGin {
 	engine := gin.Default()
 	engine.Use(ginMiddleware.MiddlewareHandlerFunc()) //Prd middleware
 
-	for path, endpointData := range endPointsMap {
-		engine.Handle(endpointData.HttpMethod, path, endpointData.Handler)
+	for _, endpointData := range endPointsMap {
+		engine.Handle(endpointData.HttpMethod, endpointData.RelPath, endpointData.Handler)
 	}
 
 	return &TestServerHttpGin{
@@ -35,7 +35,10 @@ func NewTestServerHttpGin(endPointsMap endpoints.Endpoints) *TestServerHttpGin {
 type DoRequestCommand struct {
 	BodyRequest  []byte
 	RelativePath string
+	Method       string
 	Uuid         string
+	Token        string
+	QueryString  string
 }
 
 type Response struct {
@@ -48,10 +51,14 @@ func (t TestServerHttpGin) DoRequest(cmd DoRequestCommand) Response {
 	var method string
 	var path string
 
-	endpointData, ok := t.endpoints[cmd.RelativePath]
+	endpointData, ok := t.endpoints[endpoints.BuildEndpointKey(cmd.RelativePath, cmd.Method)]
 	if ok {
 		method = endpointData.HttpMethod
-		path = cmd.RelativePath
+		path = endpointData.RelPath
+	}
+
+	if cmd.QueryString != "" {
+		path = fmt.Sprintf("%s%s", cmd.RelativePath, cmd.QueryString)
 	}
 
 	request, err := http.NewRequest(method, fmt.Sprintf("http://0.0.0.0:8080%v", path), bytes.NewReader(cmd.BodyRequest))
@@ -62,9 +69,12 @@ func (t TestServerHttpGin) DoRequest(cmd DoRequestCommand) Response {
 	request.Header.Set("Content-type", "application/json")
 
 	if endpointData.AuthValidation {
-		token, err := kernel.Instance.Jwt().CreateNewToken(cmd.Uuid)
-		if err != nil {
-			log.Fatal(err)
+		token := cmd.Token
+		if token == "" {
+			token, err = kernel.Instance.Jwt().CreateNewToken(cmd.Uuid)
+			if err != nil {
+				log.Fatal(err)
+			}
 		}
 		request.Header.Set("Authorization", token)
 	}

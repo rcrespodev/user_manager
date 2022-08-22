@@ -5,9 +5,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/rcrespodev/user_manager/api"
 	"github.com/rcrespodev/user_manager/api/v1/handlers"
-	"github.com/rcrespodev/user_manager/pkg/app/user/application/commands/register"
+	"github.com/rcrespodev/user_manager/pkg/app/user/application/commands/registerUser"
 	"github.com/rcrespodev/user_manager/pkg/kernel"
-	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"time"
@@ -15,7 +14,7 @@ import (
 
 func RegisterUserGinHandlerFunc() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		var clientArgs register.ClientArgs
+		var clientArgs registerUser.ClientArgs
 		var response *api.CommandResponse
 		if err := ctx.BindJSON(&clientArgs); err != nil {
 			response.Message = handlers.BodyRequestBadType()
@@ -40,11 +39,9 @@ func RegisterUserGinHandlerFunc() gin.HandlerFunc {
 
 		log := domain.NewReturnLog(cmdUuid, kernel.Instance.MessageRepository(), "user")
 
-		registerUserCommand := register.NewRegisterUserCommand(clientArgs)
-		cmd := command.NewCommand(command.RegisterUser, cmdUuid, registerUserCommand)
-
+		registerUserCommand := registerUser.NewRegisterUserCommand(clientArgs)
 		cmdBus := kernel.Instance.CommandBus()
-		cmdBus.Exec(*cmd, log)
+		cmdBus.Exec(registerUserCommand, log)
 
 		response = api.NewCommandResponse(log)
 		ctx.Set("jwt_key", cmdUuid.String())

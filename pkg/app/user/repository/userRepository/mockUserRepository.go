@@ -3,6 +3,7 @@ package userRepository
 import (
 	"github.com/rcrespodev/user_manager/pkg/app/user/domain"
 	returnLog "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
+	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 )
 
 type MockUserRepository struct {
@@ -54,16 +55,33 @@ func (m *MockUserRepository) FindUser(query domain.FindUserQuery) *domain.UserSc
 			userSchema = m.findUserByEmail(value)
 		case "alias":
 			userSchema = m.findUserByAlias(value)
+		case "name":
+			userSchema = m.findUserByName(value)
+		case "second_name":
+			userSchema = m.findUserBySecondName(value)
 		}
 		if userSchema != nil {
 			break
 		}
 	}
 
+	if userSchema == nil {
+		query.Log.LogError(returnLog.NewErrorCommand{
+			NewMessageCommand: &message.NewMessageCommand{
+				MessageId:  17,
+				MessagePkg: "user",
+			},
+		})
+	}
+
 	return userSchema
 }
 
-func (m MockUserRepository) findUserById(uuid string) *domain.UserSchema {
+func (m *MockUserRepository) DeleteUser(user *domain.User, log *returnLog.ReturnLog) {
+	//TODO implement me
+}
+
+func (m *MockUserRepository) findUserById(uuid string) *domain.UserSchema {
 	for _, userSchema := range m.userMockData.users {
 		if uuid == userSchema.Uuid {
 			return userSchema
@@ -72,7 +90,7 @@ func (m MockUserRepository) findUserById(uuid string) *domain.UserSchema {
 	return nil
 }
 
-func (m MockUserRepository) findUserByEmail(email string) *domain.UserSchema {
+func (m *MockUserRepository) findUserByEmail(email string) *domain.UserSchema {
 	for _, userSchema := range m.userMockData.users {
 		if email == userSchema.Email {
 			return userSchema
@@ -81,9 +99,27 @@ func (m MockUserRepository) findUserByEmail(email string) *domain.UserSchema {
 	return nil
 }
 
-func (m MockUserRepository) findUserByAlias(alias string) *domain.UserSchema {
+func (m *MockUserRepository) findUserByAlias(alias string) *domain.UserSchema {
 	for _, userSchema := range m.userMockData.users {
 		if alias == userSchema.Alias {
+			return userSchema
+		}
+	}
+	return nil
+}
+
+func (m *MockUserRepository) findUserByName(name string) *domain.UserSchema {
+	for _, userSchema := range m.userMockData.users {
+		if name == userSchema.Name {
+			return userSchema
+		}
+	}
+	return nil
+}
+
+func (m *MockUserRepository) findUserBySecondName(secondName string) *domain.UserSchema {
+	for _, userSchema := range m.userMockData.users {
+		if secondName == userSchema.SecondName {
 			return userSchema
 		}
 	}

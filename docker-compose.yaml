@@ -15,14 +15,14 @@ services:
       - redis
       - mysql
     restart: on-failure
-    environment:
-      APP_HOST: 0.0.0.0
-      APP_PORT: 8080
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      MYSQL_USER: root
-      MYSQL_PASSWORD: my_secret
-      MYSQL_DATABASE: user_manager
+#    environment:
+#      APP_HOST: 0.0.0.0
+#      APP_PORT: 8080
+#      REDIS_HOST: redis
+#      REDIS_PORT: 6379
+#      MYSQL_USER: root
+#      MYSQL_PASSWORD: my_secret
+#      MYSQL_DATABASE: user_manager
     volumes:
       - ./:/app
     networks:
@@ -52,6 +52,20 @@ services:
       - "6379:6379"
     expose:
       - "6379"
+    networks:
+      - user_manager_app
+
+  rabbitmq:
+    container_name: "rabbitmq"
+    image: rabbitmq:3.10.7-management
+    environment:
+      - RABBITMQ_DEFAULT_USER=my_user
+      - RABBITMQ_DEFAULT_PASS=my_password
+    ports:
+      # AMQP protocol port
+      - '5672:5672'
+      # HTTP management UI
+      - '15672:15672'
     networks:
       - user_manager_app
 

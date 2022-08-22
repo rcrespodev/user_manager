@@ -1,0 +1,4 @@
+Welcome {{.UserAlias}} !.
+Your account is now active.
+This is a sample email sent from User Manager System, using an architecture based on events.
+You can see the complete repo in.

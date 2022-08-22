@@ -23,6 +23,12 @@ type Config struct {
 		Host     string `envconfig:"default=mysql"`
 		Port     string `envconfig:"default=3306"`
 	}
+	Rabbit struct {
+		User     string `envconfig:"default=my_user"`
+		Password string `envconfig:"default=my_password"`
+		Host     string `envconfig:"default=rabbitmq"`
+		Port     string `envconfig:"default=5672"`
+	}
 	Jwt struct {
 		Key struct {
 			Private string `envconfig:"default=/app/cert/id_rsa"`
@@ -33,6 +39,15 @@ type Config struct {
 	Log struct {
 		File struct {
 			Path string `envconfig:"default=/app/logs"`
+		}
+	}
+	Smtp struct {
+		Host     string `envconfig:"default=smtp.gmail.com"`
+		Port     string `envconfig:"default=587"`
+		Username string `envconfig:"default=user.manager.email.info@gmail.com"`
+		Password string `envconfig:"default=kkgaoclbngmnzuhb"`
+		Welcome  struct {
+			Template string `envconfig:"default=/app/pkg/app/emailSender/domain/welcomeTemplate.txt"`
 		}
 	}
 }

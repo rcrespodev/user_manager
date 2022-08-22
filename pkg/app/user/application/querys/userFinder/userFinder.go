@@ -2,6 +2,8 @@ package userFinder
 
 import (
 	"github.com/rcrespodev/user_manager/pkg/app/user/domain"
+	returnLog "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
+	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"sync"
 )
 
@@ -13,7 +15,7 @@ func NewUserFinder(userRepository domain.UserRepository) *UserFinder {
 	return &UserFinder{UserRepository: userRepository}
 }
 
-func (u UserFinder) Exec(queryArgs []domain.FindUserQuery) *domain.UserSchema {
+func (u UserFinder) Exec(queryArgs []domain.FindUserQuery, log *returnLog.ReturnLog) *domain.UserSchema {
 	userChan := make(chan *domain.UserSchema)
 	done := make(chan bool)
 	wg := &sync.WaitGroup{}
@@ -48,6 +50,17 @@ func (u UserFinder) Exec(queryArgs []domain.FindUserQuery) *domain.UserSchema {
 	}()
 
 	<-done
+
+	if userSchema == nil {
+		log.LogError(returnLog.NewErrorCommand{
+			NewMessageCommand: &message.NewMessageCommand{
+				ObjectId:   "",
+				MessageId:  17,
+				MessagePkg: "user",
+				Variables:  message.Variables{},
+			},
+		})
+	}
 
 	return userSchema
 }

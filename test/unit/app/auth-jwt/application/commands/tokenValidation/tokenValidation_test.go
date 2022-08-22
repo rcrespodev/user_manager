@@ -2,10 +2,9 @@ package tokenValidation
 
 import (
 	"github.com/google/uuid"
-	"github.com/rcrespodev/user_manager/pkg/app/auth-jwt/application/commands/tokenValidation"
-	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/auth-jwt/domain"
-	jwtRepository "github.com/rcrespodev/user_manager/pkg/app/auth-jwt/repository"
-	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
+	"github.com/rcrespodev/user_manager/pkg/app/authJwt/application/commands/tokenValidation"
+	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/authJwt/domain"
+	jwtRepository "github.com/rcrespodev/user_manager/pkg/app/authJwt/repository"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/valueObjects"
@@ -154,9 +153,9 @@ func TestTokenValidation(t *testing.T) {
 
 			//token, err := jwt.CreateNewToken(cmdUuid.String())
 			tokenValidationCmd := tokenValidation.NewCommand(tt.args.token)
-			cmd := command.NewCommand(command.TokenValidation, cmdUuid, tokenValidationCmd)
+			//cmd := command.NewCommand(command.TokenValidation, cmdUuid, tokenValidationCmd)
 			done := make(chan bool)
-			go handler.Handle(*cmd, retLog, done)
+			go handler.Handle(tokenValidationCmd, retLog, done)
 			<-done
 
 			// ReturnLog check

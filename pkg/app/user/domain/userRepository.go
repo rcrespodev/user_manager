@@ -7,6 +7,7 @@ import (
 type UserRepository interface {
 	SaveUser(user *User, log *returnLog.ReturnLog)
 	FindUser(Query FindUserQuery) *UserSchema
+	DeleteUser(user *User, log *returnLog.ReturnLog)
 }
 
 type FindUserQuery struct {

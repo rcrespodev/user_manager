@@ -10,26 +10,26 @@ import (
 )
 
 type RedisRepository struct {
-	redisCliente *redis.Client
-	ctx          context.Context
+	redisClient *redis.Client
+	ctx         context.Context
 }
 
 func NewRedisRepository(redisClient *redis.Client) *RedisRepository {
 	redisRepository := &RedisRepository{}
 	switch redisClient {
 	case nil:
-		redisRepository.redisCliente = redisRepository.newConnection()
+		redisRepository.redisClient = redisRepository.newConnection()
 		redisRepository.ctx = context.Background()
 	default:
-		redisRepository.redisCliente = redisClient
+		redisRepository.redisClient = redisClient
 		redisRepository.ctx = context.Background()
 	}
 
 	return redisRepository
 }
 
-func (r RedisRepository) RedisCliente() *redis.Client {
-	return r.redisCliente
+func (r RedisRepository) RedisClient() *redis.Client {
+	return r.redisClient
 }
 
 func (r RedisRepository) Ctx() context.Context {
@@ -38,15 +38,15 @@ func (r RedisRepository) Ctx() context.Context {
 
 func (r RedisRepository) newConnection() *redis.Client {
 	redisConf := config.Conf.Redis
-	redisCliente := redis.NewClient(&redis.Options{
+	redisClient := redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%s:%s", redisConf.Host, redisConf.Host),
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
 
-	if err := redisCliente.Ping(context.Background()).Err(); err != nil {
+	if err := redisClient.Ping(context.Background()).Err(); err != nil {
 		log.Fatalf("Redis connection %v", err)
 	}
 
-	return redisCliente
+	return redisClient
 }

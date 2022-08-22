@@ -16,10 +16,16 @@ type MySqlPoolConnection struct {
 	DockerResource *dockertest.Resource
 }
 
+var Pool *dockertest.Pool
+var mySqlResource *dockertest.Resource
+
 func NewDockerTestMySql() *MySqlPoolConnection {
-	pool, err := dockertest.NewPool("")
-	if err != nil {
-		log.Fatalf("Could not connect to docker: %s", err)
+	var err error
+	if Pool == nil {
+		Pool, err = dockertest.NewPool("")
+		if err != nil {
+			log.Fatalf("Could not connect to docker: %s", err)
+		}
 	}
 
 	mySqlOptions := dockertest.RunOptions{
@@ -37,14 +43,17 @@ func NewDockerTestMySql() *MySqlPoolConnection {
 			},
 		},
 	}
-	mySqlResource, err := pool.RunWithOptions(&mySqlOptions, func(config *docker.HostConfig) {
-		config.AutoRemove = true
-		config.RestartPolicy = docker.RestartPolicy{
-			Name: "no",
+
+	if mySqlResource == nil {
+		mySqlResource, err = Pool.RunWithOptions(&mySqlOptions, func(config *docker.HostConfig) {
+			config.AutoRemove = true
+			config.RestartPolicy = docker.RestartPolicy{
+				Name: "no",
+			}
+		})
+		if err != nil {
+			log.Fatalf("Could not start mySqlResource: %s", err.Error())
 		}
-	})
-	if err != nil {
-		log.Fatalf("Could not start mySqlResource: %s", err.Error())
 	}
 
 	if err = os.Setenv("MYSQL_PORT", mySqlResource.GetPort("3306/tcp")); err != nil {
@@ -52,7 +61,7 @@ func NewDockerTestMySql() *MySqlPoolConnection {
 	}
 
 	var mySqlClient *sql.DB
-	if err = pool.Retry(func() error {
+	if err = Pool.Retry(func() error {
 		datasource := fmt.Sprintf("root:my_secret@(localhost:%s)/user_manager", mySqlResource.GetPort("3306/tcp"))
 		mySqlClient, err = sql.Open("mysql", datasource)
 		if err != nil {
@@ -64,7 +73,7 @@ func NewDockerTestMySql() *MySqlPoolConnection {
 	}
 	return &MySqlPoolConnection{
 		MySqlClient:    mySqlClient,
-		DockerPool:     pool,
+		DockerPool:     Pool,
 		DockerResource: mySqlResource,
 	}
 }

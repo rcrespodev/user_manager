@@ -2,10 +2,9 @@ package userLogged
 
 import (
 	"github.com/google/uuid"
-	"github.com/rcrespodev/user_manager/pkg/app/auth-jwt/application/commands/userLogged"
-	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/auth-jwt/domain"
-	jwtRepository "github.com/rcrespodev/user_manager/pkg/app/auth-jwt/repository"
-	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/command"
+	"github.com/rcrespodev/user_manager/pkg/app/authJwt/application/commands/userLogged"
+	jwtDomain "github.com/rcrespodev/user_manager/pkg/app/authJwt/domain"
+	jwtRepository "github.com/rcrespodev/user_manager/pkg/app/authJwt/repository"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/valueObjects"
@@ -85,10 +84,9 @@ func TestUserLogged(t *testing.T) {
 			userLogger := userLogged.NewUserLogger(jwt, mockJwtRepository)
 
 			userLoggedCmd := userLogged.NewCommand(cmdUuid)
-			cmd := command.NewCommand(command.UserLogged, cmdUuid, userLoggedCmd)
 			handler := userLogged.NewCommandHandler(userLogger)
 			done := make(chan bool)
-			go handler.Handle(*cmd, retLog, done)
+			go handler.Handle(userLoggedCmd, retLog, done)
 			<-done
 
 			// ReturnLog check
