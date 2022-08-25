@@ -59,7 +59,7 @@ func (w *WelcomeEmail) newWelcomeBody(templatePath string) {
 	w.body = buffer.Bytes()
 }
 
-func (w *WelcomeEmail) bodyVars() any {
+func (w *WelcomeEmail) bodyVars() interface{} {
 	return struct {
 		UserAlias string
 	}{
