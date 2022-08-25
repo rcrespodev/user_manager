@@ -8,11 +8,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="79ec640a-17bf-4245-87c1-8202ea6de316" name="Changes" comment="Refactor: email sender smtp.&#10;Minors change in email body.">
-      <change afterPath="$PROJECT_DIR$/img.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-    </list>
+    <list default="true" id="79ec640a-17bf-4245-87c1-8202ea6de316" name="Changes" comment="Readme.&#10;Minors change in syntax and add the links to titles. Also add the table of response messages." />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -302,14 +298,7 @@
       <workItem from="1659529365497" duration="18773000" />
       <workItem from="1659617849703" duration="2106000" />
       <workItem from="1661281295711" duration="7119000" />
-      <workItem from="1661427809947" duration="10645000" />
-    </task>
-    <task id="LOCAL-00047" summary="Feature: Readme !!">
-      <created>1658278219550</created>
-      <option name="number" value="00047" />
-      <option name="presentableId" value="LOCAL-00047" />
-      <option name="project" value="LOCAL" />
-      <updated>1658278219550</updated>
+      <workItem from="1661427809947" duration="10946000" />
     </task>
     <task id="LOCAL-00048" summary="Refactor: Variables rename">
       <created>1658282333894</created>
@@ -647,7 +636,14 @@
       <option name="project" value="LOCAL" />
       <updated>1661433741013</updated>
     </task>
-    <option name="localTasksCounter" value="96" />
+    <task id="LOCAL-00096" summary="Readme.&#10;Minors change in syntax and add the links to titles. Also add the table of response messages.">
+      <created>1661449604805</created>
+      <option name="number" value="00096" />
+      <option name="presentableId" value="LOCAL-00096" />
+      <option name="project" value="LOCAL" />
+      <updated>1661449604805</updated>
+    </task>
+    <option name="localTasksCounter" value="97" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -698,7 +694,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Refactor: Endpoints.&#10;Replace string with endpoints constants." />
     <MESSAGE value="Testing: User.&#10;Add sql injection email validation as uses case." />
     <MESSAGE value="Feature: Endpoints.&#10;Endpoint rel path are stored as key in hash map." />
     <MESSAGE value="Feature: Login.&#10;Add a extra data layer for persistence user session data.&#10;Important: user session is handling inside application layer.&#10;Authentication is handling inside infrastructure layer." />
@@ -723,7 +718,8 @@
     <MESSAGE value="Refactor: pkg returnLog.&#10;Runtime.Caller() return the absolute path, which prevents tests from being portable.&#10;parsePath just cut the abs path into rel path to project(root dir=user_manager).&#10;put root_dir as env???" />
     <MESSAGE value="Refactor: deploy.&#10;Minors change in Makefile" />
     <MESSAGE value="Refactor: email sender smtp.&#10;Minors change in email body." />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor: email sender smtp.&#10;Minors change in email body." />
+    <MESSAGE value="Readme.&#10;Minors change in syntax and add the links to titles. Also add the table of response messages." />
+    <option name="LAST_COMMIT_MESSAGE" value="Readme.&#10;Minors change in syntax and add the links to titles. Also add the table of response messages." />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
