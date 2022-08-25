@@ -8,12 +8,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="79ec640a-17bf-4245-87c1-8202ea6de316" name="Changes" comment="Refactor: pkg email sender.&#10;Just change type any for type interface. Type any isn´t compatible with go 1.17.">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/kernel/cqrs/returnLog/domain/customError/customError.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/kernel/cqrs/returnLog/domain/customError/customError.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/kernel/cqrs/returnLog/domain/customError/internalError.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/kernel/cqrs/returnLog/domain/customError/internalError.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/unit/kernel/cqrs/returnLog/.env" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/unit/kernel/cqrs/returnLog/returnLog_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/test/unit/kernel/cqrs/returnLog/returnLog_test.go" afterDir="false" />
+    <list default="true" id="79ec640a-17bf-4245-87c1-8202ea6de316" name="Changes" comment="Refactor: pkg returnLog.&#10;Runtime.Caller() return the absolute path, which prevents tests from being portable.&#10;parsePath just cut the abs path into rel path to project(root dir=user_manager).&#10;put root_dir as env???">
+      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -305,14 +301,7 @@
       <workItem from="1659529365497" duration="18773000" />
       <workItem from="1659617849703" duration="2106000" />
       <workItem from="1661281295711" duration="7119000" />
-      <workItem from="1661427809947" duration="2975000" />
-    </task>
-    <task id="LOCAL-00042" summary="Feature: Add Api documentation.">
-      <created>1658166311802</created>
-      <option name="number" value="00042" />
-      <option name="presentableId" value="LOCAL-00042" />
-      <option name="project" value="LOCAL" />
-      <updated>1658166311802</updated>
+      <workItem from="1661427809947" duration="3303000" />
     </task>
     <task id="LOCAL-00043" summary="Documentation.">
       <created>1658172613154</created>
@@ -650,7 +639,14 @@
       <option name="project" value="LOCAL" />
       <updated>1661428470863</updated>
     </task>
-    <option name="localTasksCounter" value="91" />
+    <task id="LOCAL-00091" summary="Refactor: pkg returnLog.&#10;Runtime.Caller() return the absolute path, which prevents tests from being portable.&#10;parsePath just cut the abs path into rel path to project(root dir=user_manager).&#10;put root_dir as env???">
+      <created>1661430946487</created>
+      <option name="number" value="00091" />
+      <option name="presentableId" value="LOCAL-00091" />
+      <option name="project" value="LOCAL" />
+      <updated>1661430946487</updated>
+    </task>
+    <option name="localTasksCounter" value="92" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -701,7 +697,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Refactor: pkg users:&#10;The required tests send a jwt in header Authorization." />
     <MESSAGE value="Refactor: api-endpoints.&#10;Rename fields. &quot;Endpoint&quot; is most semantic than &quot;Routes&quot;." />
     <MESSAGE value="Refactor: integration test.&#10;Delete unused .envs" />
     <MESSAGE value="Refactor: Endpoints.&#10;Replace string with endpoints constants." />
@@ -726,7 +721,8 @@
     <MESSAGE value="Delete .gitignore" />
     <MESSAGE value="Add logs to git files. These logs are good example of the internal errors handling." />
     <MESSAGE value="Refactor: pkg email sender.&#10;Just change type any for type interface. Type any isn´t compatible with go 1.17." />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor: pkg email sender.&#10;Just change type any for type interface. Type any isn´t compatible with go 1.17." />
+    <MESSAGE value="Refactor: pkg returnLog.&#10;Runtime.Caller() return the absolute path, which prevents tests from being portable.&#10;parsePath just cut the abs path into rel path to project(root dir=user_manager).&#10;put root_dir as env???" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor: pkg returnLog.&#10;Runtime.Caller() return the absolute path, which prevents tests from being portable.&#10;parsePath just cut the abs path into rel path to project(root dir=user_manager).&#10;put root_dir as env???" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
