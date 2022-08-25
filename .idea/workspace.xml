@@ -8,9 +8,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="79ec640a-17bf-4245-87c1-8202ea6de316" name="Changes" comment="login endpoint documentation.">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/user_manager.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/user_manager.iml" afterDir="false" />
+    <list default="true" id="79ec640a-17bf-4245-87c1-8202ea6de316" name="Changes" comment="Refactor: pkg email sender.&#10;Just change type any for type interface. Type any isn´t compatible with go 1.17.">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -47,7 +46,9 @@
     <setting file="file://$PROJECT_DIR$/pkg/app/user/repository/userRepository/mockUserRepository.go" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/pkg/app/user/repository/userRepository/mySqlUserRepository.go" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/test.sh" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/test/integration/v1/handlers/registerUser/registerUserGinHandlerFunc_test.go" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$USER_HOME$/go/pkg/mod/github.com/go-sql-driver/mysql@v1.6.0/connection.go" root0="SKIP_INSPECTION" />
+    <setting file="file://$USER_HOME$/go/pkg/mod/github.com/go-sql-driver/mysql@v1.6.0/packets.go" root0="SKIP_INSPECTION" />
+    <setting file="file:///usr/local/go/src/database/sql/sql.go" root0="SKIP_INSPECTION" />
     <setting file="file:///usr/local/go/src/reflect/deepequal.go" root0="SKIP_INSPECTION" />
     <setting file="file:///usr/local/go/src/runtime/extern.go" root0="SKIP_INSPECTION" />
   </component>
@@ -65,35 +66,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.format.on.save.advertiser.fired&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.vendoring.notification.had.been.shown&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
-    &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/rcrespo/github.com/rcrespodev/user_manager&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.grazie&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.go.format.on.save.advertiser.fired": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.go.migrated.go.modules.settings": "true",
+    "RunOnceActivity.go.vendoring.notification.had.been.shown": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "go.import.settings.migrated": "true",
+    "go.sdk.automatically.set": "true",
+    "last_opened_file_path": "/home/rcrespo/github.com/rcrespodev/user_manager_client",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.lookFeel"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mysql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/test/integration/v1/handlers" />
@@ -301,27 +302,8 @@
       <workItem from="1659447843446" duration="22451000" />
       <workItem from="1659529365497" duration="18773000" />
       <workItem from="1659617849703" duration="2106000" />
-    </task>
-    <task id="LOCAL-00038" summary="Refactor: pkg registerUser.&#10;Test wit requiere pkg looks much better">
-      <created>1657905669872</created>
-      <option name="number" value="00038" />
-      <option name="presentableId" value="LOCAL-00038" />
-      <option name="project" value="LOCAL" />
-      <updated>1657905669872</updated>
-    </task>
-    <task id="LOCAL-00039" summary="Refactor: pkg registerUser.&#10;Delete comments and minors refactors">
-      <created>1657906301000</created>
-      <option name="number" value="00039" />
-      <option name="presentableId" value="LOCAL-00039" />
-      <option name="project" value="LOCAL" />
-      <updated>1657906301000</updated>
-    </task>
-    <task id="LOCAL-00040" summary="Fix: pkg kernel and server.&#10;Config there are instantiated before instantiate repositories">
-      <created>1657909418908</created>
-      <option name="number" value="00040" />
-      <option name="presentableId" value="LOCAL-00040" />
-      <option name="project" value="LOCAL" />
-      <updated>1657909418909</updated>
+      <workItem from="1661281295711" duration="7119000" />
+      <workItem from="1661427809947" duration="596000" />
     </task>
     <task id="LOCAL-00041" summary="Refactor: deploy - docker.&#10;Delete comments">
       <created>1657909684317</created>
@@ -645,7 +627,28 @@
       <option name="project" value="LOCAL" />
       <updated>1659620811465</updated>
     </task>
-    <option name="localTasksCounter" value="87" />
+    <task id="LOCAL-00087" summary="Delete .gitignore">
+      <created>1661188751655</created>
+      <option name="number" value="00087" />
+      <option name="presentableId" value="LOCAL-00087" />
+      <option name="project" value="LOCAL" />
+      <updated>1661188751655</updated>
+    </task>
+    <task id="LOCAL-00088" summary="Add logs to git files. These logs are good example of the internal errors handling.">
+      <created>1661188832831</created>
+      <option name="number" value="00088" />
+      <option name="presentableId" value="LOCAL-00088" />
+      <option name="project" value="LOCAL" />
+      <updated>1661188832831</updated>
+    </task>
+    <task id="LOCAL-00089" summary="Refactor: pkg email sender.&#10;Just change type any for type interface. Type any isn´t compatible with go 1.17.">
+      <created>1661428402567</created>
+      <option name="number" value="00089" />
+      <option name="presentableId" value="LOCAL-00089" />
+      <option name="project" value="LOCAL" />
+      <updated>1661428402567</updated>
+    </task>
+    <option name="localTasksCounter" value="90" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -696,9 +699,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Feature: Implement jwt with custom claims.&#10;claims:&#10;- uuid (e.g user_uuid)&#10;- time (time.Now().Unix)" />
-    <MESSAGE value="Refactor: pkg users:&#10;Move tests to new directory" />
-    <MESSAGE value="Refactor: pkg users:&#10;Add jwt generation in register user http handler.&#10;The solution set key &quot;Token&quot; in the header response." />
     <MESSAGE value="Refactor: pkg users:&#10;The required tests send a jwt in header Authorization." />
     <MESSAGE value="Refactor: api-endpoints.&#10;Rename fields. &quot;Endpoint&quot; is most semantic than &quot;Routes&quot;." />
     <MESSAGE value="Refactor: integration test.&#10;Delete unused .envs" />
@@ -721,7 +721,10 @@
     <MESSAGE value="Feature: Pkg Log file.&#10;LogFile type receives internal errors and write YYYY-MM-DD-errors.log file with the errors received.&#10;The method LogInternalError() is called each time ReturnLog type execute method LogError() and command.Error != nil.&#10;The log file path are defined in LOG_FILE_PATH env." />
     <MESSAGE value="refactor: returnLog pkg.&#10;When internal error is logged in returnLog, then log the same error in log file." />
     <MESSAGE value="login endpoint documentation." />
-    <option name="LAST_COMMIT_MESSAGE" value="login endpoint documentation." />
+    <MESSAGE value="Delete .gitignore" />
+    <MESSAGE value="Add logs to git files. These logs are good example of the internal errors handling." />
+    <MESSAGE value="Refactor: pkg email sender.&#10;Just change type any for type interface. Type any isn´t compatible with go 1.17." />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor: pkg email sender.&#10;Just change type any for type interface. Type any isn´t compatible with go 1.17." />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
