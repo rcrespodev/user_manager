@@ -9,8 +9,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="79ec640a-17bf-4245-87c1-8202ea6de316" name="Changes" comment="Refactor: pkg email sender.&#10;Just change type any for type interface. Type any isn´t compatible with go 1.17.">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/kernel/cqrs/returnLog/domain/customError/customError.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/kernel/cqrs/returnLog/domain/customError/customError.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/kernel/cqrs/returnLog/domain/customError/internalError.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/kernel/cqrs/returnLog/domain/customError/internalError.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/unit/kernel/cqrs/returnLog/.env" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/unit/kernel/cqrs/returnLog/returnLog_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/test/unit/kernel/cqrs/returnLog/returnLog_test.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -111,7 +114,7 @@
       <recent name="$PROJECT_DIR$/test/unit/app" />
     </key>
   </component>
-  <component name="RunManager" selected="Go Build.go build github.com/rcrespodev/user_manager/cmd/web">
+  <component name="RunManager" selected="Go Test.go test github.com/rcrespodev/user_manager/test/unit/kernel/cqrs/returnLog">
     <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
       <module name="user_manager" />
       <working_directory value="$PROJECT_DIR$" />
@@ -121,25 +124,13 @@
       <filePath value="$PROJECT_DIR$" />
       <method v="2" />
     </configuration>
-    <configuration name="go build github.com/rcrespodev/user_manager/cmd/web" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+    <configuration name="go build github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/customError" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="user_manager" />
       <working_directory value="$PROJECT_DIR$" />
       <kind value="PACKAGE" />
-      <package value="github.com/rcrespodev/user_manager/cmd/web" />
+      <package value="github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/customError" />
       <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$/cmd/web/main.go" />
-      <method v="2" />
-    </configuration>
-    <configuration name="TestNewUser in github.com/rcrespodev/user_manager/test/unit/user/domain" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
-      <module name="user_manager" />
-      <working_directory value="$PROJECT_DIR$/test/unit/user/domain" />
-      <root_directory value="$PROJECT_DIR$" />
-      <kind value="PACKAGE" />
-      <package value="github.com/rcrespodev/user_manager/test/unit/user/domain" />
-      <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$" />
-      <framework value="gotest" />
-      <pattern value="^\QTestNewUser\E$" />
+      <filePath value="$PROJECT_DIR$/pkg/kernel/cqrs/returnLog/domain/customError/internalError.go" />
       <method v="2" />
     </configuration>
     <configuration name="TestRegisterUserGinHandlerFunc in github.com/rcrespodev/user_manager/test/integration/v1/handlers/registerUser" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
@@ -188,6 +179,17 @@
       <framework value="gotest" />
       <method v="2" />
     </configuration>
+    <configuration name="go test github.com/rcrespodev/user_manager/test/unit/kernel/cqrs/returnLog" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="user_manager" />
+      <working_directory value="$PROJECT_DIR$/test/unit/kernel/cqrs/returnLog" />
+      <root_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="github.com/rcrespodev/user_manager/test/unit/kernel/cqrs/returnLog" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <method v="2" />
+    </configuration>
     <configuration default="true" type="SwaggerCodegen">
       <option name="activeConfigurationType" value="FILE" />
       <option name="configurationPath" value="" />
@@ -222,11 +224,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Test.go test github.com/rcrespodev/user_manager/test/unit/kernel/cqrs/returnLog" />
+        <item itemvalue="Go Build.go build github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/customError" />
         <item itemvalue="Go Test.TestUserRegistration in github.com/rcrespodev/user_manager/test/unit/user/application/register" />
         <item itemvalue="Go Test.TestRegisterUserGinHandlerFunc in github.com/rcrespodev/user_manager/test/integration/v1/handlers/registerUser" />
         <item itemvalue="Go Test.TestRegisterUserGinHandlerFunc/user_email_already_exists in github.com/rcrespodev/user_manager/test/integration/v1/handlers/registerUser" />
-        <item itemvalue="Go Test.TestNewUser in github.com/rcrespodev/user_manager/test/unit/user/domain" />
-        <item itemvalue="Go Build.go build github.com/rcrespodev/user_manager/cmd/web" />
       </list>
     </recent_temporary>
   </component>
@@ -303,14 +305,7 @@
       <workItem from="1659529365497" duration="18773000" />
       <workItem from="1659617849703" duration="2106000" />
       <workItem from="1661281295711" duration="7119000" />
-      <workItem from="1661427809947" duration="596000" />
-    </task>
-    <task id="LOCAL-00041" summary="Refactor: deploy - docker.&#10;Delete comments">
-      <created>1657909684317</created>
-      <option name="number" value="00041" />
-      <option name="presentableId" value="LOCAL-00041" />
-      <option name="project" value="LOCAL" />
-      <updated>1657909684317</updated>
+      <workItem from="1661427809947" duration="2975000" />
     </task>
     <task id="LOCAL-00042" summary="Feature: Add Api documentation.">
       <created>1658166311802</created>
@@ -648,7 +643,14 @@
       <option name="project" value="LOCAL" />
       <updated>1661428402567</updated>
     </task>
-    <option name="localTasksCounter" value="90" />
+    <task id="LOCAL-00090" summary="Refactor: pkg email sender.&#10;Just change type any for type interface. Type any isn´t compatible with go 1.17.">
+      <created>1661428470863</created>
+      <option name="number" value="00090" />
+      <option name="presentableId" value="LOCAL-00090" />
+      <option name="project" value="LOCAL" />
+      <updated>1661428470863</updated>
+    </task>
+    <option name="localTasksCounter" value="91" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

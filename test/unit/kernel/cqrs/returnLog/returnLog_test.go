@@ -3,14 +3,11 @@ package returnLog
 import (
 	"fmt"
 	"github.com/google/uuid"
-	"github.com/joho/godotenv"
 	domain "github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/message"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/domain/valueObjects"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/repository"
 	"github.com/rcrespodev/user_manager/pkg/kernel/cqrs/returnLog/service"
-	"log"
-	"os"
 	"reflect"
 	"testing"
 	"time"
@@ -21,11 +18,6 @@ const (
 )
 
 func TestReturnLogSrv(t *testing.T) {
-	if err := godotenv.Load(".env"); err != nil {
-		log.Fatal(err)
-	}
-	homeProject := os.Getenv("HOME_PROJECT")
-
 	var mockRepository = repository.NewMockMessageRepository([]repository.MockData{
 		{
 			Id:              001,
@@ -119,7 +111,7 @@ func TestReturnLogSrv(t *testing.T) {
 				error: &wantCustomError{
 					internalError: &internalError{
 						Error: fmt.Errorf("message 999 not found in pkg testing"),
-						file:  fmt.Sprintf("%v/test/unit/kernel/cqrs/returnLog/returnLog_test.go", homeProject),
+						file:  fmt.Sprintf("user_manager/test/unit/kernel/cqrs/returnLog/returnLog_test.go"),
 					},
 				},
 				success:        &wantSuccess{message: nil},
@@ -145,7 +137,7 @@ func TestReturnLogSrv(t *testing.T) {
 				error: &wantCustomError{
 					internalError: &internalError{
 						Error: fmt.Errorf("internal Error"),
-						file:  fmt.Sprintf("%v/test/unit/kernel/cqrs/returnLog/returnLog_test.go", homeProject),
+						file:  fmt.Sprintf("user_manager/test/unit/kernel/cqrs/returnLog/returnLog_test.go"),
 					},
 				},
 				success:        &wantSuccess{message: nil},
@@ -207,7 +199,7 @@ func TestReturnLogSrv(t *testing.T) {
 				error: &wantCustomError{
 					internalError: &internalError{
 						Error: fmt.Errorf("internal Error"),
-						file:  fmt.Sprintf("%v/test/unit/kernel/cqrs/returnLog/returnLog_test.go", homeProject),
+						file:  fmt.Sprintf("user_manager/test/unit/kernel/cqrs/returnLog/returnLog_test.go"),
 					},
 					clientError: nil,
 				},
@@ -493,10 +485,10 @@ func TestReturnLogSrv(t *testing.T) {
 						t.Errorf("Internal Error\n\t- got: %v\n\t- want: %v", gotInternalError, tt.want.error.internalError.Error)
 						return
 					}
-					//if gotInternalErrorFile := internalError.File(); !reflect.DeepEqual(gotInternalErrorFile, tt.want.error.internalError.file) {
-					//	t.Errorf("Internal Error File\n\t- got: %v\n\t- want: %v", gotInternalErrorFile, tt.want.error.internalError.file)
-					//	return
-					//}
+					if gotInternalErrorFile := internalError.File(); !reflect.DeepEqual(gotInternalErrorFile, tt.want.error.internalError.file) {
+						t.Errorf("Internal Error File\n\t- got: %v\n\t- want: %v", gotInternalErrorFile, tt.want.error.internalError.file)
+						return
+					}
 				}
 			}
 

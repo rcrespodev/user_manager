@@ -35,6 +35,7 @@ func NewInternalError(error error, caller int) *CustomError {
 		},
 		clientError: nil,
 	}
+	customerErr.internalError.parsePath()
 
 	// see app logs
 	log.Printf("error:%v, file:%v, line:%v", customerErr.internalError.error, customerErr.internalError.file, customerErr.internalError.line)
