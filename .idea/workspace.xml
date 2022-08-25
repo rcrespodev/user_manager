@@ -8,8 +8,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="79ec640a-17bf-4245-87c1-8202ea6de316" name="Changes" comment="Refactor: pkg returnLog.&#10;Runtime.Caller() return the absolute path, which prevents tests from being portable.&#10;parsePath just cut the abs path into rel path to project(root dir=user_manager).&#10;put root_dir as env???">
-      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
+    <list default="true" id="79ec640a-17bf-4245-87c1-8202ea6de316" name="Changes" comment="Refactor: email sender smtp.&#10;Minors change in email body.">
+      <change beforePath="$PROJECT_DIR$/pkg/app/emailSender/infrastructure/smtpEmailSender.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/app/emailSender/infrastructure/smtpEmailSender.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,7 +44,6 @@
     <setting file="file://$PROJECT_DIR$/pkg/app/user/domain/userRepository.go" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/pkg/app/user/repository/userRepository/mockUserRepository.go" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/pkg/app/user/repository/userRepository/mySqlUserRepository.go" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/test.sh" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/go/pkg/mod/github.com/go-sql-driver/mysql@v1.6.0/connection.go" root0="SKIP_INSPECTION" />
     <setting file="file://$USER_HOME$/go/pkg/mod/github.com/go-sql-driver/mysql@v1.6.0/packets.go" root0="SKIP_INSPECTION" />
     <setting file="file:///usr/local/go/src/database/sql/sql.go" root0="SKIP_INSPECTION" />
@@ -301,21 +300,7 @@
       <workItem from="1659529365497" duration="18773000" />
       <workItem from="1659617849703" duration="2106000" />
       <workItem from="1661281295711" duration="7119000" />
-      <workItem from="1661427809947" duration="3303000" />
-    </task>
-    <task id="LOCAL-00043" summary="Documentation.">
-      <created>1658172613154</created>
-      <option name="number" value="00043" />
-      <option name="presentableId" value="LOCAL-00043" />
-      <option name="project" value="LOCAL" />
-      <updated>1658172613154</updated>
-    </task>
-    <task id="LOCAL-00044" summary="Documentation.">
-      <created>1658172664782</created>
-      <option name="number" value="00044" />
-      <option name="presentableId" value="LOCAL-00044" />
-      <option name="project" value="LOCAL" />
-      <updated>1658172664782</updated>
+      <workItem from="1661427809947" duration="4217000" />
     </task>
     <task id="LOCAL-00045" summary="Feature: Mysql User Repo.&#10;Add autoincrement field to primary key. This change allow to the cliente to use the same uuid in several requests.">
       <created>1658233835096</created>
@@ -646,7 +631,21 @@
       <option name="project" value="LOCAL" />
       <updated>1661430946487</updated>
     </task>
-    <option name="localTasksCounter" value="92" />
+    <task id="LOCAL-00092" summary="Refactor: deploy.&#10;Minors change in Makefile">
+      <created>1661431227736</created>
+      <option name="number" value="00092" />
+      <option name="presentableId" value="LOCAL-00092" />
+      <option name="project" value="LOCAL" />
+      <updated>1661431227736</updated>
+    </task>
+    <task id="LOCAL-00093" summary="Refactor: email sender smtp.&#10;Minors change in email body.">
+      <created>1661433006277</created>
+      <option name="number" value="00093" />
+      <option name="presentableId" value="LOCAL-00093" />
+      <option name="project" value="LOCAL" />
+      <updated>1661433006277</updated>
+    </task>
+    <option name="localTasksCounter" value="94" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -697,8 +696,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Refactor: api-endpoints.&#10;Rename fields. &quot;Endpoint&quot; is most semantic than &quot;Routes&quot;." />
-    <MESSAGE value="Refactor: integration test.&#10;Delete unused .envs" />
     <MESSAGE value="Refactor: Endpoints.&#10;Replace string with endpoints constants." />
     <MESSAGE value="Testing: User.&#10;Add sql injection email validation as uses case." />
     <MESSAGE value="Feature: Endpoints.&#10;Endpoint rel path are stored as key in hash map." />
@@ -722,7 +719,9 @@
     <MESSAGE value="Add logs to git files. These logs are good example of the internal errors handling." />
     <MESSAGE value="Refactor: pkg email sender.&#10;Just change type any for type interface. Type any isn´t compatible with go 1.17." />
     <MESSAGE value="Refactor: pkg returnLog.&#10;Runtime.Caller() return the absolute path, which prevents tests from being portable.&#10;parsePath just cut the abs path into rel path to project(root dir=user_manager).&#10;put root_dir as env???" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor: pkg returnLog.&#10;Runtime.Caller() return the absolute path, which prevents tests from being portable.&#10;parsePath just cut the abs path into rel path to project(root dir=user_manager).&#10;put root_dir as env???" />
+    <MESSAGE value="Refactor: deploy.&#10;Minors change in Makefile" />
+    <MESSAGE value="Refactor: email sender smtp.&#10;Minors change in email body." />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor: email sender smtp.&#10;Minors change in email body." />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
