@@ -8,9 +8,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="79ec640a-17bf-4245-87c1-8202ea6de316" name="Changes" comment="Refactor: email sender smtp.&#10;Minors change in email body.">
-      <change beforePath="$PROJECT_DIR$/pkg/app/emailSender/infrastructure/smtpEmailSender.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/app/emailSender/infrastructure/smtpEmailSender.go" afterDir="false" />
-    </list>
+    <list default="true" id="79ec640a-17bf-4245-87c1-8202ea6de316" name="Changes" comment="Refactor: email sender smtp.&#10;Minors change in email body." />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -300,14 +298,7 @@
       <workItem from="1659529365497" duration="18773000" />
       <workItem from="1659617849703" duration="2106000" />
       <workItem from="1661281295711" duration="7119000" />
-      <workItem from="1661427809947" duration="4217000" />
-    </task>
-    <task id="LOCAL-00045" summary="Feature: Mysql User Repo.&#10;Add autoincrement field to primary key. This change allow to the cliente to use the same uuid in several requests.">
-      <created>1658233835096</created>
-      <option name="number" value="00045" />
-      <option name="presentableId" value="LOCAL-00045" />
-      <option name="project" value="LOCAL" />
-      <updated>1658233835096</updated>
+      <workItem from="1661427809947" duration="4900000" />
     </task>
     <task id="LOCAL-00046" summary="Refactor: User Registration.&#10;Final changes.">
       <created>1658239187891</created>
@@ -645,7 +636,14 @@
       <option name="project" value="LOCAL" />
       <updated>1661433006277</updated>
     </task>
-    <option name="localTasksCounter" value="94" />
+    <task id="LOCAL-00094" summary="Refactor: email sender smtp.&#10;Minors change in email body.">
+      <created>1661433066234</created>
+      <option name="number" value="00094" />
+      <option name="presentableId" value="LOCAL-00094" />
+      <option name="project" value="LOCAL" />
+      <updated>1661433066234</updated>
+    </task>
+    <option name="localTasksCounter" value="95" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
