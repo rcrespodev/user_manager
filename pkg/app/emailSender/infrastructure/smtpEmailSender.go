@@ -31,8 +31,8 @@ func NewSmtpEmailSender(conf EmailAuthConf) *SmtpEmailSender {
 }
 
 func (s SmtpEmailSender) SendEmail(command *emailSenderDomain.SendEmailCommand, log *returnLog.ReturnLog) {
-	mime := "MIME-version: 1.0;\nContent-Type: text/plain; charset=\"UTF-8\";\n\n"
-	message := []byte(fmt.Sprintf("Subject: %s\n%s\n%s\n", command.Subject, mime, string(command.Body)))
+	//mime := "MIME-version: 1.0;\nContent-Type: text/plain; charset=\"UTF-8\";\n\n"
+	message := []byte(fmt.Sprintf("Subject: %s\n%s\n", command.Subject, string(command.Body)))
 	addr := fmt.Sprintf("%s:%s", s.host, s.port)
 	to := make([]string, 1)
 	to[0] = command.To
