@@ -8,7 +8,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="79ec640a-17bf-4245-87c1-8202ea6de316" name="Changes" comment="Refactor: email sender smtp.&#10;Minors change in email body." />
+    <list default="true" id="79ec640a-17bf-4245-87c1-8202ea6de316" name="Changes" comment="Refactor: email sender smtp.&#10;Minors change in email body.">
+      <change afterPath="$PROJECT_DIR$/img.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -298,14 +302,7 @@
       <workItem from="1659529365497" duration="18773000" />
       <workItem from="1659617849703" duration="2106000" />
       <workItem from="1661281295711" duration="7119000" />
-      <workItem from="1661427809947" duration="4900000" />
-    </task>
-    <task id="LOCAL-00046" summary="Refactor: User Registration.&#10;Final changes.">
-      <created>1658239187891</created>
-      <option name="number" value="00046" />
-      <option name="presentableId" value="LOCAL-00046" />
-      <option name="project" value="LOCAL" />
-      <updated>1658239187891</updated>
+      <workItem from="1661427809947" duration="10645000" />
     </task>
     <task id="LOCAL-00047" summary="Feature: Readme !!">
       <created>1658278219550</created>
@@ -643,7 +640,14 @@
       <option name="project" value="LOCAL" />
       <updated>1661433066234</updated>
     </task>
-    <option name="localTasksCounter" value="95" />
+    <task id="LOCAL-00095" summary="Refactor: email sender smtp.&#10;Minors change in email body.">
+      <created>1661433741013</created>
+      <option name="number" value="00095" />
+      <option name="presentableId" value="LOCAL-00095" />
+      <option name="project" value="LOCAL" />
+      <updated>1661433741013</updated>
+    </task>
+    <option name="localTasksCounter" value="96" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
